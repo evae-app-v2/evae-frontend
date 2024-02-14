@@ -1,26 +1,28 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import Layout from "./Components/layout";
+import { BrowserRouter, Routes, Route } from "react-router-dom"; // Importer BrowserRouter
+
+import { AuthProvider } from "./routes/AuthProvider";
+import { LoginPage } from "./Components/LoginPage";
+import ProtectedRoute from "./routes/ProtectedRoute";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+        <BrowserRouter> {/* Ajouter BrowserRouter ici */}
+            <AuthProvider>
+                <Routes>
+                    {/* Public routes */}
+                    <Route path="/evae/login" element={<LoginPage />} />
+
+                    {/* Private route using ProtectedRoute component */}
+                    <Route path="/" element={<ProtectedRoute />}>
+                        <Route path="/evae/account" element={<Layout />} />
+                    </Route>
+                </Routes>
+            </AuthProvider>
+        </BrowserRouter>
+);
 }
 
 export default App;
