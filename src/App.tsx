@@ -6,6 +6,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"; // Importer Bro
 import { AuthProvider } from "./routes/AuthProvider";
 import { LoginPage } from "./Components/LoginPage";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import RubriquesListe from "./Components/rubrique-standars/RubriquesListe";
+import {EmptyCompoenent} from "./Components/EmptyCompoenent";
 
 function App() {
     return (
@@ -17,7 +19,9 @@ function App() {
 
                     {/* Private route using ProtectedRoute component */}
                     <Route path="/" element={<ProtectedRoute />}>
-                        <Route path="/evae/account" element={<Layout />} />
+                        <Route path="/evae/home" element={<Layout><EmptyCompoenent/></Layout>}/>
+                        <Route path="/evae/rubrique-standars" element={<Layout><RubriquesListe/></Layout>}/>
+                        <Route path="/evae/test" element={<Layout><LoginPage/></Layout>}/>
                     </Route>
                 </Routes>
             </AuthProvider>
