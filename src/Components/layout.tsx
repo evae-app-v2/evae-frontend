@@ -2,7 +2,7 @@
 // https://github.com/neurolinker/popice
 
 import React, {ReactNode, useState} from 'react';
-import RubriquesListe from "./rubrique-standars/RubriquesListe";
+import RubriquesListe from "./rubriqueSTD/RubriquesListe";
 import {useSelector} from "react-redux";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
@@ -12,10 +12,10 @@ import {
     faChartBar,
     faEnvelope,
     faCalendar,
-    faFileAlt, faCamera, faMusic, faBars
+    faFileAlt, faCamera, faMusic, faBars, faQuestion
 } from "@fortawesome/free-solid-svg-icons";
 import {Statics} from "./statics";
-import {faTiktok} from "@fortawesome/free-brands-svg-icons";
+import {faSquarespace, faTiktok} from "@fortawesome/free-brands-svg-icons";
 import Spinner from "../utils/Spinner";
 import AlertComp from "../utils/alert";
 import {useNavigate} from "react-router-dom";
@@ -31,14 +31,14 @@ const adminMenu = [
         icon: faBars
     },
     {
-        name: "Utilisateurs",
-        path: "/evae/test",
-        icon: faUsers
+        name: "Couple qualificatif",
+        path: "/evae/couple-qualificatif",
+        icon: faSquarespace
     },
     {
-        name: "Vidéos",
-        path: "/videos",
-        icon: faTiktok
+        name: "Questions Standars",
+        path: "/evae/question-standars",
+        icon: faQuestion
     },
     {
         name: "Paramètres",
