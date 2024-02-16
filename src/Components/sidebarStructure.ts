@@ -1,3 +1,4 @@
+
 const sidebarStructure = [
     {
         id: "dashboard",

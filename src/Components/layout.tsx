@@ -2,7 +2,13 @@
 // https://github.com/neurolinker/popice
 
 import React, {ReactNode, useState} from 'react';
+
+import { useDispatch } from "react-redux";
+import { useEffect } from 'react';
 import RubriquesListe from "./rubriqueSTD/RubriquesListe";
+import { hideLoading } from "../redux/alertsSlice";
+import axios from "axios";
+
 import {useSelector} from "react-redux";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
@@ -78,7 +84,7 @@ const adminMenu = [
 ];
 const enseignantMenu = [
     {
-        name:"",
+        name:"Test",
         path:"",
         icon:""
     },
@@ -91,6 +97,8 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
     const [menuName, setMenuName] = useState("");
     const [showSpinner, setShowSpinner] = useState(false);
+    const dispatch = useDispatch(); // Initialize the dispatch function
+
     const navigate = useNavigate();
     const setDark = (val: string) => {
         const moon = document.querySelector(".moon") as HTMLElement;
@@ -142,9 +150,34 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         }
     };
     const { user } = useSelector((state:any) => state.user);
-    //const menuToBeRendered = user?.role === "ADMIN" ? adminMenu : user?.role === "ENSEIGNANT" ? enseignantMenu : [];
-    const menuToBeRendered = adminMenu;
-    const role = user?.role === "ADMIN" ? "ADMIN" : user?.role === "ENSEIGNANT" ? "ENSEIGNANT" : null;
+    const [role, setRole] = useState<string | null>(null); // State to hold the user role
+
+    const fetchUserDetails = async () => {
+        try {
+          const response = await axios.get("http://localhost:8085/api/v1/user/get-user-by-id", {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+          });
+          // Update the role state with the fetched role
+          setRole(response.data.role);
+        } catch (error) {
+          console.error("Error fetching user details:", error);
+        }
+      };
+
+      useEffect(() => {
+        // Fetch user details only if the user is authenticated
+          fetchUserDetails();
+        
+      }, [user]);
+   
+      console.log("role = ",role);
+    // const menuToBeRendered = adminMenu;
+
+    const menuToBeRendered = role === "ADM" ? adminMenu : role === "ENS" ? enseignantMenu : [];
+
+    // const roleUser = user?.role === "ADMIN" ? "ADMIN" : user?.role === "ENSEIGNANT" ? "ENSEIGNANT" : null;
     const handleClick = (menu: any) => {
         setMenuName(menu.name);
         navigate(menu.path);
@@ -152,11 +185,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         // Vous pouvez maintenant utiliser le nom du menu cliqué comme vous le souhaitez
     };
     const handleLogout = () => {
-        setShowSpinner(true);
-        setTimeout(() => {
-            setShowSpinner(false);
-        }, 5000); // 5000 milliseconds
-        console.log("testt")};
+        // Perform logout logic, clear local storage, or revoke the authentication token
+        localStorage.removeItem("token");
+        dispatch(hideLoading());
+        navigate("/evae/login"); // Redirect to the login page after logout
+    };
+    
     // @ts-ignore
     return (
 
@@ -233,31 +267,31 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         <div key={index}
                              onClick={() => handleClick(menu)}
                              className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-500 bg-[#1E293B] p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
-                            <FontAwesomeIcon icon={menu.icon} style={{color: "#f6f5f4"}}/>
+                            {/* <FontAwesomeIcon icon={menu.icon} style={{color: "#f6f5f4"}}/> */}
                             <div>
                                 {menu.name}
                             </div>
                         </div>
                     ))}
                     <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-500 bg-[#1E293B] p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
-                        <button className="flex items-center space-x-2" onClick={() => handleLogout()}>
-                            <svg
-                                aria-hidden="true"
-                                className="w-6 h-6"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                                />
-                            </svg>
-                            <span>Se déconnecter</span>
-                        </button>
+                    <button className="flex items-center space-x-2" onClick={handleLogout}>
+    <svg
+        aria-hidden="true"
+        className="w-6 h-6"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+    >
+        <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+        />
+    </svg>
+    <span>Se déconnecter</span>
+</button>
                     </div>
                 </div>
 

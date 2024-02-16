@@ -65,8 +65,8 @@ const QuestionSTDList = () => {
         <>
             <section className="container px-4 mx-auto">
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-x-3 ">
-                    <h2 className="text-lg font-medium text-gray-800 dark:text-white mb-4 sm:mb-0">Listes des
-                        rubriques &nbsp;
+                    <h2 className="text-lg font-medium text-gray-800 dark:text-white mb-4 sm:mb-0">nom de la
+                        rubrique &nbsp;
                         <span
                             className="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full dark:bg-gray-800 dark:text-blue-400">{rubriques.length}</span>
                     </h2>
@@ -79,7 +79,7 @@ const QuestionSTDList = () => {
                             <path strokeLinecap="round" strokeLinejoin="round"
                                   d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
-                        <span onClick={handleOpenDialog}>Ajouter une rubrique</span>
+                        <span onClick={handleOpenDialog}>Ajouter une question</span>
                     </Button>
                 </div>
 

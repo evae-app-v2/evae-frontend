@@ -9,6 +9,7 @@ import RubriquesListe from "./Components/rubriqueSTD/RubriquesListe";
 import { EmptyCompoenent } from "./Components/EmptyCompoenent";
 import QualificatifList from "./Components/qualificatif/qualificatifList";
 import QuestionSTDList from "./Components/questionSTD/questionSTDList";
+import { RubriqueQuestion } from './Components/RubriqueQuestion';
 
 function App() {
     return (
@@ -35,6 +36,7 @@ function AppContent() {
                 <Route path="/evae/test" element={<Layout><LoginPage/></Layout>}/>
                 <Route path="/evae/couple-qualificatif" element={<Layout><QualificatifList/></Layout>}/>
                 <Route path="/evae/question-standars" element={<Layout><QuestionSTDList/></Layout>}/>
+                <Route path="/evae/rubrique-question" element={<Layout><QuestionSTDList/></Layout>}/>
             </Route>
         </Routes>
     );
