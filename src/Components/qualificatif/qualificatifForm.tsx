@@ -12,6 +12,10 @@ import {
 import {RubriqueService} from "../../services/RubriqueService";
 import {Rubrique} from "../../model/Rubrique";
 import AlertComp from "../../utils/alert";
+import {Qualificatif} from "../../model/Qualificatif";
+import {QualificatifService} from "../../services/QualificatifService";
+import toast from "react-hot-toast";
+import {message} from "antd";
 
 type DialogWithFormProps = {
     open: boolean;
@@ -20,54 +24,58 @@ type DialogWithFormProps = {
     initialData?: any; // Nouvelle propriété pour les données initiales
 };
 
-export function RubriqueForm({ open, setOpen ,isUpdate,initialData}: DialogWithFormProps) {
-    const [designation, setDesignation] = useState("");
+export function QualificatifForm({ open, setOpen ,isUpdate,initialData}: DialogWithFormProps) {
+    const [maximal, setMaximal] = useState("");
+    const [minimal, setMinimal] = useState("");
     const [alertMessage, setALertMessage] = useState<string | null>(null); // Variable d'état pour stocker le message d'erreur
+    const [messageApi, contextHolder] = message.useMessage();
+
     useEffect(() => {
         if (initialData) {
             console.log("hani pour update")
-            setDesignation(initialData.designation);
+            setMaximal(initialData.maximal);
+            setMinimal(initialData.minimal);
         }
     }, [initialData]);
     const handleOpen = () => {
         setOpen((prevOpen) => !prevOpen);
     };
-
+    const handleClose = () => {
+        setOpen((prevOpen) => !prevOpen);
+        setMinimal("");
+        setMaximal("");
+    }
     const handleSubmit = async () => {
         try {
             // Création d'une nouvelle instance de la classe Rubrique avec les données du formulaire
-            const newRubrique = new Rubrique(
-                'RBS', // L'ID peut être 0 car il sera généré par le backend
-                null, // Type (à remplir si nécessaire)
-                designation, // noEnseignant (à remplir si nécessaire)
+            const newQualificatif = new Qualificatif(
+                maximal, // L'ID peut être 0 car il sera généré par le backend
+                minimal, // Type (à remplir si nécessaire)
                 null // Ordre (à remplir si nécessaire)
             );
             try {
                 if(isUpdate) {
-                    newRubrique.id = initialData?.id;
-                    console.log("id upadte "+newRubrique.id);
+                    newQualificatif.id = initialData?.id;
+                    console.log("id upadte "+newQualificatif.id);
 
                 }
-                const savedRubrique = isUpdate ? await new RubriqueService().update(newRubrique) : await new RubriqueService().create(newRubrique);
+                const savedQualificatif = isUpdate ? await new QualificatifService().updateQualificatif(newQualificatif): await new QualificatifService().addQualificatif(newQualificatif);
                 //setSuccessMessage("L'etudiant est ajoutée avec Success");
                 // Réinitialiser le formulaire après la soumission réussie
                 // Réinitialisation de la valeur de la désignation après la soumission réussie
-                setDesignation("");
+                setMinimal("");
+                setMaximal("");
                 // Fermeture du dialogue après la soumission réussie
                 handleOpen();
+                messageApi.open({
+                    type: 'success',
+                    content: 'Operation avec succus',
+                });
             } catch (error: any) {
-                if (error.response && error.response.data && error.response.data.message) {
                     // Si le serveur a renvoyé un message d'erreur, le stocker dans la variable d'état
-                    setALertMessage(error.response.data.message);
-                    setShowSpinner(true);
-                    setTimeout(() => {
-                        setShowSpinner(false);
-                    }, 5000); // 5000 milliseconds
-                    console.log("testt")
-                } else {
-                    // Sinon, afficher un message d'erreur générique
-                    //setErrorMessage('Une erreur est survenue lors de la soumission du formulaire. Veuillez réessayer.');
-                }
+                    console.log(error.response.data.message);
+                    console.log("TEST");
+
                 // Afficher un message d'erreur à l'utilisateur ou prendre toute autre mesure appropriée
             }            // Appel de la méthode create de RubriqueService avec l'instance nouvellement créée
 
@@ -81,18 +89,6 @@ export function RubriqueForm({ open, setOpen ,isUpdate,initialData}: DialogWithF
     const [showSpinner, setShowSpinner] = useState(false);
     return (
         <>
-            {/* Afficher l'alerte au-dessus de tout */}
-            {showSpinner && (
-                <div style={{
-                    position: 'fixed',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    zIndex: 100 // Assurez-vous que le z-index de l'alerte est supérieur à celui de la boîte de dialogue
-                }}>
-                    <AlertComp style={"red"} message={alertMessage} timeout={3000}/>
-                </div>
-            )}
             <Dialog
                 size="xs"
                 open={open}
@@ -106,28 +102,23 @@ export function RubriqueForm({ open, setOpen ,isUpdate,initialData}: DialogWithF
                         <Typography variant="h4" color="blue-gray" placeholder={undefined}>
                             {isUpdate ? "Modifier une rubrique" : "Ajouter une rubrique"}
                         </Typography>
-                        <Typography
-                            className="mb-3 font-normal"
-                            variant="paragraph"
-                            color="gray"
-                            placeholder={undefined}
-                        >
-                            Entrez le nom de la nouvelle rubrique.
-                        </Typography>
+
                         <Typography className="-mb-2" variant="h6" placeholder={undefined}>
-                            Désignation de la rubrique
+                            Le nouvelle couple qualificatif
                         </Typography>
-                        <Input label="Désignation" size="lg" placeholder={undefined} value={designation}
-                               onChange={(e) => setDesignation(e.target.value)} crossOrigin={undefined} />
+                        <Input label="Minimal" size="lg" placeholder={undefined} value={minimal}
+                               onChange={(e) => setMinimal(e.target.value)} crossOrigin={undefined} />
+                        <Input label="Maximal" size="lg" placeholder={undefined} value={maximal}
+                               onChange={(e) => setMaximal(e.target.value)} crossOrigin={undefined} />
                     </CardBody>
                     <CardFooter className="pt-0" placeholder={undefined}>
                         <Button variant="gradient" onClick={handleSubmit} fullWidth placeholder={undefined}
-                                disabled={!designation || designation.length < 2}>
+                                disabled={!maximal || maximal.length < 2 && !minimal || minimal.length < 2}>
                             {isUpdate ? "Modifier" : "Ajouter"}
                         </Button>
                     </CardFooter>
                     <CardFooter className="pt-0" placeholder={undefined} style={{marginTop:'-3%'}}>
-                        <Button variant="gradient" onClick={handleOpen} fullWidth placeholder={undefined}>
+                        <Button variant="gradient" onClick={handleClose} fullWidth placeholder={undefined}>
                             Annuler
                         </Button>
                     </CardFooter>

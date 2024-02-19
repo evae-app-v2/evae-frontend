@@ -20,7 +20,7 @@ export class QualificatifService {
             const response = await api.get<Qualificatif[]>(this.apiURL);
             return response.data;
         } catch (error) {
-            console.error(error);
+            //console.error(error);
             throw error;
         }
     }
@@ -45,13 +45,15 @@ export class QualificatifService {
             throw error;
         }
     }
-
-    public async delete(id: number): Promise<void> {
+    public async delete(id: any): Promise<void> {
         try {
-            await api.get(`/delete/${id}`);
+            return api.get(`/delete/${id}`)
         } catch (error) {
             console.error(error);
-            throw error;
+            return Promise.reject(error);
         }
     }
+
+
+
 }

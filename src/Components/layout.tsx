@@ -1,24 +1,26 @@
-// full tailwind config using javascript
-// https://github.com/neurolinker/popice
+import React, {useEffect, useState} from 'react';
 
-import React, {ReactNode, useState} from 'react';
-import RubriquesListe from "./rubriqueSTD/RubriquesListe";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import {hideLoading} from "../redux/alertsSlice";
+import axios from "axios";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
-    faHouse,
-    faUsers,
-    faCog,
+    faBars,
+    faCalendar,
+    faCamera,
     faChartBar,
     faEnvelope,
-    faCalendar,
-    faFileAlt, faCamera, faMusic, faBars, faQuestion
+    faFileAlt,
+    faHouse,
+    faMusic,
+    faNoteSticky,
+    faQuestion
 } from "@fortawesome/free-solid-svg-icons";
 import {Statics} from "./statics";
-import {faSquarespace, faTiktok} from "@fortawesome/free-brands-svg-icons";
-import Spinner from "../utils/Spinner";
+import {faSquarespace} from "@fortawesome/free-brands-svg-icons";
 import AlertComp from "../utils/alert";
 import {useNavigate} from "react-router-dom";
+
 const adminMenu = [
     {
         name: "Dashboard",
@@ -41,10 +43,12 @@ const adminMenu = [
         icon: faQuestion
     },
     {
-        name: "Paramètres",
+        name: "Evaluation",
         path: "/settings",
-        icon: faCog
-    },
+        icon: faNoteSticky
+    }
+];
+const enseignantMenu = [
     {
         name: "Statistiques",
         path: "/statistics",
@@ -76,14 +80,6 @@ const adminMenu = [
         icon: faMusic
     }
 ];
-const enseignantMenu = [
-    {
-        name:"",
-        path:"",
-        icon:""
-    },
-
-];
 interface LayoutProps {
     children: any;
 }
@@ -91,6 +87,8 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
     const [menuName, setMenuName] = useState("");
     const [showSpinner, setShowSpinner] = useState(false);
+    const dispatch = useDispatch(); // Initialize the dispatch function
+
     const navigate = useNavigate();
     const setDark = (val: string) => {
         const moon = document.querySelector(".moon") as HTMLElement;
@@ -142,9 +140,34 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         }
     };
     const { user } = useSelector((state:any) => state.user);
-    //const menuToBeRendered = user?.role === "ADMIN" ? adminMenu : user?.role === "ENSEIGNANT" ? enseignantMenu : [];
-    const menuToBeRendered = adminMenu;
-    const role = user?.role === "ADMIN" ? "ADMIN" : user?.role === "ENSEIGNANT" ? "ENSEIGNANT" : null;
+    const [role, setRole] = useState<string | null>(null); // State to hold the user role
+
+    const fetchUserDetails = async () => {
+        try {
+            const response = await axios.get("http://localhost:8085/api/v1/user/get-user-by-id", {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            });
+            // Update the role state with the fetched role
+            setRole(response.data.role);
+        } catch (error) {
+            console.error("Error fetching user details:", error);
+        }
+    };
+
+    useEffect(() => {
+        // Fetch user details only if the user is authenticated
+        fetchUserDetails();
+
+    }, [user]);
+
+    console.log("role = ",role);
+     //const menuToBeRendered = adminMenu;
+
+    const menuToBeRendered = role === "admin" ? adminMenu : role === "ens" ? enseignantMenu : [];
+
+    // const roleUser = user?.role === "ADMIN" ? "ADMIN" : user?.role === "ENSEIGNANT" ? "ENSEIGNANT" : null;
     const handleClick = (menu: any) => {
         setMenuName(menu.name);
         navigate(menu.path);
@@ -152,11 +175,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         // Vous pouvez maintenant utiliser le nom du menu cliqué comme vous le souhaitez
     };
     const handleLogout = () => {
-        setShowSpinner(true);
-        setTimeout(() => {
-            setShowSpinner(false);
-        }, 5000); // 5000 milliseconds
-        console.log("testt")};
+        // Perform logout logic, clear local storage, or revoke the authentication token
+        localStorage.removeItem("token");
+        dispatch(hideLoading());
+        navigate("/evae/login"); // Redirect to the login page after logout
+    };
+
     // @ts-ignore
     return (
 
@@ -240,7 +264,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         </div>
                     ))}
                     <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-500 bg-[#1E293B] p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
-                        <button className="flex items-center space-x-2" onClick={() => handleLogout()}>
+                        <button className="flex items-center space-x-2" onClick={handleLogout}>
                             <svg
                                 aria-hidden="true"
                                 className="w-6 h-6"
