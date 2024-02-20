@@ -12,6 +12,9 @@ import {
 import {RubriqueService} from "../../services/RubriqueService";
 import {Rubrique} from "../../model/Rubrique";
 import AlertComp from "../../utils/alert";
+import toast from "react-hot-toast";
+import {message} from "antd";
+import Spinner from "../../utils/Spinner";
 
 type DialogWithFormProps = {
     open: boolean;
@@ -23,6 +26,8 @@ type DialogWithFormProps = {
 export function RubriqueForm({ open, setOpen ,isUpdate,initialData}: DialogWithFormProps) {
     const [designation, setDesignation] = useState("");
     const [alertMessage, setALertMessage] = useState<string | null>(null); // Variable d'état pour stocker le message d'erreur
+    const [messageApi, contextHolder] = message.useMessage();
+
     useEffect(() => {
         if (initialData) {
             console.log("hani pour update")
@@ -32,7 +37,12 @@ export function RubriqueForm({ open, setOpen ,isUpdate,initialData}: DialogWithF
     const handleOpen = () => {
         setOpen((prevOpen) => !prevOpen);
     };
+    const handleClose = () => {
+        setOpen((prevOpen) => !prevOpen);
+        setDesignation("");
+    };
 
+/*
     const handleSubmit = async () => {
         try {
             // Création d'une nouvelle instance de la classe Rubrique avec les données du formulaire
@@ -46,24 +56,30 @@ export function RubriqueForm({ open, setOpen ,isUpdate,initialData}: DialogWithF
                 if(isUpdate) {
                     newRubrique.id = initialData?.id;
                     console.log("id upadte "+newRubrique.id);
-
                 }
                 const savedRubrique = isUpdate ? await new RubriqueService().update(newRubrique) : await new RubriqueService().create(newRubrique);
-                //setSuccessMessage("L'etudiant est ajoutée avec Success");
-                // Réinitialiser le formulaire après la soumission réussie
-                // Réinitialisation de la valeur de la désignation après la soumission réussie
+
                 setDesignation("");
                 // Fermeture du dialogue après la soumission réussie
                 handleOpen();
+                messageApi.open({
+                    type: 'success',
+                    content: 'Operation avec succus',
+                });
             } catch (error: any) {
                 if (error.response && error.response.data && error.response.data.message) {
                     // Si le serveur a renvoyé un message d'erreur, le stocker dans la variable d'état
-                    setALertMessage(error.response.data.message);
+                    /!*setALertMessage(error.response.data.message);
                     setShowSpinner(true);
                     setTimeout(() => {
                         setShowSpinner(false);
                     }, 5000); // 5000 milliseconds
+                    console.log("testt")*!/
                     console.log("testt")
+                    messageApi.open({
+                        type: 'error',
+                        content: error.response.data.message,
+                    });
                 } else {
                     // Sinon, afficher un message d'erreur générique
                     //setErrorMessage('Une erreur est survenue lors de la soumission du formulaire. Veuillez réessayer.');
@@ -77,31 +93,65 @@ export function RubriqueForm({ open, setOpen ,isUpdate,initialData}: DialogWithF
             // Gérer les erreurs de manière appropriée (affichage d'un message d'erreur, etc.)
         }
     };
+*/
+    const handleSubmit = async () => {
+        const newRubrique = new Rubrique(
+            'RBS',
+            null,
+            designation,
+            null
+        );
 
-    const [showSpinner, setShowSpinner] = useState(false);
+        if (isUpdate) {
+            newRubrique.id = initialData?.id;
+            console.log("id update " + newRubrique.id);
+        }
+
+        const rubriqueService = new RubriqueService();
+
+        const handleSuccess = () => {
+            setDesignation("");
+            handleOpen();
+            messageApi.open({
+                type: 'success',
+                content: 'Opération réussie',
+            });
+        };
+
+        const handleFailure = (error:any) => {
+            handleOpen();
+            messageApi.open({
+                type: 'error',
+                content: error.response.data.message,
+                style:{
+                    zIndex:"1000000 !important"
+                }
+        });
+        };
+
+        if (isUpdate) {
+            rubriqueService.update(newRubrique)
+                .then(handleSuccess)
+                .catch(handleFailure);
+        } else {
+            rubriqueService.create(newRubrique)
+                .then(handleSuccess)
+                .catch(handleFailure);
+        }
+    };
+
     return (
         <>
-            {/* Afficher l'alerte au-dessus de tout */}
-            {showSpinner && (
-                <div style={{
-                    position: 'fixed',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    zIndex: 100 // Assurez-vous que le z-index de l'alerte est supérieur à celui de la boîte de dialogue
-                }}>
-                    <AlertComp style={"red"} message={alertMessage} timeout={3000}/>
-                </div>
-            )}
+            {contextHolder}
             <Dialog
                 size="xs"
                 open={open}
                 handler={handleOpen}
                 className="bg-transparent shadow-none"
                 placeholder={undefined}
-                style={{ zIndex: 10 }} // Assurez-vous que la boîte de dialogue a un z-index inférieur à celui de l'alerte
+                style={{ zIndex: 9999}} // Assurez-vous que la boîte de dialogue a un z-index inférieur à celui de l'alerte
             >
-                <Card className="mx-auto w-full max-w-[24rem]" placeholder={undefined}>
+            <Card className="mx-auto w-full max-w-[24rem]" placeholder={undefined}>
                     <CardBody className="flex flex-col gap-4" placeholder={undefined}>
                         <Typography variant="h4" color="blue-gray" placeholder={undefined}>
                             {isUpdate ? "Modifier une rubrique" : "Ajouter une rubrique"}
@@ -127,13 +177,12 @@ export function RubriqueForm({ open, setOpen ,isUpdate,initialData}: DialogWithF
                         </Button>
                     </CardFooter>
                     <CardFooter className="pt-0" placeholder={undefined} style={{marginTop:'-3%'}}>
-                        <Button variant="gradient" onClick={handleOpen} fullWidth placeholder={undefined}>
+                        <Button variant="gradient" onClick={handleClose} fullWidth placeholder={undefined}>
                             Annuler
                         </Button>
                     </CardFooter>
                 </Card>
             </Dialog>
-
         </>
     );
 }

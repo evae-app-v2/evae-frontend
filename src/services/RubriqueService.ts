@@ -37,6 +37,7 @@ export class RubriqueService {
     }
 
     public async create(data: Rubrique): Promise<Rubrique> {
+        console.log(data);
         try {
             const response = await api.post<Rubrique>(`${this.apiURL}`, data);
             return response.data;
@@ -45,6 +46,8 @@ export class RubriqueService {
             throw error;
         }
     }
+
+
 
     public async update(data: Rubrique): Promise<Rubrique> {
         try {
