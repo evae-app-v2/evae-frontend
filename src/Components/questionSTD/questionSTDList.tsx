@@ -1,12 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import {Button} from "@material-tailwind/react";
 import {DialogDelete} from "../DialogDelete";
-import {Rubrique} from "../../model/Rubrique";
-import {RubriqueService} from "../../services/RubriqueService";
 import {Question} from "../../model/Question";
 import {QuestionService} from "../../services/QuestionService";
-import {QualificatifForm} from "../qualificatif/qualificatifForm";
 import {QuestionForm} from "./questionForm";
+import {useDispatch, useSelector} from "react-redux";
+import {loadQuestionsAsync} from "../../redux/actionsAsyncThunk";
+import {AppDispatch} from "../../redux/store";
+import {questionsLits} from "../../redux/questionsSlice";
+import {Statics} from "../statics";
+
 const QuestionSTDList = () => {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [isUpdate, setIsUpdate] = useState(false);
@@ -22,19 +25,17 @@ const QuestionSTDList = () => {
         loadQuestions();
     }, [searchTerm]); // Utilisez searchTerm comme dépendance du useEffect
 
-    const loadQuestions = async () => {
+        const loadQuestions = async () => {
         try {
-            const response: Question[] | undefined = await questionService.findAllQuestions();
-
-            if (response) {
-                setQuestions(response);
-            } else {
-                setQuestions([]); // Si la réponse est undefined, définissez questions sur un tableau vide
-            }
+            let response: Question[] = [];
+            response = await questionService.findAllQuestions();
+            console.log(response)
+            setQuestions(response);
         } catch (error) {
-            console.error("Erreur lors du chargement des questions:", error);
+            console.error("Erreur lors du chargement des rubriques:", error);
         }
     }
+
 
     const toggleSortOrder = () => {
         // Inverser l'ordre de tri lorsque l'icône est double-cliquée
@@ -58,6 +59,7 @@ const QuestionSTDList = () => {
     // @ts-ignore
     return (
         <>
+            <Statics/>
             <section className="container px-4 mx-auto">
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-x-3 ">
                     <h2 className="text-lg font-medium text-gray-800 dark:text-white mb-4 sm:mb-0">Listes des
@@ -138,7 +140,7 @@ const QuestionSTDList = () => {
                                             </tr>
                                             </thead>
                                             <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
-                                            {questions.map((question:Question, index) => (
+                                            {questions.map((question:Question,index) => (
                                                 <tr key={index}>
                                                     <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
                                                         <div className="inline-flex items-center gap-x-3">

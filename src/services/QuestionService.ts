@@ -26,6 +26,7 @@ export class QuestionService {
     public async findAllQuestions(): Promise<Question[]> {
         try {
             const response: AxiosResponse<Question[]> = await api.get<Question[]>(this.apiURL);
+            console.log(response)
             return response.data;
         } catch (error) {
             console.error(error);

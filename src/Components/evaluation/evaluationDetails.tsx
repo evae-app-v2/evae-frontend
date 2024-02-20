@@ -24,7 +24,7 @@ type DialogWithFormProps = {
     initialData?: any; // Nouvelle propriété pour les données initiales
 };
 
-export function QualificatifForm({ open, setOpen ,isUpdate,initialData}: DialogWithFormProps) {
+export function EvaluationDetails({ open, setOpen ,isUpdate,initialData}: DialogWithFormProps) {
     const [maximal, setMaximal] = useState("");
     const [minimal, setMinimal] = useState("");
     const [alertMessage, setALertMessage] = useState<string | null>(null); // Variable d'état pour stocker le message d'erreur

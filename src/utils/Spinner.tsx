@@ -14,7 +14,7 @@ const Spinner = ({ timeout }: any) => {
     return (
         <>
             {showSpinner && (
-                <div className="fixed top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
+                <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
                     <div className="border-t-transparent border-solid animate-spin rounded-full border-blue-400 border-8 h-32 w-32"></div>
                 </div>
             )}

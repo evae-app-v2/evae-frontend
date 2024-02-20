@@ -14,6 +14,7 @@ import {Rubrique} from "../../model/Rubrique";
 import AlertComp from "../../utils/alert";
 import toast from "react-hot-toast";
 import {message} from "antd";
+import Spinner from "../../utils/Spinner";
 
 type DialogWithFormProps = {
     open: boolean;
@@ -118,11 +119,14 @@ export function RubriqueForm({ open, setOpen ,isUpdate,initialData}: DialogWithF
         };
 
         const handleFailure = (error:any) => {
-            console.log("tstst")
-                messageApi.open({
-                    type: 'error',
-                    content: error.response.data.message,
-                });
+            handleOpen();
+            messageApi.open({
+                type: 'error',
+                content: error.response.data.message,
+                style:{
+                    zIndex:"1000000 !important"
+                }
+        });
         };
 
         if (isUpdate) {
@@ -138,15 +142,16 @@ export function RubriqueForm({ open, setOpen ,isUpdate,initialData}: DialogWithF
 
     return (
         <>
+            {contextHolder}
             <Dialog
                 size="xs"
                 open={open}
                 handler={handleOpen}
                 className="bg-transparent shadow-none"
                 placeholder={undefined}
-                style={{ zIndex: 10 }} // Assurez-vous que la boîte de dialogue a un z-index inférieur à celui de l'alerte
+                style={{ zIndex: 9999}} // Assurez-vous que la boîte de dialogue a un z-index inférieur à celui de l'alerte
             >
-                <Card className="mx-auto w-full max-w-[24rem]" placeholder={undefined}>
+            <Card className="mx-auto w-full max-w-[24rem]" placeholder={undefined}>
                     <CardBody className="flex flex-col gap-4" placeholder={undefined}>
                         <Typography variant="h4" color="blue-gray" placeholder={undefined}>
                             {isUpdate ? "Modifier une rubrique" : "Ajouter une rubrique"}
@@ -178,7 +183,6 @@ export function RubriqueForm({ open, setOpen ,isUpdate,initialData}: DialogWithF
                     </CardFooter>
                 </Card>
             </Dialog>
-
         </>
     );
 }

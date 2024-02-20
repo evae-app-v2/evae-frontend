@@ -4,6 +4,8 @@ import {Button} from "@material-tailwind/react";
 import {DialogDelete} from "../DialogDelete";
 import {Rubrique} from "../../model/Rubrique";
 import {RubriqueService} from "../../services/RubriqueService";
+import Spinner from "../../utils/Spinner";
+import {Statics} from "../statics";
 
 const RubriqueListe = () => {
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -64,6 +66,7 @@ const RubriqueListe = () => {
     // @ts-ignore
     return (
         <>
+            <Statics/>
             <section className="container px-4 mx-auto" style={{zIndex: 5}}>
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-x-3 ">
                     <h2 className="text-lg font-medium text-gray-800 dark:text-white mb-4 sm:mb-0">Listes des
@@ -84,7 +87,7 @@ const RubriqueListe = () => {
                     </Button>
                 </div>
 
-{/*
+                {/*
                 <div className="mt-6 md:flex md:items-center md:justify-between">
                     <div
                         className="inline-flex overflow-hidden bg-white border divide-x rounded-lg dark:bg-gray-900 rtl:flex-row-reverse dark:border-gray-700 dark:divide-gray-700">
@@ -236,12 +239,13 @@ const RubriqueListe = () => {
                 </div>
 
             </section>
-            <RubriqueForm
-                open={dialogOpen}
-                setOpen={setDialogOpen}
-                isUpdate={isUpdate} // Indique si c'est une mise à jour ou une création
-                initialData={rubriqueToUpdate} // Passe les données de la rubrique à mettre à jour
-            />
+
+                <RubriqueForm
+                    open={dialogOpen}
+                    setOpen={setDialogOpen}
+                    isUpdate={isUpdate} // Indique si c'est une mise à jour ou une création
+                    initialData={rubriqueToUpdate} // Passe les données de la rubrique à mettre à jour
+                />
             <DialogDelete
                 open={dialogDeleteOpen}
                 onClose={() => setDialogDeleteOpen(false)}
@@ -250,6 +254,7 @@ const RubriqueListe = () => {
                 id={idRubrique}
                 name={"rubrique"}
                 setOpen={setDialogDeleteOpen}/>
+
         </>
     );
 }
