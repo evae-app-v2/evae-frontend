@@ -24,10 +24,16 @@ const adminMenu = [
         icon: faBars
     },
     {
+        name: "Rubriques Composées",
+        path: "/evae/rubrique-question",
+        icon: faSquarespace
+    },
+    {
         name: "Couple qualificatif",
         path: "/evae/couple-qualificatif",
         icon: faSquarespace
     },
+
     {
         name: "Questions Standars",
         path: "/evae/question-standars",

@@ -11,7 +11,7 @@ import QuestionSTDList from "./Components/questionSTD/questionSTDList";
 import Login from "./Components/login";
 import {LoginPage} from "./Components/LoginPage";
 import EvaluationsList from "./Components/evaluation/evaluationsList";
-import { RubriqueQuestion } from './Components/RubriqueQuestion';
+import { RubriqueQuestion } from './Components/rubriqueComposee/RubriqueQuestion';
 
 function App() {
     return (
