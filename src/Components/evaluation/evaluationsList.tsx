@@ -1,22 +1,22 @@
 import React, {useEffect, useState} from 'react';
-import {QualificatifForm} from "./qualificatifForm";
 import {Button} from "@material-tailwind/react";
 import {DialogDelete} from "../DialogDelete";
 import {Qualificatif} from "../../model/Qualificatif";
 import {QualificatifService} from "../../services/QualificatifService";
 import toast from "react-hot-toast";
 import {Statics} from "../statics";
+import {EvaluationDetails} from "./evaluationDetails";
 
-const QualificatifList = () => {
+const EvaluationsList = () => {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [isUpdate, setIsUpdate] = useState(false);
     const [idQualificatif, setIdQualificatif] = useState();
     const [dialogDeleteOpen, setDialogDeleteOpen] = useState(false);
-    const [qualificatifs, setQualificatifs] = useState<Qualificatif[]>([]); // Spécifiez le type Etudiant pour l'état initial
+    const [evaluations, setQualificatifs] = useState<Qualificatif[]>([]); // Spécifiez le type Etudiant pour l'état initial
     const [searchTerm, setSearchTerm] = useState(""); // Ajoutez une variable d'état pour le terme de recherche
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc"); // Ajoutez un état pour le tri
     const [qualificatifToUpdate, setQualificatifToUpdate] = useState<Qualificatif | null>(null); // Nouvelle variable d'état pour la rubrique à mettre à jour
-    const qualificatifsService=new QualificatifService();
+    const evaluationsService=new QualificatifService();
     useEffect(() => {
         //setRubriqueToUpdate(null);
         loadQualificatifs();
@@ -25,7 +25,7 @@ const QualificatifList = () => {
     const loadQualificatifs = async () => {
         try {
             let response: Qualificatif[] = [];
-                response = await qualificatifsService.findAllQualificatifs();
+                response = await evaluationsService.findAllQualificatifs();
                 // Triez les rubriques en fonction de l'ordre alphabétique
                 if (sortOrder === "asc") {
                     response.sort((a, b) => a.maximal.localeCompare(b.maximal));
@@ -64,10 +64,10 @@ const QualificatifList = () => {
 
             <section className="container px-4 mx-auto">
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-x-3 ">
-                    <h2 className="text-lg font-medium text-gray-800 dark:text-white mb-4 sm:mb-0">Listes des
-                        Qualificatifs &nbsp;
+                    <h2 className="text-lg font-medium text-gray-800 dark:text-white mb-4 sm:mb-0">
+                        Liste des evaluations &nbsp;
                         <span
-                            className="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full dark:bg-gray-800 dark:text-blue-400">{qualificatifs.length}</span>
+                            className="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full dark:bg-gray-800 dark:text-blue-400">{evaluations.length}</span>
                     </h2>
 
                     <Button
@@ -78,7 +78,7 @@ const QualificatifList = () => {
                             <path strokeLinecap="round" strokeLinejoin="round"
                                   d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
-                        <span onClick={handleOpenDialog}>Ajouter une Qualificatif</span>
+                        <span onClick={handleOpenDialog}>Ajouter une Evaluation</span>
                     </Button>
                 </div>
 
@@ -137,7 +137,7 @@ const QualificatifList = () => {
                                             </tr>
                                             </thead>
                                             <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
-                                            {qualificatifs.map((qualificatif:Qualificatif, index) => (
+                                            {evaluations.map((qualificatif:Qualificatif, index) => (
                                                 <tr key={index}>
                                                 <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
                                                     <div className="inline-flex items-center gap-x-3">
@@ -190,7 +190,7 @@ const QualificatifList = () => {
                     </div>
 
             </section>
-            <QualificatifForm
+            <EvaluationDetails
                 open={dialogOpen}
                 setOpen={setDialogOpen}
                 isUpdate={isUpdate} // Indique si c'est une mise à jour ou une création
@@ -208,4 +208,4 @@ const QualificatifList = () => {
 );
 }
 
-export default QualificatifList;
+export default EvaluationsList;

@@ -14,6 +14,8 @@ import {Rubrique} from "../../model/Rubrique";
 import AlertComp from "../../utils/alert";
 import {Qualificatif} from "../../model/Qualificatif";
 import {QualificatifService} from "../../services/QualificatifService";
+import toast from "react-hot-toast";
+import {message} from "antd";
 
 type DialogWithFormProps = {
     open: boolean;
@@ -26,6 +28,8 @@ export function QualificatifForm({ open, setOpen ,isUpdate,initialData}: DialogW
     const [maximal, setMaximal] = useState("");
     const [minimal, setMinimal] = useState("");
     const [alertMessage, setALertMessage] = useState<string | null>(null); // Variable d'état pour stocker le message d'erreur
+    const [messageApi, contextHolder] = message.useMessage();
+
     useEffect(() => {
         if (initialData) {
             console.log("hani pour update")
@@ -36,67 +40,55 @@ export function QualificatifForm({ open, setOpen ,isUpdate,initialData}: DialogW
     const handleOpen = () => {
         setOpen((prevOpen) => !prevOpen);
     };
-
+    const handleClose = () => {
+        setOpen((prevOpen) => !prevOpen);
+        setMinimal("");
+        setMaximal("");
+    }
     const handleSubmit = async () => {
-        try {
-            // Création d'une nouvelle instance de la classe Rubrique avec les données du formulaire
             const newQualificatif = new Qualificatif(
                 maximal, // L'ID peut être 0 car il sera généré par le backend
                 minimal, // Type (à remplir si nécessaire)
                 null // Ordre (à remplir si nécessaire)
             );
-            try {
-                if(isUpdate) {
-                    newQualificatif.id = initialData?.id;
-                    console.log("id upadte "+newQualificatif.id);
 
-                }
-                const savedQualificatif = isUpdate ? await new QualificatifService().updateQualificatif(newQualificatif): await new QualificatifService().addQualificatif(newQualificatif);
-                //setSuccessMessage("L'etudiant est ajoutée avec Success");
-                // Réinitialiser le formulaire après la soumission réussie
-                // Réinitialisation de la valeur de la désignation après la soumission réussie
+            if (isUpdate) {
+                newQualificatif.id = initialData?.id;
+            }
+
+            const qualificatifService = new QualificatifService();
+
+            const handleSuccess = () => {
                 setMinimal("");
                 setMaximal("");
-                // Fermeture du dialogue après la soumission réussie
                 handleOpen();
-            } catch (error: any) {
-                if (error.response && error.response.data && error.response.data.message) {
-                    // Si le serveur a renvoyé un message d'erreur, le stocker dans la variable d'état
-                    setALertMessage(error.response.data.message);
-                    setShowSpinner(true);
-                    setTimeout(() => {
-                        setShowSpinner(false);
-                    }, 5000); // 5000 milliseconds
-                    console.log("testt")
-                } else {
-                    // Sinon, afficher un message d'erreur générique
-                    //setErrorMessage('Une erreur est survenue lors de la soumission du formulaire. Veuillez réessayer.');
-                }
-                // Afficher un message d'erreur à l'utilisateur ou prendre toute autre mesure appropriée
-            }            // Appel de la méthode create de RubriqueService avec l'instance nouvellement créée
+                messageApi.open({
+                    type: 'success',
+                    content: 'Opération réussie',
+                });
+            };
 
+            const handleFailure = (error: any) => {
+                handleOpen();
+                messageApi.open({
+                    type: 'error',
+                    content: error.response.data.errorMessage,});
+            };
 
-        } catch (error) {
-            console.error("Erreur lors de la création de la rubrique :", error);
-            // Gérer les erreurs de manière appropriée (affichage d'un message d'erreur, etc.)
-        }
+            if (isUpdate) {
+                qualificatifService.updateQualificatif(newQualificatif)
+                    .then(handleSuccess)
+                    .catch(handleFailure);
+            } else {
+                qualificatifService.addQualificatif(newQualificatif)
+                    .then(handleSuccess)
+                    .catch(handleFailure);
+            }
     };
 
-    const [showSpinner, setShowSpinner] = useState(false);
     return (
         <>
-            {/* Afficher l'alerte au-dessus de tout */}
-            {showSpinner && (
-                <div style={{
-                    position: 'fixed',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    zIndex: 100 // Assurez-vous que le z-index de l'alerte est supérieur à celui de la boîte de dialogue
-                }}>
-                    <AlertComp style={"red"} message={alertMessage} timeout={3000}/>
-                </div>
-            )}
+            {contextHolder}
             <Dialog
                 size="xs"
                 open={open}
@@ -126,7 +118,7 @@ export function QualificatifForm({ open, setOpen ,isUpdate,initialData}: DialogW
                         </Button>
                     </CardFooter>
                     <CardFooter className="pt-0" placeholder={undefined} style={{marginTop:'-3%'}}>
-                        <Button variant="gradient" onClick={handleOpen} fullWidth placeholder={undefined}>
+                        <Button variant="gradient" onClick={handleClose} fullWidth placeholder={undefined}>
                             Annuler
                         </Button>
                     </CardFooter>
