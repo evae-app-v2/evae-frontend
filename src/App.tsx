@@ -10,12 +10,7 @@ import QualificatifList from "./Components/qualificatif/qualificatifList";
 import QuestionSTDList from "./Components/questionSTD/questionSTDList";
 import {LoginPage} from "./Components/LoginPage";
 import EvaluationsList from "./Components/evaluation/evaluationsList";
-import {Question} from "./model/Question";
-import {Qualificatif} from "./model/Qualificatif";
-import {RubriqueComposee} from "./model/RubriqueComposee";
-import {Evaluation} from "./model/Evaluation";
-import {Enseignant} from "./model/Enseignant";
-
+import { RubriqueQuestion } from './Components/rubriqueComposee/RubriqueQuestion';
 function App() {
     return (
         <BrowserRouter>
@@ -71,6 +66,8 @@ function AppContent() {
                 <Route path="/evae/couple-qualificatif" element={<Layout><QualificatifList/></Layout>}/>
                 <Route path="/evae/question-standars" element={<Layout><QuestionSTDList/></Layout>}/>
                 <Route path="/evae/evaluations" element={<Layout><EvaluationsList/></Layout>}/>
+                <Route path="/evae/rubrique-question" element={<Layout><RubriqueQuestion/></Layout>}/>
+
             </Route>
         </Routes>
     );

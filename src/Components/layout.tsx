@@ -24,10 +24,16 @@ const adminMenu = [
         icon: faBars
     },
     {
+        name: "Rubriques Composées",
+        path: "/evae/rubrique-question",
+        icon: faSquarespace
+    },
+    {
         name: "Couple qualificatif",
         path: "/evae/couple-qualificatif",
         icon: faSquarespace
     },
+
     {
         name: "Questions Standars",
         path: "/evae/question-standars",
@@ -135,7 +141,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
     const menuToBeRendered = role === "ADM" ? adminMenu : role === "ENS" ? enseignantMenu : [];
 
-    // const roleUser = user?.role === "ADMIN" ? "ADMIN" : user?.role === "ENSEIGNANT" ? "ENSEIGNANT" : null;
+    // const roleUser = user?.role === "ADM" ? "ADMIN" : user?.role === "ENS" ? "ENSEIGNANT" : null;
     const handleClick = (menu: any) => {
         setMenuName(menu.name);
         navigate(menu.path);
@@ -209,7 +215,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         <div key={index}
                              onClick={() => handleClick(menu)}
                              className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-500 bg-[#1E293B] p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
-                            <FontAwesomeIcon icon={menu.icon} style={{color: "#f6f5f4"}}/>
+                            {/* <FontAwesomeIcon icon={menu.icon} style={{color: "#f6f5f4"}}/> */}
                             <div>
                                 {menu.name}
                             </div>
