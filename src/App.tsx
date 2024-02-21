@@ -10,7 +10,6 @@ import QualificatifList from "./Components/qualificatif/qualificatifList";
 import QuestionSTDList from "./Components/questionSTD/questionSTDList";
 import {LoginPage} from "./Components/LoginPage";
 import EvaluationsList from "./Components/evaluation/evaluationsList";
-import { RubriqueQuestion } from './Components/rubriqueComposee/RubriqueQuestion';
 function App() {
     return (
         <BrowserRouter>
@@ -28,7 +27,9 @@ function AppContent() {
   useEffect(() => {
     console.log(isAuthenticated)
   }, [isAuthenticated]);
+
     return (
+
         <Routes>
             <Route path="/" element={isAuthenticated ? <Navigate to="/evae/home" /> : <Navigate to="/evae/login" />} />
             {/* Public routes */}
@@ -40,6 +41,7 @@ function AppContent() {
                 <Route path="/evae/rubrique-standars" element={<Layout><RubriquesListe/></Layout>}/>
                 <Route path="/evae/test" element={<Layout><LoginPage/></Layout>}/>
                 <Route path="/evae/couple-qualificatif" element={<Layout><QualificatifList/></Layout>}/>
+                <Route path="/evae/rubrique-composee" element={<Layout><RubriqueQuestion/></Layout>}/>
                 <Route path="/evae/question-standars" element={<Layout><QuestionSTDList/></Layout>}/>
                 <Route path="/evae/evaluations" element={<Layout><EvaluationsList/></Layout>}/>
                 <Route path="/evae/rubrique-question" element={<Layout><RubriqueQuestion/></Layout>}/>
