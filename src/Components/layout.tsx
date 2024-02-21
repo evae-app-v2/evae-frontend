@@ -7,7 +7,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faBars, faHouse, faNoteSticky, faQuestion} from "@fortawesome/free-solid-svg-icons";
 import {faSquarespace} from "@fortawesome/free-brands-svg-icons";
 import AlertComp from "../utils/alert";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {Footer} from "./footer";
 import logo from "../assets/output-onlinepngtools.png";
 import userIcon from "../assets/userIcon.png";
@@ -59,7 +59,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     const [menuName, setMenuName] = useState("");
     const [showSpinner, setShowSpinner] = useState(false);
     const dispatch = useDispatch(); // Initialize the dispatch function
-
+    const [username, SetUsername] = useState("");
     const navigate = useNavigate();
     const setDark = (val: string) => {
         const moon = document.querySelector(".moon") as HTMLElement;
@@ -122,6 +122,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             });
             // Update the role state with the fetched role
             setRole(response.data.role);
+            const nomComplet = response.data.noEnseignant.nom +' '+ response.data.noEnseignant.prenom;
+            console.log(response.data.loginConnection)
+            role === "ADM" ? SetUsername(response.data.loginConnection) : SetUsername(nomComplet);
         } catch (error) {
             console.error("Error fetching user details:", error);
         }
@@ -131,10 +134,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         // Fetch user details only if the user is authenticated
         fetchUserDetails();
 
-    }, [user]);
+    }, [user,username]);
 
     console.log("role = ",role);
-     //const menuToBeRendered = adminMenu;
+     //const menuToBeRendered = enseignantMenu;
 
     const menuToBeRendered = role === "ADM" ? adminMenu : role === "ENS" ? enseignantMenu : [];
 
@@ -179,8 +182,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                             </div>
                         </div>
 
-                        <div className="hidden md:block text-sm md:text-md text-black dark:text-white">Boutinkhar
-                            Hassan
+                        <div className="hidden md:block text-sm md:text-md text-black dark:text-white">{username}
                         </div>
                     </div>
 
@@ -260,15 +262,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                      aria-label="Breadcrumb">
                     <ol className="inline-flex items-center space-x-1 md:space-x-3">
                         <li className="inline-flex items-center">
-                            <a href="#"
-                               className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
+                            <Link to="/evae/home"
+                                  className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
                                 <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"
                                      xmlns="http://www.w3.org/2000/svg">
                                     <path
                                         d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
                                 </svg>
                                 Home
-                            </a>
+                            </Link>
                         </li>
                         <li>
                             <div className="flex items-center">
@@ -284,10 +286,18 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         </li>
                     </ol>
                 </nav>
-                <div style={{ width: '100%' }}>
-                    {children}
+                {/*
+                <div style={{ width: '100%' }} className="h-auto">
+*/}
+                <div className="flex flex-col h-screen justify-between">
+                    <div className="mt-negative-3">
+                        {children}
+                    </div>
+                    <div className="fixed inset-x-0 bottom-0">
+                        <Footer/>
+                    </div>
                 </div>
-                <Footer/>
+
                 {/*
                     showSpinner && <Spinner timeout={3000} />*/
                 }
