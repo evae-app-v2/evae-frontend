@@ -11,6 +11,7 @@ import {Link, useNavigate} from "react-router-dom";
 import {Footer} from "./footer";
 import logo from "../assets/output-onlinepngtools.png";
 import userIcon from "../assets/userIcon.png";
+import {useAuth} from "../routes/AuthProvider";
 
 const adminMenu = [
     {
@@ -61,6 +62,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     const dispatch = useDispatch(); // Initialize the dispatch function
     const [username, SetUsername] = useState("");
     const navigate = useNavigate();
+    const { logoutUser } = useAuth();
+
     const setDark = (val: string) => {
         const moon = document.querySelector(".moon") as HTMLElement;
         const sun = document.querySelector(".sun") as HTMLElement;
@@ -152,6 +155,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         // Perform logout logic, clear local storage, or revoke the authentication token
         localStorage.removeItem("token");
         dispatch(hideLoading());
+        logoutUser();
         navigate("/evae/login"); // Redirect to the login page after logout
     };
 
