@@ -157,7 +157,7 @@ export const LoginPage = () => {
                                 <Button
                                     type="submit"
                                     className="uppercase block w-full p-4 text-lg rounded-full bg-indigo-500 hover:bg-indigo-600 focus:outline-none"
-                                    disabled={!motpasse || !checkEmailFormat(loginConnection)}
+                                    disabled={!motpasse || !loginConnection}
                                     placeholder={undefined}                                >
                                     Se connecter
                                 </Button>
