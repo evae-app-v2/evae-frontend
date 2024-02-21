@@ -33,6 +33,11 @@ const adminMenu = [
         name: "Questions Standars",
         path: "/evae/question-standars",
         icon: faQuestion
+    },
+    {
+        name: "Rubrique Composee",
+        path: "/evae/rubrique-composee",
+        icon: faQuestion
     }
 ];
 const enseignantMenu = [

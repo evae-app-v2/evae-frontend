@@ -7,6 +7,7 @@ import {
     DialogBody,
     DialogFooter,
 } from "@material-tailwind/react";
+import { RubriqueQuestionService } from "../services/RubriqueQuestionService";
 import {RubriqueService} from "../services/RubriqueService";
 import {QualificatifService} from "../services/QualificatifService";
 import {QuestionService} from "../services/QuestionService";
@@ -21,7 +22,7 @@ type DialogWithFormProps = {
     name:string
 };
 export function DialogDelete({ title, messageComp,id, name,open, setOpen }: DialogWithFormProps) {
-   const [messageApi, contextHolder] = message.useMessage();
+    const [messageApi, contextHolder] = message.useMessage();
 
     const [service, setService] = useState<any>(null);
     const handleOpen = () => {
@@ -37,6 +38,9 @@ export function DialogDelete({ title, messageComp,id, name,open, setOpen }: Dial
                 break;
             case "question":
                 setService(new QuestionService());
+                break;
+            case "rubriqueQuestion":
+                setService(new RubriqueQuestionService());
                 break;
             default:
                 break;
@@ -66,7 +70,7 @@ export function DialogDelete({ title, messageComp,id, name,open, setOpen }: Dial
                 // Vous pouvez utiliser ici une bibliothèque comme react-toastify pour afficher un message d'erreur à l'utilisateur
             });
 
-                // Si la suppression réussit, effectuer les actions appropriées
+        // Si la suppression réussit, effectuer les actions appropriées
 
 
     }

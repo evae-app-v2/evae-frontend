@@ -94,7 +94,7 @@ export function EvaluationDetails({ open, setOpen, initialData }: DialogWithForm
                     </section>
 
                     <DialogBody placeholder={undefined}>
-                        <div className=" px-0" style={{overflowX: 'auto', overflowY: 'auto'}}>
+                        <div className=" px-0" style={{maxHeight: 'calc(8 * 68px)', overflowY: 'auto'}}>
                             <table className="w-full min-w-max table-auto text-left border border-blue-gray-200">
                                 <tbody>
                                 {evaluation?.rubriques.map((rubrique, index) => {
