@@ -17,7 +17,3 @@ export class RubriqueQuestions {
     }
 }
 
-
-
-
-

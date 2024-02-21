@@ -20,8 +20,8 @@ import {message} from "antd";
 type DialogWithFormProps = {
     open: boolean;
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    isUpdate: boolean; // Nouvelle propriété pour indiquer si c'est une mise à jour
-    initialData?: any; // Nouvelle propriété pour les données initiales
+    isUpdate: boolean;
+    initialData?: any;
 };
 
 export function QualificatifForm({ open, setOpen ,isUpdate,initialData}: DialogWithFormProps) {
@@ -32,7 +32,7 @@ export function QualificatifForm({ open, setOpen ,isUpdate,initialData}: DialogW
 
     useEffect(() => {
         if (initialData) {
-            console.log("hani pour update")
+            console.log(" initialisation ")
             setMaximal(initialData.maximal);
             setMinimal(initialData.minimal);
         }
@@ -47,9 +47,9 @@ export function QualificatifForm({ open, setOpen ,isUpdate,initialData}: DialogW
     }
     const handleSubmit = async () => {
             const newQualificatif = new Qualificatif(
-                maximal, // L'ID peut être 0 car il sera généré par le backend
-                minimal, // Type (à remplir si nécessaire)
-                null // Ordre (à remplir si nécessaire)
+                maximal,
+                minimal,
+                null
             );
 
             if (isUpdate) {
@@ -64,7 +64,7 @@ export function QualificatifForm({ open, setOpen ,isUpdate,initialData}: DialogW
                 handleOpen();
                 messageApi.open({
                     type: 'success',
-                    content: 'Opération réussie',
+                    content: 'Opération réalisé avec succès ',
                 });
             };
 
@@ -72,7 +72,8 @@ export function QualificatifForm({ open, setOpen ,isUpdate,initialData}: DialogW
                 handleOpen();
                 messageApi.open({
                     type: 'error',
-                    content: error.response.data.errorMessage,});
+                    content: " Opération annulé, demande non valide ",
+                });
             };
 
             if (isUpdate) {

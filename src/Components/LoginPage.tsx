@@ -26,12 +26,14 @@ export const LoginPage = () => {
             dispatch(showLoading());
 
             const sanitizedValues = {
+                
                 loginConnection: values.loginConnection,
                 motpasse: values.motpasse,
                 // ... autres propriétés nécessaires
             };
 
 
+        
             console.log(sanitizedValues);
             axios.post("http://localhost:8085/api/v1/user/login", sanitizedValues)
                 .then(function (response) {
@@ -46,6 +48,7 @@ export const LoginPage = () => {
                             content: 'Vous êtes connecté avec succès ! Bienvenue de nouveau !',
                         });
                         localStorage.setItem("token", response.data.token);
+                        loginUser(); // Appel de la fonction loginUser pour mettre à jour l'état d'authentification
                         loginUser(); // Appel de la fonction loginUser pour mettre à jour l'état d'authentification
                         navigate("/evae/home");
                     } else {
@@ -90,9 +93,9 @@ export const LoginPage = () => {
 
     };
 
-    function checkEmailFormat(email: string): boolean {
-        return /@gmail\.com$/.test(email);
-    }
+    // function checkEmailFormat(email: string): boolean {
+    //     return /@gmail\.com$/.test(email);
+    // }
 
 
 

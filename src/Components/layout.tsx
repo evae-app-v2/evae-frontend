@@ -15,14 +15,9 @@ import {useAuth} from "../routes/AuthProvider";
 
 const adminMenu = [
     {
-        name: "Dashboard",
+        name: "Acceuil",
         path: "/evae/home",
         icon: faHouse
-    },
-    {
-        name: "Rubriques Standars",
-        path: "/evae/rubrique-standars",
-        icon: faBars
     },
     {
         name: "Couple qualificatif",
@@ -30,14 +25,19 @@ const adminMenu = [
         icon: faSquarespace
     },
     {
-        name: "Questions Standars",
+        name: "Question Standard",
         path: "/evae/question-standars",
         icon: faQuestion
     },
     {
-        name: "Rubrique Composee",
-        path: "/evae/rubrique-composee",
-        icon: faQuestion
+        name: "Rubrique Standard",
+        path: "/evae/rubrique-standars",
+        icon: faBars
+    },
+    {
+        name: "Rubrique Composée",
+        path: "/evae/rubrique-question",
+        icon: faSquarespace
     }
 ];
 const enseignantMenu = [
@@ -143,7 +143,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
     const menuToBeRendered = role === "ADM" ? adminMenu : role === "ENS" ? enseignantMenu : [];
 
-    // const roleUser = user?.role === "ADMIN" ? "ADMIN" : user?.role === "ENSEIGNANT" ? "ENSEIGNANT" : null;
+    // const roleUser = user?.role === "ADM" ? "ADMIN" : user?.role === "ENS" ? "ENSEIGNANT" : null;
     const handleClick = (menu: any) => {
         setMenuName(menu.name);
         navigate(menu.path);
@@ -218,7 +218,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         <div key={index}
                              onClick={() => handleClick(menu)}
                              className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-500 bg-[#1E293B] p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
-                            <FontAwesomeIcon icon={menu.icon} style={{color: "#f6f5f4"}}/>
+                            {/* <FontAwesomeIcon icon={menu.icon} style={{color: "#f6f5f4"}}/> */}
                             <div>
                                 {menu.name}
                             </div>

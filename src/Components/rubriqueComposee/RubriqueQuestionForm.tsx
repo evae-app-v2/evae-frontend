@@ -282,3 +282,4 @@ export function RubriqueQuestionForm({ open, setOpen, isUpdate, initialData }: D
 //         </>
 //     );
 // }
+

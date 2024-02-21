@@ -7,6 +7,10 @@ import {RubriqueService} from "../../services/RubriqueService";
 import Spinner from "../../utils/Spinner";
 import {Statics} from "../statics";
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
+
 const RubriqueListe = () => {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [isUpdate, setIsUpdate] = useState(false);
@@ -16,7 +20,10 @@ const RubriqueListe = () => {
     const [searchTerm, setSearchTerm] = useState(""); // Ajoutez une variable d'état pour le terme de recherche
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc"); // Ajoutez un état pour le tri
     const [rubriqueToUpdate, setRubriqueToUpdate] = useState<Rubrique | null>(null); // Nouvelle variable d'état pour la rubrique à mettre à jour
-    const rubriqueService = new RubriqueService();
+    const rubriqueService=new RubriqueService();
+
+
+    const navigate = useNavigate();
     useEffect(() => {
         //setRubriqueToUpdate(null);
         loadRubriques();
@@ -53,6 +60,11 @@ const RubriqueListe = () => {
         setIsUpdate(false);
 
     };
+    
+    // const handleView = (rubrique : Rubrique) => {
+    //     navigate("/evae/rubrique-question");
+    // }
+
     const handleOpenDialogUpdate = (rubrique: Rubrique) => {
         setRubriqueToUpdate(rubrique); // Met à jour la variable d'état avec les données de la rubrique à mettre à jour
         setIsUpdate(true);
@@ -219,17 +231,22 @@ const RubriqueListe = () => {
 
                                                     <button onClick={() => handleOpenDialogUpdate(rubrique)}
                                                             className="text-gray-500 transition-colors duration-200 dark:hover:text-yellow-500 dark:text-gray-300 hover:text-yellow-500 focus:outline-none">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                             viewBox="0 0 24 24"
-                                                             stroke-width="1.5" stroke="currentColor"
-                                                             className="w-5 h-5">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                  d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/>
-                                                        </svg>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>))}
+                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                                 viewBox="0 0 24 24"
+                                                                 stroke-width="1.5" stroke="currentColor"
+                                                                 className="w-5 h-5">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                      d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/>
+                                                            </svg>
+                                                        </button>
+                                                        {/* <button onClick={()=>handleView(rubrique)}
+                                                            className="text-gray-500 transition-colors duration-200 dark:hover:text-yellow-500 dark:text-gray-300 hover:text-yellow-500 focus:outline-none">
+                                                            <FontAwesomeIcon icon={faEye} />
+
+                                                        </button> */}
+                                                    </div>
+                                                </td>
+                                            </tr>))}
 
                                     </tbody>
                                 </table>
