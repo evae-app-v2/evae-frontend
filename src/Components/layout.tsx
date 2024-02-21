@@ -15,30 +15,29 @@ import {useAuth} from "../routes/AuthProvider";
 
 const adminMenu = [
     {
-        name: "Dashboard",
+        name: "Acceuil",
         path: "/evae/home",
         icon: faHouse
-    },
-    {
-        name: "Rubriques Standars",
-        path: "/evae/rubrique-standars",
-        icon: faBars
-    },
-    {
-        name: "Rubriques Composées",
-        path: "/evae/rubrique-question",
-        icon: faSquarespace
     },
     {
         name: "Couple qualificatif",
         path: "/evae/couple-qualificatif",
         icon: faSquarespace
     },
-
     {
-        name: "Questions Standars",
+        name: "Question Standard",
         path: "/evae/question-standars",
         icon: faQuestion
+    },
+    {
+        name: "Rubrique Standard",
+        path: "/evae/rubrique-standars",
+        icon: faBars
+    },
+    {
+        name: "Rubrique Composée",
+        path: "/evae/rubrique-question",
+        icon: faSquarespace
     }
 ];
 const enseignantMenu = [
