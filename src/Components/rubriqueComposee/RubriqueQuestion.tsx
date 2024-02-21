@@ -203,7 +203,7 @@ export const RubriqueQuestion = () => {
                                                     <div className="flex items-center gap-x-2">
                                                         <div>
                                                             <h2 className="font-medium text-gray-800 dark:text-white"
-                                                                style={{textAlign: "center"}}>{idRubrique}</h2>
+                                                                style={{textAlign: "center"}}>{rubrique.idRubrique}</h2>
                                                         </div>
                                                     </div>
                                                 </div>

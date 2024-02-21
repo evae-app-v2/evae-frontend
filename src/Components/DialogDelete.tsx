@@ -52,7 +52,7 @@ export function DialogDelete({ title, messageComp,id, name,open, setOpen }: Dial
                 handleOpen();
                 messageApi.open({
                     type: 'success',
-                    content: 'Operation avec succus',
+                    content: 'Operation réalisé avec succès',
                 });
             })
             .catch((error: any) => {
