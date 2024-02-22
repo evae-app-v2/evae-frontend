@@ -29,7 +29,7 @@ const RubriqueListe = () => {
     useEffect(() => {
         //setRubriqueToUpdate(null);
         loadRubriques();
-    }, [searchTerm]); // Utilisez searchTerm comme dépendance du useEffect
+    }, [rubriques,searchTerm]); // Utilisez searchTerm comme dépendance du useEffect
 
     const loadRubriques = async () => {
         try {
