@@ -114,7 +114,7 @@ export function RubriqueForm({ open, setOpen ,isUpdate,initialData}: DialogWithF
             handleOpen();
             messageApi.open({
                 type: 'success',
-                content: 'Opération réussie',
+                content: 'Opération réalisée avec succès',
             });
         };
 
@@ -122,7 +122,7 @@ export function RubriqueForm({ open, setOpen ,isUpdate,initialData}: DialogWithF
             handleOpen();
             messageApi.open({
                 type: 'error',
-                content: 'Opération refusé, veuillez verifier les informations demandés',
+                content: 'Opération refusé, demande non valide',
                 style:{
                     zIndex:"1000000 !important"
                 }

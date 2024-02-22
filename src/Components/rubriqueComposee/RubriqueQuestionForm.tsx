@@ -78,7 +78,7 @@ export function RubriqueQuestionForm({ open, setOpen, isUpdate, initialData }: D
         <Card className="mx-auto w-full max-w-[24rem]" placeholder={undefined}>
           <CardBody className="flex flex-col gap-4" placeholder={undefined}>
             <Typography variant="h4" color="blue-gray" placeholder={undefined}>
-              {isUpdate ? "Modifier une rubrique" : "Ajouter une rubrique"}
+              {isUpdate ? "Modifier " : "Ajouter "}
             </Typography>
             <Typography className="mb-3 font-normal" variant="paragraph" color="gray" placeholder={undefined}>
               Liste des questions

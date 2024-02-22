@@ -23,14 +23,17 @@ const QuestionSTDList = () => {
     useEffect(() => {
         //setRubriqueToUpdate(null);
         loadQuestions();
-    }, [searchTerm]);
+    }, [questions,searchTerm]);
 
         const loadQuestions = async () => {
         try {
             let response: Question[] = [];
             response = await questionService.findAllQuestions();
-            console.log(response)
-            setQuestions(response);
+            const sortedResponses = [...response].sort((a, b) =>
+                a.intitule.localeCompare(b.intitule)
+            );
+            console.log(sortedResponses)
+            setQuestions(sortedResponses);
         } catch (error) {
             console.error("Erreur lors du chargement des rubriques:", error);
         }

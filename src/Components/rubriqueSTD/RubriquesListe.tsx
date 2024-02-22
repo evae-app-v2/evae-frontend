@@ -22,6 +22,8 @@ const RubriqueListe = () => {
     const [rubriqueToUpdate, setRubriqueToUpdate] = useState<Rubrique | null>(null); // Nouvelle variable d'état pour la rubrique à mettre à jour
     const rubriqueService=new RubriqueService();
 
+    const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null);
+
 
     const navigate = useNavigate();
     useEffect(() => {
@@ -39,50 +41,74 @@ const RubriqueListe = () => {
                 }
             } else {
                 response = await rubriqueService.getAll();
-                // Triez les rubriques en fonction de l'ordre alphabétique
-                if (sortOrder === "asc") {
-                    response.sort((a, b) => a.designation.localeCompare(b.designation));
-                } else {
-                    response.sort((a, b) => b.designation.localeCompare(a.designation));
-                }
+
+                // Sort initially by "ordre"
+                const sortedRubriques = response.sort((a, b) =>
+                    (a.ordre || 0) - (b.ordre || 0)
+                );
+
+                setrubriques(sortedRubriques);
             }
-            setrubriques(response);
         } catch (error) {
             console.error("Erreur lors du chargement des rubriques:", error);
         }
-    }
-    /*const toggleSortOrder = () => {
-        // Inverser l'ordre de tri lorsque l'icône est double-cliquée
-        setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-    };*/
-
+    };
 
     const toggleSortOrder = () => {
-        // Inverser l'ordre de tri lorsque l'icône est double-cliquée
-        setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-
-        // Copier le tableau des rubriques pour éviter la mutation directe du state
-        const sortedRubriques = [...rubriques];
-
-        // Fonction de comparaison personnalisée pour trier par ordre numérique
-        const compareByOrdre = (a:Rubrique, b:Rubrique) => {
-            if (sortOrder === "asc") {
-                return (a.ordre || 0) - (b.ordre || 0);
-            } else {
-                return (b.ordre || 0) - (a.ordre || 0);
-            }
-        };
-
-        // Appliquer le tri personnalisé
-        sortedRubriques.sort(compareByOrdre);
-
-        // Mettre à jour le state avec le tableau trié
-        setrubriques(sortedRubriques);
+        // Toggle between alphabetical and "ordre" sorting
+        if (sortOrder === "asc") {
+            // Sort alphabetically
+            setSortOrder("desc");
+            const sortedRubriques = [...rubriques].sort((a, b) =>
+                a.designation.localeCompare(b.designation)
+            );
+            setrubriques(sortedRubriques);
+        } else {
+            // Sort by "ordre"
+            setSortOrder("asc");
+            const sortedRubriques = [...rubriques].sort((a, b) =>
+                (a.ordre || 0) - (b.ordre || 0)
+            );
+            setrubriques(sortedRubriques);
+        }
     };
+
     const handleOpenDialog = (rubrique?: any) => {
         setDialogOpen(true);
         setIsUpdate(false);
 
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
+        if (e.key === 'ArrowUp' && index > 0) {
+            // Move the selected row up
+            swapRows(index, index - 1);
+        } else if (e.key === 'ArrowDown' && index < rubriques.length - 1) {
+            // Move the selected row down
+            swapRows(index, index + 1);
+        }
+    };
+
+    const swapRows = async (indexA: number, indexB: number) => {
+        const updatedRubriques = [...rubriques];
+        [updatedRubriques[indexA], updatedRubriques[indexB]] = [
+            updatedRubriques[indexB],
+            updatedRubriques[indexA],
+        ];
+        setrubriques(updatedRubriques);
+
+        // Update the ordre attribute in the backend
+        const updatedRubriquesData = updatedRubriques.map((rubrique, index) => ({
+            ...rubrique,
+            ordre: index + 1,
+        }));
+
+        try {
+            // Make an API call to update the ordre attribute
+            await rubriqueService.updateOrdre(updatedRubriquesData);
+        } catch (error) {
+            console.error("Error updating ordre attribute:", error);
+        }
     };
     
     // const handleView = (rubrique : Rubrique) => {
@@ -199,11 +225,11 @@ const RubriqueListe = () => {
                                             </button>
                                         </th>
 
-                                        {/*
+
                                         <th scope="col"
                                             className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
                                             <button className="flex items-center gap-x-2">
-                                                <span>Type</span>
+                                                <span>  </span>
 
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                                                      viewBox="0 0 24 24"
@@ -213,7 +239,6 @@ const RubriqueListe = () => {
                                                 </svg>
                                             </button>
                                         </th>
-                                        */}
 
                                         <th scope="col"
                                             className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -225,7 +250,12 @@ const RubriqueListe = () => {
                                     <tbody
                                         className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
                                     {rubriques.map((rubrique: Rubrique, index) => (
-                                        <tr key={index}>
+                                        <tr
+                                            key={index}
+                                            onKeyDown={(e) => handleKeyDown(e, index)}
+                                            tabIndex={0} // Make the row focusable
+                                            className={index === selectedRowIndex ? 'bg-gray-200' : ''}
+                                        >
                                             <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
                                                 <div className="inline-flex items-center gap-x-3">
                                                     <div className="flex items-center gap-x-2">
@@ -236,13 +266,36 @@ const RubriqueListe = () => {
                                                     </div>
                                                 </div>
                                             </td>
-                                            {/*
                                             <td className="px-4 py-4 text-sm whitespace-nowrap">
                                                 <div className="flex items-center gap-x-2">
-                                                    <p className="px-3 py-1 text-xs text-indigo-500 rounded-full dark:bg-gray-800 bg-indigo-100/60">Standard</p>
+                                                    {index > 0 && (
+                                                        <button
+                                                            onClick={() => handleKeyDown({key: 'ArrowUp'} as React.KeyboardEvent, index)}
+                                                            className="text-indigo-500 focus:outline-none">
+                                                            {/* Up Arrow Icon */}
+                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                                 viewBox="0 0 24 24" stroke="currentColor"
+                                                                 className="w-4 h-4">
+                                                                <path strokeLinecap="round" strokeLinejoin="round"
+                                                                      d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+                                                            </svg>
+                                                        </button>
+                                                    )}
+                                                    {index < rubriques.length - 1 && (
+                                                        <button
+                                                            onClick={() => handleKeyDown({key: 'ArrowDown'} as React.KeyboardEvent, index)}
+                                                            className="text-indigo-500 focus:outline-none">
+                                                            {/* Down Arrow Icon */}
+                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                                 viewBox="0 0 24 24" stroke="currentColor"
+                                                                 className="w-4 h-4">
+                                                                <path strokeLinecap="round" strokeLinejoin="round"
+                                                                      d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                                                            </svg>
+                                                        </button>
+                                                    )}
                                                 </div>
                                             </td>
-                                            */}
 
                                             <td className="px-4 py-4 text-sm whitespace-nowrap">
                                                 <div className="flex items-center gap-x-6">
@@ -259,22 +312,22 @@ const RubriqueListe = () => {
 
                                                     <button onClick={() => handleOpenDialogUpdate(rubrique)}
                                                             className="text-gray-500 transition-colors duration-200 dark:hover:text-yellow-500 dark:text-gray-300 hover:text-yellow-500 focus:outline-none">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                                 viewBox="0 0 24 24"
-                                                                 stroke-width="1.5" stroke="currentColor"
-                                                                 className="w-5 h-5">
-                                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                                      d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/>
-                                                            </svg>
-                                                        </button>
-                                                        {/* <button onClick={()=>handleView(rubrique)}
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                             viewBox="0 0 24 24"
+                                                             stroke-width="1.5" stroke="currentColor"
+                                                             className="w-5 h-5">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                  d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/>
+                                                        </svg>
+                                                    </button>
+                                                    {/* <button onClick={()=>handleView(rubrique)}
                                                             className="text-gray-500 transition-colors duration-200 dark:hover:text-yellow-500 dark:text-gray-300 hover:text-yellow-500 focus:outline-none">
                                                             <FontAwesomeIcon icon={faEye} />
 
                                                         </button> */}
-                                                    </div>
-                                                </td>
-                                            </tr>))}
+                                                </div>
+                                            </td>
+                                        </tr>))}
 
                                     </tbody>
                                 </table>
@@ -285,12 +338,12 @@ const RubriqueListe = () => {
 
             </section>
 
-                <RubriqueForm
-                    open={dialogOpen}
-                    setOpen={setDialogOpen}
-                    isUpdate={isUpdate} // Indique si c'est une mise à jour ou une création
-                    initialData={rubriqueToUpdate} // Passe les données de la rubrique à mettre à jour
-                />
+            <RubriqueForm
+                open={dialogOpen}
+                setOpen={setDialogOpen}
+                isUpdate={isUpdate} // Indique si c'est une mise à jour ou une création
+                initialData={rubriqueToUpdate} // Passe les données de la rubrique à mettre à jour
+            />
             <DialogDelete
                 open={dialogDeleteOpen}
                 onClose={() => setDialogDeleteOpen(false)}

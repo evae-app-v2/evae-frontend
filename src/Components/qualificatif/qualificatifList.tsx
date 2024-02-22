@@ -20,7 +20,7 @@ const QualificatifList = () => {
     useEffect(() => {
         //setRubriqueToUpdate(null);
         loadQualificatifs();
-    }, [searchTerm]); // Utilisez searchTerm comme dépendance du useEffect
+    }, [qualificatifs,searchTerm]); // Utilisez searchTerm comme dépendance du useEffect
 
     const loadQualificatifs = async () => {
         try {
