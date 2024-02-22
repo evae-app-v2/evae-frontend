@@ -122,7 +122,7 @@ export function RubriqueForm({ open, setOpen ,isUpdate,initialData}: DialogWithF
             handleOpen();
             messageApi.open({
                 type: 'error',
-                content: error.response.data.message,
+                content: 'Opération refusé, veuillez verifier les informations demandés',
                 style:{
                     zIndex:"1000000 !important"
                 }
@@ -154,18 +154,10 @@ export function RubriqueForm({ open, setOpen ,isUpdate,initialData}: DialogWithF
             <Card className="mx-auto w-full max-w-[24rem]" placeholder={undefined}>
                     <CardBody className="flex flex-col gap-4" placeholder={undefined}>
                         <Typography variant="h4" color="blue-gray" placeholder={undefined}>
-                            {isUpdate ? "Modifier une rubrique" : "Ajouter une rubrique"}
-                        </Typography>
-                        <Typography
-                            className="mb-3 font-normal"
-                            variant="paragraph"
-                            color="gray"
-                            placeholder={undefined}
-                        >
-                            Entrez le nom de la nouvelle rubrique.
+                            {isUpdate ? "Modifier " : "Ajouter "}
                         </Typography>
                         <Typography className="-mb-2" variant="h6" placeholder={undefined}>
-                            Désignation de la rubrique
+                            la nouvelle rubrique
                         </Typography>
                         <Input label="Désignation" size="lg" placeholder={undefined} value={designation}
                                onChange={(e) => setDesignation(e.target.value)} crossOrigin={undefined} />

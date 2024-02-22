@@ -51,9 +51,33 @@ const RubriqueListe = () => {
             console.error("Erreur lors du chargement des rubriques:", error);
         }
     }
+    /*const toggleSortOrder = () => {
+        // Inverser l'ordre de tri lorsque l'icône est double-cliquée
+        setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    };*/
+
+
     const toggleSortOrder = () => {
         // Inverser l'ordre de tri lorsque l'icône est double-cliquée
         setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+
+        // Copier le tableau des rubriques pour éviter la mutation directe du state
+        const sortedRubriques = [...rubriques];
+
+        // Fonction de comparaison personnalisée pour trier par ordre numérique
+        const compareByOrdre = (a:Rubrique, b:Rubrique) => {
+            if (sortOrder === "asc") {
+                return (a.ordre || 0) - (b.ordre || 0);
+            } else {
+                return (b.ordre || 0) - (a.ordre || 0);
+            }
+        };
+
+        // Appliquer le tri personnalisé
+        sortedRubriques.sort(compareByOrdre);
+
+        // Mettre à jour le state avec le tableau trié
+        setrubriques(sortedRubriques);
     };
     const handleOpenDialog = (rubrique?: any) => {
         setDialogOpen(true);
@@ -175,6 +199,7 @@ const RubriqueListe = () => {
                                             </button>
                                         </th>
 
+                                        {/*
                                         <th scope="col"
                                             className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
                                             <button className="flex items-center gap-x-2">
@@ -188,6 +213,7 @@ const RubriqueListe = () => {
                                                 </svg>
                                             </button>
                                         </th>
+                                        */}
 
                                         <th scope="col"
                                             className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -210,11 +236,13 @@ const RubriqueListe = () => {
                                                     </div>
                                                 </div>
                                             </td>
+                                            {/*
                                             <td className="px-4 py-4 text-sm whitespace-nowrap">
                                                 <div className="flex items-center gap-x-2">
                                                     <p className="px-3 py-1 text-xs text-indigo-500 rounded-full dark:bg-gray-800 bg-indigo-100/60">Standard</p>
                                                 </div>
                                             </td>
+                                            */}
 
                                             <td className="px-4 py-4 text-sm whitespace-nowrap">
                                                 <div className="flex items-center gap-x-6">
