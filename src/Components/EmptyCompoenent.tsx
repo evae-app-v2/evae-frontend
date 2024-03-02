@@ -10,12 +10,7 @@ export function EmptyCompoenent() {
                             </h2>
                         <p className="mt-2 text-sm text-gray-500 md:text-base">Notre plateforme vous permet de créer facilement des évaluations pour que les étudiants puissent donner leur avis sur les cours des enseignants. Avec des fonctionnalités intuitives et
                             des outils puissants, vous pouvez concevoir des évaluations personnalisées qui répondent aux besoins de votre établissement. Commencez dès maintenant à collecter des retours précieux et à améliorer l'expérience d'apprentissage pour tous.</p>
-                        <div className="flex justify-center lg:justify-start mt-6">
-                            <a className="px-4 py-3 bg-gray-900 text-gray-200 text-xs font-semibold rounded hover:bg-gray-800"
-                               href="#">Commencer</a>
-                            <a className="mx-4 px-4 py-3 bg-gray-300 text-gray-900 text-xs font-semibold rounded hover:bg-gray-400"
-                               href="#">En savoir plus</a>
-                        </div>
+
                     </div>
                 </div>
                 <div className="hidden lg:block lg:w-1/2"

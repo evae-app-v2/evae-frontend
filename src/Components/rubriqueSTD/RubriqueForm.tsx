@@ -42,58 +42,6 @@ export function RubriqueForm({ open, setOpen ,isUpdate,initialData}: DialogWithF
         setDesignation("");
     };
 
-/*
-    const handleSubmit = async () => {
-        try {
-            // Création d'une nouvelle instance de la classe Rubrique avec les données du formulaire
-            const newRubrique = new Rubrique(
-                'RBS', // L'ID peut être 0 car il sera généré par le backend
-                null, // Type (à remplir si nécessaire)
-                designation, // noEnseignant (à remplir si nécessaire)
-                null // Ordre (à remplir si nécessaire)
-            );
-            try {
-                if(isUpdate) {
-                    newRubrique.id = initialData?.id;
-                    console.log("id upadte "+newRubrique.id);
-                }
-                const savedRubrique = isUpdate ? await new RubriqueService().update(newRubrique) : await new RubriqueService().create(newRubrique);
-
-                setDesignation("");
-                // Fermeture du dialogue après la soumission réussie
-                handleOpen();
-                messageApi.open({
-                    type: 'success',
-                    content: 'Operation avec succus',
-                });
-            } catch (error: any) {
-                if (error.response && error.response.data && error.response.data.message) {
-                    // Si le serveur a renvoyé un message d'erreur, le stocker dans la variable d'état
-                    /!*setALertMessage(error.response.data.message);
-                    setShowSpinner(true);
-                    setTimeout(() => {
-                        setShowSpinner(false);
-                    }, 5000); // 5000 milliseconds
-                    console.log("testt")*!/
-                    console.log("testt")
-                    messageApi.open({
-                        type: 'error',
-                        content: error.response.data.message,
-                    });
-                } else {
-                    // Sinon, afficher un message d'erreur générique
-                    //setErrorMessage('Une erreur est survenue lors de la soumission du formulaire. Veuillez réessayer.');
-                }
-                // Afficher un message d'erreur à l'utilisateur ou prendre toute autre mesure appropriée
-            }            // Appel de la méthode create de RubriqueService avec l'instance nouvellement créée
-
-
-        } catch (error) {
-            console.error("Erreur lors de la création de la rubrique :", error);
-            // Gérer les erreurs de manière appropriée (affichage d'un message d'erreur, etc.)
-        }
-    };
-*/
     const handleSubmit = async () => {
         const newRubrique = new Rubrique(
             'RBS',

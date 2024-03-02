@@ -15,12 +15,12 @@ import {useAuth} from "../routes/AuthProvider";
 
 const adminMenu = [
     {
-        name: "Acceuil",
+        name: "Accueil",
         path: "/evae/home",
         icon: faHouse
     },
     {
-        name: "Couple qualificatif",
+        name: "Couple des qualificatifs",
         path: "/evae/couple-qualificatif",
         icon: faSquarespace
     },
