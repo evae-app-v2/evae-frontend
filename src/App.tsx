@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import './App.css';
 import Layout from "./Components/layout";
 import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
-import {AuthProvider, useAuth} from "./routes/AuthProvider"; // Importez AuthProvider et useAuth ici
+import {AuthProvider, useAuth} from "./routes/AuthProvider";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import RubriquesListe from "./Components/rubriqueSTD/RubriquesListe";
 import {EmptyCompoenent} from "./Components/EmptyCompoenent";
@@ -23,8 +23,6 @@ function App() {
 
 function AppContent() {
     const { isAuthenticated } = useAuth(); // Utilisez useAuth à l'intérieur de AppContent
-    // Création des questions avec des qualificatifs
-    // Création des questions avec des qualificatifs
   useEffect(() => {
     console.log(isAuthenticated)
   }, [isAuthenticated]);

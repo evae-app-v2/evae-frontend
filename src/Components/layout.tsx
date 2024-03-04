@@ -34,11 +34,11 @@ const adminMenu = [
         path: "/evae/rubrique-standars",
         icon: faBars
     },
-    /* {
+    {
         name: "Rubrique Composée",
         path: "/evae/rubrique-question",
         icon: faSquarespace
-    }*/
+    }
 ];
 const enseignantMenu = [
     {
