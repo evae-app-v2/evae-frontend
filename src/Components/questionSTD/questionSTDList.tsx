@@ -15,22 +15,25 @@ const QuestionSTDList = () => {
     const [isUpdate, setIsUpdate] = useState(false);
     const [idQuestion, setIdQuestion] = useState();
     const [dialogDeleteOpen, setDialogDeleteOpen] = useState(false);
-    const [questions, setQuestions] = useState<Question[]>([]); // Spécifiez le type Etudiant pour l'état initial
-    const [searchTerm, setSearchTerm] = useState(""); // Ajoutez une variable d'état pour le terme de recherche
-    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc"); // Ajoutez un état pour le tri
-    const [rubriqueToUpdate, setRubriqueToUpdate] = useState<Question | null>(null); // Nouvelle variable d'état pour la rubrique à mettre à jour
+    const [questions, setQuestions] = useState<Question[]>([]);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+    const [rubriqueToUpdate, setRubriqueToUpdate] = useState<Question | null>(null);
     const questionService=new QuestionService();
     useEffect(() => {
         //setRubriqueToUpdate(null);
         loadQuestions();
-    }, [searchTerm]); // Utilisez searchTerm comme dépendance du useEffect
+    }, [questions,searchTerm]);
 
         const loadQuestions = async () => {
         try {
             let response: Question[] = [];
             response = await questionService.findAllQuestions();
-            console.log(response)
-            setQuestions(response);
+            const sortedResponses = [...response].sort((a, b) =>
+                a.intitule.localeCompare(b.intitule)
+            );
+            console.log(sortedResponses)
+            setQuestions(sortedResponses);
         } catch (error) {
             console.error("Erreur lors du chargement des rubriques:", error);
         }
@@ -62,8 +65,8 @@ const QuestionSTDList = () => {
             <Statics/>
             <section className="container px-4 mx-auto">
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-x-3 ">
-                    <h2 className="text-lg font-medium text-gray-800 dark:text-white mb-4 sm:mb-0">nom de la
-                        rubrique &nbsp;
+                    <h2 className="text-lg font-medium text-gray-800 dark:text-white mb-4 sm:mb-0">
+                        Listes des questions &nbsp;
                         <span
                             className="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full dark:bg-gray-800 dark:text-blue-400">{questions.length}</span>
                     </h2>
@@ -76,7 +79,7 @@ const QuestionSTDList = () => {
                             <path strokeLinecap="round" strokeLinejoin="round"
                                   d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
-                        <span onClick={handleOpenDialog}>Ajouter une question</span>
+                        <span onClick={handleOpenDialog}>Ajouter</span>
                     </Button>
                 </div>
 
@@ -112,7 +115,7 @@ const QuestionSTDList = () => {
                     </svg>
                                                     </button>
                                                 </th>
-
+                                                {/*
                                                 <th scope="col"
                                                     className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
                                                     <button className="flex items-center gap-x-2">
@@ -126,6 +129,7 @@ const QuestionSTDList = () => {
                                                         </svg>
                                                     </button>
                                                 </th>
+                                                */}
 
                                                 <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
                                                     Maximal
@@ -152,11 +156,13 @@ const QuestionSTDList = () => {
                                                             </div>
                                                         </div>
                                                     </td>
+                                                    {/*
                                                     <td className="px-4 py-4 text-sm whitespace-nowrap">
                                                         <div className="flex items-center gap-x-2">
                                                             <p className="px-3 py-1 text-xs text-indigo-500 rounded-full dark:bg-gray-800 bg-indigo-100/60">Standard</p>
                                                         </div>
                                                     </td>
+                                                    */}
                                                     <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
                                                         <div className="inline-flex items-center gap-x-3">
                                                             <div className="flex items-center gap-x-2">

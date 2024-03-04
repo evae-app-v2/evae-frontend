@@ -101,11 +101,11 @@ export function QualificatifForm({ open, setOpen ,isUpdate,initialData}: DialogW
                 <Card className="mx-auto w-full max-w-[24rem]" placeholder={undefined}>
                     <CardBody className="flex flex-col gap-4" placeholder={undefined}>
                         <Typography variant="h4" color="blue-gray" placeholder={undefined}>
-                            {isUpdate ? "Modifier une rubrique" : "Ajouter une rubrique"}
+                            {isUpdate ? "Modifier " : "Ajouter "}
                         </Typography>
 
                         <Typography className="-mb-2" variant="h6" placeholder={undefined}>
-                            Le nouvelle couple qualificatif
+                            Le nouveau qualificatif
                         </Typography>
                         <Input label="Minimal" size="lg" placeholder={undefined} value={minimal}
                                onChange={(e) => setMinimal(e.target.value)} crossOrigin={undefined} />

@@ -146,14 +146,14 @@ export const LoginPage = () => {
                               method="POST">
                             <div className="pb-2 pt-4">
                                 <input type="text"
-                                       name="loginConnection" id="email" placeholder="Email"
+                                       name="loginConnection" id="email" placeholder="Identifiant"
                                        className="block w-full p-4 text-lg rounded-sm bg-black"  required={true}onChange={(e) => setLoginConnection(e.target.value)}/>
                             </div>
                             <div className="pb-2 pt-4">
                                 <input className="block w-full p-4 text-lg rounded-sm bg-black" type="password"
                                        id="password"
                                        name="motpasse"
-                                       placeholder="Password" required={true} onChange={(e) => setMotpasse(e.target.value)}/>
+                                       placeholder="Mot de passe " required={true} onChange={(e) => setMotpasse(e.target.value)}/>
                             </div>
 
                             <div className="px-4 pb-2 pt-4">

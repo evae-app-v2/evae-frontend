@@ -119,14 +119,10 @@ export function QuestionForm({ open, setOpen, isUpdate, initialData }: DialogWit
                 <Card className="mx-auto w-full max-w-[24rem]" placeholder={undefined}>
                     <CardBody className="flex flex-col gap-4" placeholder={undefined}>
                         <Typography variant="h4" color="blue-gray" placeholder={undefined}>
-                            {isUpdate ? "Modifier une question" : "Ajouter une question"}
-                        </Typography>
-                        <Typography className="mb-3 font-normal" variant="paragraph" color="gray"
-                                    placeholder={undefined}>
-                            Entrez le texte de la nouvelle question.
+                            {isUpdate ? "Modifier " : "Ajouter "}
                         </Typography>
                         <Typography className="-mb-2" variant="h6" placeholder={undefined}>
-                            Intitulé de la question
+                           la nouvelle question
                         </Typography>
                         <Input
                             label="Intitulé"

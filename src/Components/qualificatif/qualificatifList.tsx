@@ -4,7 +4,6 @@ import {Button} from "@material-tailwind/react";
 import {DialogDelete} from "../DialogDelete";
 import {Qualificatif} from "../../model/Qualificatif";
 import {QualificatifService} from "../../services/QualificatifService";
-import toast from "react-hot-toast";
 import {Statics} from "../statics";
 
 const QualificatifList = () => {
@@ -12,21 +11,19 @@ const QualificatifList = () => {
     const [isUpdate, setIsUpdate] = useState(false);
     const [idQualificatif, setIdQualificatif] = useState();
     const [dialogDeleteOpen, setDialogDeleteOpen] = useState(false);
-    const [qualificatifs, setQualificatifs] = useState<Qualificatif[]>([]); // Spécifiez le type Etudiant pour l'état initial
-    const [searchTerm, setSearchTerm] = useState(""); // Ajoutez une variable d'état pour le terme de recherche
-    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc"); // Ajoutez un état pour le tri
-    const [qualificatifToUpdate, setQualificatifToUpdate] = useState<Qualificatif | null>(null); // Nouvelle variable d'état pour la rubrique à mettre à jour
+    const [qualificatifs, setQualificatifs] = useState<Qualificatif[]>([]);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+    const [qualificatifToUpdate, setQualificatifToUpdate] = useState<Qualificatif | null>(null);
     const qualificatifsService=new QualificatifService();
     useEffect(() => {
-        //setRubriqueToUpdate(null);
         loadQualificatifs();
-    }, [searchTerm]); // Utilisez searchTerm comme dépendance du useEffect
+    }, [qualificatifs,searchTerm]);
 
     const loadQualificatifs = async () => {
         try {
             let response: Qualificatif[] = [];
                 response = await qualificatifsService.findAllQualificatifs();
-                // Triez les rubriques en fonction de l'ordre alphabétique
                 if (sortOrder === "asc") {
                     response.sort((a, b) => a.maximal.localeCompare(b.maximal));
                 } else {
@@ -48,9 +45,9 @@ const QualificatifList = () => {
 
     };
     const handleOpenDialogUpdate = (qualificatif: Qualificatif) => {
-        setQualificatifToUpdate(qualificatif); // Met à jour la variable d'état avec les données de la rubrique à mettre à jour
+        setQualificatifToUpdate(qualificatif);
         setIsUpdate(true);
-        setDialogOpen(true); // Ouvre la boîte de dialogue avec le formulaire pré-rempli
+        setDialogOpen(true);
     };
     const handleOpenDialogDelete = (id:any) => {
         console.log(id);
@@ -78,7 +75,7 @@ const QualificatifList = () => {
                             <path strokeLinecap="round" strokeLinejoin="round"
                                   d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
-                        <span onClick={handleOpenDialog}>Ajouter une Qualificatif</span>
+                        <span onClick={handleOpenDialog}>Ajouter</span>
                     </Button>
                 </div>
 

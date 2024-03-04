@@ -14,6 +14,15 @@ export class RubriqueService {
         }
     }
 
+    async updateOrdre(updatedRubriquesData: any[]) {
+        try {
+            const response = await api.post(`${this.apiURL}/update-ordre`, updatedRubriquesData);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    }
+
     public async getById(id: number): Promise<Rubrique> {
         try {
             const response = await api.get<Rubrique>(`${this.apiURL}/${id}`);
@@ -46,9 +55,7 @@ export class RubriqueService {
             throw error;
         }
     }
-
-
-
+    
     public async update(data: Rubrique): Promise<Rubrique> {
         try {
             const response = await api.post<Rubrique>(
