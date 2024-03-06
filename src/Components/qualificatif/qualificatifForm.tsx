@@ -107,9 +107,9 @@ export function QualificatifForm({ open, setOpen ,isUpdate,initialData}: DialogW
                         <Typography className="-mb-2" variant="h6" placeholder={undefined}>
                             Le nouveau qualificatif
                         </Typography>
-                        <Input label="Minimal" size="lg" placeholder={undefined} value={minimal}
+                        <Input label="Minimal *" size="lg" placeholder={undefined} value={minimal}
                                onChange={(e) => setMinimal(e.target.value)} crossOrigin={undefined} />
-                        <Input label="Maximal" size="lg" placeholder={undefined} value={maximal}
+                        <Input label="Maximal *" size="lg" placeholder={undefined} value={maximal}
                                onChange={(e) => setMaximal(e.target.value)} crossOrigin={undefined} />
                     </CardBody>
                     <CardFooter className="pt-0" placeholder={undefined}>

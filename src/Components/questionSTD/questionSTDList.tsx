@@ -29,18 +29,21 @@ const QuestionSTDList = () => {
         try {
             let response: Question[] = [];
             response = await questionService.findAllQuestions();
-            const sortedResponses = [...response].sort((a, b) =>
-                a.intitule.localeCompare(b.intitule)
-            );
-            console.log(sortedResponses)
-            setQuestions(sortedResponses);
+            if (sortOrder === "asc") {
+                response.sort((a, b) => a.intitule.localeCompare(b.intitule));
+            } else {
+                response.sort((a, b) => b.intitule.localeCompare(a.intitule));
+            }
+            console.log(response)
+            setQuestions(response);
         } catch (error) {
             console.error("Erreur lors du chargement des rubriques:", error);
         }
     }
 
 
-    const toggleSortOrder = () => {
+
+        const toggleSortOrder = () => {
         // Inverser l'ordre de tri lorsque l'icône est double-cliquée
         setSortOrder(sortOrder === "asc" ? "desc" : "asc");
     };
@@ -62,11 +65,10 @@ const QuestionSTDList = () => {
     // @ts-ignore
     return (
         <>
-            <Statics/>
-            <section className="container px-4 mx-auto">
+            <section className="container px-4 mx-auto mt-7">
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-x-3 ">
                     <h2 className="text-lg font-medium text-gray-800 dark:text-white mb-4 sm:mb-0">
-                        Listes des questions &nbsp;
+                        Liste des questions standards &nbsp;
                         <span
                             className="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full dark:bg-gray-800 dark:text-blue-400">{questions.length}</span>
                     </h2>
@@ -79,7 +81,7 @@ const QuestionSTDList = () => {
                             <path strokeLinecap="round" strokeLinejoin="round"
                                   d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
-                        <span onClick={handleOpenDialog}>Ajouter</span>
+                        <span onClick={handleOpenDialog}> Ajouter</span>
                     </Button>
                 </div>
 
@@ -89,7 +91,7 @@ const QuestionSTDList = () => {
                     <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                         <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
                             <div className="overflow-hidden border border-gray-200 dark:border-gray-700 md:rounded-lg"
-                                 style={{maxHeight: 'calc(6 * 90px)', overflowY: 'auto'}}>
+                                 style={{maxHeight: 'calc(6 * 100px)', overflowY: 'auto'}}>
                                 <table className="w-full divide-y divide-gray-200 dark:divide-gray-700">
                                     <thead className="bg-gray-50 dark:bg-gray-800 sticky top-0" >
                                             <tr>
@@ -132,10 +134,7 @@ const QuestionSTDList = () => {
                                                 */}
 
                                                 <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                                    Maximal
-                                                </th>
-                                                <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                                    Minimal
+                                                    Couple de qualificatifs
                                                 </th>
                                                 <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
                                                     Actions
@@ -168,24 +167,29 @@ const QuestionSTDList = () => {
                                                             <div className="flex items-center gap-x-2">
                                                                 <div>
                                                                     <h2 className="font-medium text-gray-800 dark:text-white"
-                                                                        style={{textAlign: "center"}}>{question.idQualificatif?.maximal}</h2>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
-                                                        <div className="inline-flex items-center gap-x-3">
-                                                            <div className="flex items-center gap-x-2">
-                                                                <div>
-                                                                    <h2 className="font-medium text-gray-800 dark:text-white"
-                                                                        style={{textAlign: "center"}}>{question.idQualificatif?.minimal}</h2>
+                                                                        style={{textAlign: "center"}}>
+                                                                        <span>{question.idQualificatif?.minimal}</span>
+                                                                        <span style={{margin: "0 5px"}}> | </span>
+                                                                        <span>{question.idQualificatif?.maximal}</span>
+                                                                    </h2>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </td>
 
+
                                                     <td className="px-4 py-4 text-sm whitespace-nowrap">
                                                         <div className="flex items-center gap-x-6">
+                                                            <button onClick={() => handleOpenDialogUpdate(question)}
+                                                                    className="text-gray-500 transition-colors duration-200 dark:hover:text-yellow-500 dark:text-gray-300 hover:text-yellow-500 focus:outline-none">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                                     viewBox="0 0 24 24"
+                                                                     stroke-width="1.5" stroke="currentColor"
+                                                                     className="w-5 h-5">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                                          d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/>
+                                                                </svg>
+                                                            </button>
                                                             <button onClick={() => handleOpenDialogDelete(question.id)}
                                                                     className="text-gray-500 transition-colors duration-200 dark:hover:text-red-500 dark:text-gray-300 hover:text-red-500 focus:outline-none">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -197,16 +201,7 @@ const QuestionSTDList = () => {
                                                                 </svg>
                                                             </button>
 
-                                                            <button onClick={() => handleOpenDialogUpdate(question)}
-                                                                    className="text-gray-500 transition-colors duration-200 dark:hover:text-yellow-500 dark:text-gray-300 hover:text-yellow-500 focus:outline-none">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                                     viewBox="0 0 24 24"
-                                                                     stroke-width="1.5" stroke="currentColor"
-                                                                     className="w-5 h-5">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                                          d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/>
-                                                                </svg>
-                                                            </button>
+
                                                         </div>
                                                     </td>
                                                 </tr>))}
@@ -232,9 +227,9 @@ const QuestionSTDList = () => {
                 messageComp="Voulez-vous vraiment supprimer cette Question ?"
                 id={idQuestion}
                 name={"question"}
-                setOpen={setDialogDeleteOpen} />
+                setOpen={setDialogDeleteOpen}/>
         </>
-);
+    );
 }
 
 export default QuestionSTDList;
