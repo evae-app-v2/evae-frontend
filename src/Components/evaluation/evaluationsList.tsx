@@ -57,7 +57,25 @@ const EvaluationsList = () => {
         setIdQualificatif(id)
         setDialogDeleteOpen(true);
     };
+    const handleEtat = (etat: string) => {
+        switch (etat) {
+            case "ELA":
+                // Traitement à effectuer lorsque etat === "ELA"
+                return <span className="px-2 py-1 font-semibold leading-tight text-orange-700 bg-orange-100 rounded-sm mr-6">En cours d'élaboration</span>;
 
+            case "DIS":
+                // Traitement à effectuer lorsque etat === "DIS"
+                return <span className="px-2 py-1 font-semibold leading-tight text-green-800 bg-green-100 rounded-sm mr-6">Mise à disposition</span>;
+
+            case "CLO":
+                // Traitement à effectuer lorsque etat === "CLO"
+                return <span className="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-sm mr-6">Clôturée</span>;
+
+            default:
+                // Traitement par défaut si etat ne correspond à aucun des cas précédents
+                break;
+        }
+    };
 
     return (
         <>
@@ -141,11 +159,14 @@ const EvaluationsList = () => {
                                                 <div className="flex items-center gap-x-2">
                                                     <div>
                                                         <h2 className="font-medium text-gray-800 dark:text-white"
-                                                            style={{textAlign: "center"}}>{evaluation.etat}</h2></div></div></div>
-                                        </td>
+                                                            style={{textAlign: "center"}}>{handleEtat(evaluation.etat)}</h2>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    </td>
 
                                         <td className="px-4 py-4 text-sm whitespace-nowrap">
-                                            <div className="flex items-center gap-x-6">
+                                        <div className="flex items-center gap-x-6">
                                                 <button onClick={() => handleOpenDialogDelete(1)}
                                                         className="text-gray-500 transition-colors duration-200 dark:hover:text-red-500 dark:text-gray-300 hover:text-red-500 focus:outline-none">
                                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none"

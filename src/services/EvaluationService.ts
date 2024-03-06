@@ -23,6 +23,15 @@ export class EvaluationService {
             throw error;
         }
     }
+    public async avancerWorkflow(idEvaluation:any): Promise<any> {
+        try {
+            const response = await api.post<Evaluation[]>(`${this.apiURL}/avancerWorkflow/${idEvaluation}`);
+            return response.data;
+        } catch (error) {
+            //console.error(error);
+            throw error;
+        }
+    }
 
 
 }
