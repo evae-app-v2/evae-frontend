@@ -14,6 +14,15 @@ export class EvaluationService {
             throw error;
         }
     }
+    public async getEvaluationsEtudiant(): Promise<Evaluation[]> {
+        try {
+            const response = await api.get<Evaluation[]>(`${this.apiURL}/etudiant`);
+            return response.data;
+        } catch (error) {
+            //console.error(error);
+            throw error;
+        }
+    }
 
 
 }

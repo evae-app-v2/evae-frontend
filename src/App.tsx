@@ -11,6 +11,7 @@ import QuestionSTDList from "./Components/questionSTD/questionSTDList";
 import {LoginPage} from "./Components/LoginPage";
 import EvaluationsList from "./Components/evaluation/evaluationsList";
 import RubriqueQuestion from "./Components/rubriqueComposee/RubriqueQuestion";
+import EvaluationEtudiantList from "./Components/evaluation/evaluationEtudiantList";
 function App() {
     return (
         <BrowserRouter>
@@ -43,6 +44,7 @@ function AppContent() {
                 <Route path="/evae/rubrique-composee" element={<Layout><RubriqueQuestion/></Layout>}/>
                 <Route path="/evae/question-standars" element={<Layout><QuestionSTDList/></Layout>}/>
                 <Route path="/evae/evaluations" element={<Layout><EvaluationsList/></Layout>}/>
+                <Route path="/evae/etud/evaluations" element={<Layout><EvaluationEtudiantList/></Layout>}/>
                 <Route path="/evae/rubrique-question" element={<Layout><RubriqueQuestion/></Layout>}/>
 
             </Route>

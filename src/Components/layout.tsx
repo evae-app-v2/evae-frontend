@@ -51,6 +51,17 @@ const enseignantMenu = [
         icon: faNoteSticky
     }
 ];
+const etudiantMenu = [
+    {
+        name: "Accueil",
+        path: "/evae/home",
+        icon: faHouse
+    },{
+        name: "Evaluation",
+        path: "/evae/etud/evaluations",
+        icon: faNoteSticky
+    }
+];
 interface LayoutProps {
     children: any;
 }
@@ -124,9 +135,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             });
             // Update the role state with the fetched role
             setRole(response.data.role);
-            const nomComplet = response.data.noEnseignant.nom +' '+ response.data.noEnseignant.prenom;
+            let  nomComplet="";
+            if(role=="ENS"){
+            nomComplet = response.data.noEnseignant.prenom +' '+ response.data.noEnseignant.nom;}else{
+                nomComplet=response.data.noEtudiant.prenom +' '+ response.data.noEtudiant.nom;
+            }
+
+            console.log(nomComplet)
             console.log(response.data.loginConnection)
-            role === "ADM" ? SetUsername(response.data.loginConnection) : SetUsername(nomComplet);
+            role === "ADM" ? SetUsername(response.data.loginConnection) : SetUsername(nomComplet); console.log(username);
         } catch (error) {
             console.error("Error fetching user details:", error);
         }
@@ -141,7 +158,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     console.log("role = ",role);
      //const menuToBeRendered = enseignantMenu;
 
-    const menuToBeRendered = role === "ADM" ? adminMenu : role === "ENS" ? enseignantMenu : [];
+    const menuToBeRendered = role === "ADM" ? adminMenu : role === "ENS" ? enseignantMenu : role === "ETU" ? etudiantMenu : [];
 
     // const roleUser = user?.role === "ADM" ? "ADMIN" : user?.role === "ENS" ? "ENSEIGNANT" : null;
     const handleClick = (menu: any) => {
