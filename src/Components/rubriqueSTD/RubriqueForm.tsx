@@ -107,7 +107,7 @@ export function RubriqueForm({ open, setOpen ,isUpdate,initialData}: DialogWithF
                         <Typography className="-mb-2" variant="h6" placeholder={undefined}>
                             la nouvelle rubrique
                         </Typography>
-                        <Input label="Désignation" size="lg" placeholder={undefined} value={designation}
+                        <Input label="Désignation *" size="lg" placeholder={undefined} value={designation}
                                onChange={(e) => setDesignation(e.target.value)} crossOrigin={undefined} />
                     </CardBody>
                     <CardFooter className="pt-0" placeholder={undefined}>

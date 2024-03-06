@@ -12,6 +12,8 @@ import {RubriqueService} from "../services/RubriqueService";
 import {QualificatifService} from "../services/QualificatifService";
 import {QuestionService} from "../services/QuestionService";
 import toast from "react-hot-toast";
+import {faCheckCircle, faTrashAlt, faX} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 type DialogWithFormProps = {
     title: string;
     messageComp: string;
@@ -80,20 +82,30 @@ export function DialogDelete({ title, messageComp,id, name,open, setOpen }: Dial
         <>
             {contextHolder}
             <Dialog open={open} handler={handleOpen} placeholder={undefined}>
-                <DialogHeader placeholder={undefined}>{title}</DialogHeader>
+                <DialogHeader placeholder={undefined}>Confirmez-vous la suppression ?</DialogHeader>
                 <DialogBody placeholder={undefined}>{messageComp}</DialogBody>
                 <DialogFooter placeholder={undefined}>
                     <Button
                         variant="text"
-                        color="red"
+                        color="gray"
                         onClick={handleOpen}
                         className="mr-1"
                         placeholder={undefined}
                     >
-                        <span>Cancel</span>
+                         {/* Icône de la poubelle */}
+                        <FontAwesomeIcon icon={faX} className="mr-1" />
+                        <span>Annuler</span>
                     </Button>
-                    <Button variant="gradient" color="green" onClick={handlValid} placeholder={undefined}>
-                        <span>Confirm</span>
+
+                    <Button
+                        variant="gradient"
+                        color="deep-orange"
+                        onClick={handlValid}
+                        placeholder={undefined}
+                    >
+                        <FontAwesomeIcon icon={faTrashAlt} className="mr-1" />
+                        {/* Icône de validation */}
+                        <span>Supprimer</span>
                     </Button>
                 </DialogFooter>
             </Dialog>
