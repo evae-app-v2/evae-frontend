@@ -122,7 +122,7 @@ export function RubriqueComposeDetails({ open, setOpen, initialData }: DialogWit
                                                 </th>*/}
                                             <th className="cursor-pointer bg-blue-gray-50/50 p-4 transition-colors hover:bg-blue-gray-50 border border-blue-gray-200"></th>
                                         </tr>
-                                        {rubrique.questions.map((question, indexQ) => (
+                                        {rubrique.questions.map((question:any, indexQ:any) => (
                                             <tr key={indexQ}>
                                                 <td className="p-4 border border-blue-gray-200">
                                                     <div className="flex items-center gap-3">

@@ -230,11 +230,30 @@ export function EvaluationDetails({open, setOpen, initialData}: DialogWithFormPr
                                             </td>
                                             <td className="p-4">
                                                 <div className="flex items-center gap-3">
+                                                    {[...Array(5)].map((_, index) => {
+                                                        const position = index + 1;
+                                                        const disabled = position < question.idQualificatif?.minimal || position > question.idQualificatif?.maximal;
+                                                        return (
+                                                            <input
+                                                                key={index}
+                                                                type="radio"
+                                                                value={position}
+                                                                checked={position === question.positionnements}
+                                                                disabled={disabled}
+                                                            />
+                                                        );
+                                                    })}
+                                                </div>
+                                            </td>
+                                            <td className="p-4">
+                                                <div className="flex items-center gap-3">
                                                     <div className="flex flex-col">
                                                         <p className="block antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal">{question.idQualificatif?.maximal}</p>
                                                     </div>
                                                 </div>
                                             </td>
+
+
                                         </tr>
                                     ))}
                                 </React.Fragment>
@@ -244,22 +263,22 @@ export function EvaluationDetails({open, setOpen, initialData}: DialogWithFormPr
                     </div>
                 </DialogBody>
 
-                    <DialogFooter placeholder={undefined} className="flex justify-between mb-2">
+                <DialogFooter placeholder={undefined} className="flex justify-between mb-2">
 
-                        <div className="flex justify-end space-x-4">
-                            {evaluation?.etat !== 'CLO' && (
-                                <button
-                                    className={`flex px-3 py-2 ${evaluation?.etat === 'ELA' ? 'bg-green-400' : 'bg-red-400'} text-white font-semibold rounded items-center`}
-                                    onClick={() => handleAvancerWorkflow(evaluation?.id)}
-                                >
+                    <div className="flex justify-end space-x-4">
+                        {evaluation?.etat !== 'CLO' && (
+                            <button
+                                className={`flex px-3 py-2 ${evaluation?.etat === 'ELA' ? 'bg-green-400' : 'bg-red-400'} text-white font-semibold rounded items-center`}
+                                onClick={() => handleAvancerWorkflow(evaluation?.id)}
+                            >
             <span className="mr-1">
                 {evaluation?.etat === 'ELA' ? 'Publier Evaluation' : 'Cloturer Evaluation'}
             </span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                         stroke="currentColor" className="w-6 h-6">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                                              d="M9 5l7 7-7 7"/>
-                                    </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                     stroke="currentColor" className="w-6 h-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                                          d="M9 5l7 7-7 7"/>
+                                </svg>
                                 </button>
                             )}
 
