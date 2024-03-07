@@ -6,9 +6,9 @@ export class RubriqueComposee {
     type: string;
     designation: string;
     ordre: number;
-    questions: Question[]; 
+    questions: any;
 
-    constructor(id: number, type: string, designation: string, ordre: number, questions: Question[], idRubrique?: number) {
+    constructor(id: number, type: string, designation: string, ordre: number, questions: any, idRubrique?: number) {
         this.id = id;
         this.type = type;
         this.designation = designation;

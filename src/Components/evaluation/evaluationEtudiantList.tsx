@@ -3,7 +3,7 @@ import { Button } from "@material-tailwind/react";
 import toast from "react-hot-toast";
 import { Evaluation } from '../../model/Evaluation';
 import { DialogDelete } from '../DialogDelete';
-import { EvaluationDetails } from './evaluationDetails';
+import { EvaluationDetails } from './evaluationDetailsEtudiant';
 import { Qualificatif } from '../../model/Qualificatif';
 import { Statics } from '../statics';
 import {EvaluationService} from "../../services/EvaluationService";
