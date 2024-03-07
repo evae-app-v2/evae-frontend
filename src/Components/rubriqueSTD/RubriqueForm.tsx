@@ -63,6 +63,7 @@ export function RubriqueForm({ open, setOpen ,isUpdate,initialData}: DialogWithF
             messageApi.open({
                 type: 'success',
                 content: 'Opération réalisée avec succès',
+                duration: 15,
             });
         };
 
@@ -71,6 +72,7 @@ export function RubriqueForm({ open, setOpen ,isUpdate,initialData}: DialogWithF
             messageApi.open({
                 type: 'error',
                 content: 'Opération refusé, demande non valide',
+                duration: 15,
                 style:{
                     zIndex:"1000000 !important"
                 }

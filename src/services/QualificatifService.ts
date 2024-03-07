@@ -53,6 +53,15 @@ export class QualificatifService {
             return Promise.reject(error);
         }
     }
+    public async qualificatifIsUsedInQuestion(id: any): Promise<boolean> {
+        try {
+            const response = await  api.get(`/qualificatifIsUsedInQuestion/${id}`)
+            return response.data;
+        } catch (error) {
+            console.error(error);
+            return Promise.reject(error);
+        }
+    }
 
 
 

@@ -122,7 +122,7 @@ const RubriqueQuestion = () => {
                         <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
                             <div
                                 className="overflow-hidden border border-gray-200 dark:border-gray-700 md:rounded-lg"
-                                style={{ maxHeight: 'calc(6 * 70px)', overflowY: 'auto' }}
+                                style={{ maxHeight: 'calc(6 * 100px)', overflowY: 'auto' }}
                             >
                                 <table
                                     className="w-full divide-y divide-gray-200 dark:divide-gray-700"
@@ -142,7 +142,7 @@ const RubriqueQuestion = () => {
                                             scope="col"
                                             className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
                                         >
-                                            Actions
+                                            Action
                                         </th>
                                     </tr>
                                     </thead>

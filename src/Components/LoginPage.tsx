@@ -65,7 +65,8 @@ export const LoginPage = () => {
                     dispatch(hideLoading());
                     messageApi.open({
                         type: 'error',
-                        content: 'Désolé, vos informations de connexion sont incorrectes. Veuillez vérifier vos identifiants et réessayer.',});                });
+                        content: 'Désolé, vos informations de connexion sont incorrectes. Veuillez vérifier vos identifiants et réessayer.',
+                        duration: 15,});                });
         } catch (error:any) {
             console.log("Catch block error:", error);
 
