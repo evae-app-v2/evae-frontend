@@ -11,30 +11,69 @@ const QualificatifList = () => {
     const [isUpdate, setIsUpdate] = useState(false);
     const [idQualificatif, setIdQualificatif] = useState();
     const [dialogDeleteOpen, setDialogDeleteOpen] = useState(false);
+    const [condition, setCondition] = useState(true);
     const [qualificatifs, setQualificatifs] = useState<Qualificatif[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
     const [sortBy, setSortBy] = useState("");
     const [qualificatifToUpdate, setQualificatifToUpdate] = useState<Qualificatif | null>(null);
+    const [disabledAction, setDisabledAction] = useState<{ [key: number]: boolean }>({});
     const qualificatifsService=new QualificatifService();
+    const [disabledButtons, setDisabledButtons] = useState<{[id: number]: boolean}>({});
     useEffect(() => {
-        loadQualificatifs();
-    }, [qualificatifs,searchTerm]);
+
+        loadQualificatifs().then(async r => await fetchData());
+
+    }, [qualificatifs]);
+
+    const testDisabled = async (id: any): Promise<boolean> => {
+        try {
+            const response = await qualificatifsService.qualificatifIsUsedInQuestion(id);
+            console.log(id);
+            console.log(response);
+            return response; // Retourne la valeur de la réponse obtenue de la promesse
+        } catch (error) {
+            console.error("Une erreur s'est produite :", error);
+            return false;
+        }
+    };
+
 
     const loadQualificatifs = async () => {
         try {
             let response: Qualificatif[] = [];
                 response = await qualificatifsService.findAllQualificatifs();
-                if (sortBy === "max") {
+
+
+            if (sortBy === "max") {
                     sortQualificatifsByMax(response)
                 } else {
                     sortQualificatifsByMin(response)
                 }
             setQualificatifs(response);
+
         } catch (error) {
             console.error("Erreur lors du chargement des rubriques:", error);
         }
     }
+    const fetchData = async () => {
+        try {
+            const updatedDisabledButtons: { [id: number]: boolean } = {};
+            const promises = qualificatifs.map(async (qualificatif) => {
+                const isDisabled = await testDisabled(qualificatif.id);
+                updatedDisabledButtons[qualificatif.id] = isDisabled;
+                console.log(isDisabled)
+            });
+            await Promise.all(promises);
+            // Mettre à jour l'état des boutons désactivés
+            setDisabledButtons(updatedDisabledButtons);
+        } catch (error) {
+            console.error("Une erreur s'est produite :", error);
+            // Désactiver tous les boutons en cas d'erreur
+            setDisabledButtons({});
+        }
+    };
+
     const sortQualificatifsByMax=(list:any)=>{
         if (sortOrder === "asc") {
             list.sort((a:any, b:any) => a.maximal.localeCompare(b.maximal));
@@ -103,7 +142,7 @@ const QualificatifList = () => {
                                     <thead className="bg-gray-50 dark:bg-gray-800 sticky top-0" >
                                     <tr>
                                         <th scope="col"
-                                            className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                            className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400">
                                             <button className="flex items-center gap-x-2">
                                                 <span>Minmal</span>
 
@@ -130,7 +169,7 @@ const QualificatifList = () => {
                                             </button>
                                         </th>
                                         <th scope="col"
-                                            className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                            className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400">
                                             <button className="flex items-center gap-x-2">
                                                 <span>Maximal</span>
 
@@ -158,8 +197,8 @@ const QualificatifList = () => {
 
 
                                         <th scope="col"
-                                            className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                            Actions
+                                            className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400">
+                                            Action
                                         </th>
 
 
@@ -177,7 +216,7 @@ const QualificatifList = () => {
                                             </td>
                                             <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
                                                 <div className="inline-flex items-center gap-x-3">
-                                                <div className="flex items-center gap-x-2">
+                                                    <div className="flex items-center gap-x-2">
                                                         <div>
                                                             <h2 className="font-medium text-gray-800 dark:text-white"
                                                                 style={{textAlign: "center"}}>{qualificatif.maximal}</h2>
@@ -189,23 +228,32 @@ const QualificatifList = () => {
                                             <td className="px-4 py-4 text-sm whitespace-nowrap">
                                                 <div className="flex items-center gap-x-6">
                                                     <button onClick={() => handleOpenDialogUpdate(qualificatif)}
-                                                            className="text-gray-500 transition-colors duration-200 dark:hover:text-yellow-500 dark:text-gray-300 hover:text-yellow-500 focus:outline-none">
+                                                            disabled={disabledButtons[qualificatif.id]}
+                                                            className={`text-blue-600 transition-colors duration-200 dark:text-gray-400 dark:hover:text-yellow-400 hover:text-blue-600 focus:outline-none ${disabledButtons[qualificatif.id] ? "cursor-not-allowed opacity-50" : ""}`}
+                                                            title={disabledButtons[qualificatif.id] ? "Impossible de modifier le couple qualificatif car il est déjà utilisé dans une question" : ""}
+                                                    >
                                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                                                              viewBox="0 0 24 24"
-                                                             stroke-width="1.5" stroke="currentColor"
-                                                             className="w-5 h-5">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                  d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/>
+                                                             strokeWidth="1.5" stroke="currentColor"
+                                                             className="w-5 h-5"
+                                                        >
+                                                            <path strokeLinecap="round" strokeLinejoin="round"
+                                                                  d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
+                                                            />
                                                         </svg>
                                                     </button>
                                                     <button onClick={() => handleOpenDialogDelete(qualificatif.id)}
-                                                            className="text-gray-500 transition-colors duration-200 dark:hover:text-red-500 dark:text-gray-300 hover:text-red-500 focus:outline-none">
+                                                            disabled={disabledButtons[qualificatif.id]}
+                                                            title={disabledButtons[qualificatif.id] ? "Impossible de supprimer le couple qualificatif car il est déjà utilisé dans une question" : ""}
+                                                            className={`text-red-500 transition-colors duration-200 dark:text-gray-400 dark:hover:text-red-400 hover:text-red-500 focus:outline-none ${disabledButtons[qualificatif.id] ? "cursor-not-allowed opacity-50" : ""}`}>
                                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                                                              viewBox="0 0 24 24"
-                                                             stroke-width="1.5" stroke="currentColor"
-                                                             className="w-5 h-5">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                  d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
+                                                             strokeWidth="1.5" stroke="currentColor"
+                                                             className="w-5 h-5"
+                                                        >
+                                                            <path strokeLinecap="round" strokeLinejoin="round"
+                                                                  d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                                            />
                                                         </svg>
                                                     </button>
                                                 </div>

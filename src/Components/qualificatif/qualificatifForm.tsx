@@ -37,13 +37,28 @@ export function QualificatifForm({ open, setOpen ,isUpdate,initialData}: DialogW
             setMinimal(initialData.minimal);
         }
     }, [initialData]);
+    useEffect(() => {
+        if (!open) {
+            setMinimal("");
+            setMaximal("");
+        }
+    }, [open]);
+
     const handleOpen = () => {
         setOpen((prevOpen) => !prevOpen);
+        if (!isUpdate) {
+            setMinimal("");
+            setMaximal("");
+        }
     };
     const handleClose = () => {
         setOpen((prevOpen) => !prevOpen);
         setMinimal("");
         setMaximal("");
+        if (!isUpdate) {
+            setMinimal("");
+            setMaximal("");
+        }
     }
     const handleSubmit = async () => {
             const newQualificatif = new Qualificatif(
@@ -65,6 +80,7 @@ export function QualificatifForm({ open, setOpen ,isUpdate,initialData}: DialogW
                 messageApi.open({
                     type: 'success',
                     content: 'Opération réalisé avec succès ',
+                    duration: 15,
                 });
             };
 
@@ -73,6 +89,7 @@ export function QualificatifForm({ open, setOpen ,isUpdate,initialData}: DialogW
                 messageApi.open({
                     type: 'error',
                     content: " Opération annulé, demande non valide ",
+                    duration: 15,
                 });
             };
 

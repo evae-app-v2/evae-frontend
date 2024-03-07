@@ -38,6 +38,7 @@ export function EvaluationDetails({open, setOpen, initialData}: DialogWithFormPr
             messageApi.open({
                 type: 'success',
                 content: 'Opération réalisé avec succès ',
+                duration: 15,
             });
         };
 
@@ -46,6 +47,7 @@ export function EvaluationDetails({open, setOpen, initialData}: DialogWithFormPr
             messageApi.open({
                 type: 'error',
                 content: " Opération annulé, demande non valide ",
+                duration: 15,
             });
         };
         evaluationService.avancerWorkflow(id).then(handleSuccess)

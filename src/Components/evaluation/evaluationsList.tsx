@@ -55,13 +55,13 @@ const EvaluationsList = () => {
     const handleEtat = (etat: string) => {
         switch (etat) {
             case "ELA":
-                return <span className="px-2 py-1 font-semibold leading-tight text-orange-700 bg-orange-100 rounded-sm mr-6">En cours d'élaboration</span>;
+                return <span className="px-2 py-1 font-semibold leading-tight text-orange-700 bg-orange-100 rounded ">En cours d'élaboration</span>;
 
             case "DIS":
-                return <span className="px-2 py-1 font-semibold leading-tight text-green-800 bg-green-100 rounded-sm mr-6">Mise à disposition</span>;
+                return <span className="px-2 py-1 font-semibold leading-tight text-green-800 bg-green-100 rounded ">Mise à disposition</span>;
 
             case "CLO":
-                return <span className="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-sm mr-6">Clôturée</span>;
+                return <span className="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded ">Clôturée</span>;
 
             default:
                 return null;
@@ -95,14 +95,14 @@ const EvaluationsList = () => {
                                 <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                                     <thead className="bg-gray-100 dark:bg-gray-700 sticky top-0 ">
                                     <tr>
-                                        <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400">No Évaluation</th>
-                                        <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400">Désignation</th>
-                                        <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400">Formation</th>
-                                        <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400">Promotion</th>
-                                        <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400">UE</th>
-                                        <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400">EC</th>
-                                        <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400">État</th>
-                                        <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400">Actions</th>
+                                        <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{textAlign: "center"}}>No Évaluation</th>
+                                        <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{textAlign: "center"}}>Désignation</th>
+                                        <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{textAlign: "center"}}>Formation</th>
+                                        <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{textAlign: "center"}}>Promotion</th>
+                                        <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{textAlign: "center"}}>UE</th>
+                                        <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{textAlign: "center"}}>EC</th>
+                                        <th scope="col" className="px-4 py-4 text-sm font-normal text-center rtl:text-right text-black-400 dark:text-gray-400">État</th>
+                                        <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" >Actions</th>
                                     </tr>
                                     </thead>
                                     <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -114,7 +114,7 @@ const EvaluationsList = () => {
                                             <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{textAlign: "center"}}>{evaluation.promotion}</td>
                                             <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{textAlign: "center"}}>{evaluation.codeUE}</td>
                                             <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{textAlign: "center"}}>{evaluation.codeEC}</td>
-                                            <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">{handleEtat(evaluation.etat)}</td>
+                                            <td className="px-4 py-4 text-sm font-medium  text-center text-gray-700 whitespace-nowrap">{handleEtat(evaluation.etat)}</td>
                                             <td className="px-4 py-4 text-sm whitespace-nowrap">
                                                 <div className="flex items-center gap-x-6">
                                                     <button onClick={() => handleOpenDialogDelete(evaluation.id)} className="text-gray-500 transition-colors duration-200 dark:hover:text-red-500 dark:text-gray-300 hover:text-red-500 focus:outline-none">

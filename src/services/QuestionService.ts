@@ -72,4 +72,13 @@ export class QuestionService {
             throw error;
         }
     }
+    public async questionIsUsedInRubriqueOrEvaluation(id: any): Promise<boolean> {
+        try {
+            const response = await  api.get(`${this.apiURL}/questionIsUsedInRubriqueOrEvaluation/${id}`)
+            return response.data;
+        } catch (error) {
+            console.error(error);
+            return Promise.reject(error);
+        }
+    }
 }
