@@ -97,7 +97,7 @@ export function RubriqueComposeDetails({ open, setOpen, initialData }: DialogWit
                     <div className=" px-0" style={{maxHeight: 'calc(6 * 40px)', overflowY: 'auto'}}>
                         <table className="w-full min-w-max table-auto text-left border border-blue-gray-200">
                             <tbody>
-                            {evaluation?.rubriques.map((rubrique, index) => {
+                            {evaluation?.rubriques.map((rubrique : any, index: any) => {
                                 return (
                                     <React.Fragment key={index}>
                                         <tr>

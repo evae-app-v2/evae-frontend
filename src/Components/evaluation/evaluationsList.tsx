@@ -9,6 +9,7 @@ import { Statics } from '../statics';
 import { EvaluationService } from "../../services/EvaluationService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
+import { EvaluationForm } from './evaluationForm';
 
 const EvaluationsList = () => {
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -19,9 +20,27 @@ const EvaluationsList = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
     const [evaluationToUpdate, setEvaluationToUpdate] = useState<Evaluation | undefined>();
-
+    const [idEvaluation, setIdEvaluation] = useState();
+    const [evaluationToShow, setEvaluationToShow] = useState<Evaluation>();
+    const [isEvaluationFormOpen, setIsEvaluationFormOpen] = useState(false);
     const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
     const evaluationService = new EvaluationService();
+
+
+    /*const loadEvaluations = async () => {
+        try {
+            const response = await evaluationService.findAllEvaluations();
+            setEvaluations(response);
+        } catch (error) {
+            console.error("Erreur lors du chargement des évaluations:", error);
+            toast.error("Erreur lors du chargement des évaluations.");
+        }
+    };*/
+
+
+
+
+
 
     useEffect(() => {
         loadEvaluations();
@@ -42,15 +61,38 @@ const EvaluationsList = () => {
         setSortOrder(sortOrder === "asc" ? "desc" : "asc");
     };
 
-    const handleOpenDialog = (evaluation: Evaluation) => {
-        setEvaluationToUpdate(evaluation);
+    /*    const handleOpenDialog = (evaluation: Evaluation) => {
+            setEvaluationToUpdate(evaluation);
+            setDialogOpen(true);
+        };*/
+
+    const handleOpenDialog = (evaluation: any) => {
+        setEvaluationToShow(evaluation);
         setDialogOpen(true);
+        console.log(evaluation)
+        setIsUpdate(false);
     };
 
+    const handleOpenDialogUpdate = (evaluation: Evaluation) => {
+        setEvaluationToUpdate(evaluation);
+        setIsUpdate(true);
+        setIsEvaluationFormOpen(true);
+    };
     const handleOpenDialogDelete = (id: any) => {
-        setIdQualificatif(id);
+        console.log(id);
+        setIdEvaluation(id)
         setDialogDeleteOpen(true);
     };
+
+    const handleCreateNewEvaluation = () => {
+        setIsUpdate(false); // Indique que ce n'est pas une mise à jour
+        setIsEvaluationFormOpen(true);
+        setEvaluationToUpdate(undefined);
+
+        // Ouvre le formulaire
+    };
+
+
 
     const handleEtat = (etat: string) => {
         switch (etat) {
@@ -78,11 +120,13 @@ const EvaluationsList = () => {
                     </h2>
                     <Button
                         className="flex items-center justify-center w-full sm:w-auto px-5 py-2 text-sm tracking-wide text-white transition-colors duration-200 rounded-lg sm:shrink-0 gap-x-2 "
-                        placeholder={undefined}>
+                        placeholder={undefined}
+                        onClick={handleCreateNewEvaluation}
+                    >
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"
-                             stroke="currentColor" className="w-5 h-5">
+                            stroke="currentColor" className="w-5 h-5">
                             <path strokeLinecap="round" strokeLinejoin="round"
-                                  d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         <span>Créer une évaluation</span>
                     </Button>
@@ -91,49 +135,68 @@ const EvaluationsList = () => {
                 <div className="flex flex-col mt-8">
                     <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                         <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-                            <div className="overflow-hidden border border-gray-200 dark:border-gray-700 md:rounded-lg" style={{maxHeight: 'calc(6 * 90px)', overflowY: 'auto'}}>
+                            <div className="overflow-hidden border border-gray-200 dark:border-gray-700 md:rounded-lg" style={{ maxHeight: 'calc(6 * 90px)', overflowY: 'auto' }}>
                                 <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                                     <thead className="bg-gray-100 dark:bg-gray-700 sticky top-0 ">
-                                    <tr>
-                                        <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{textAlign: "center"}}>No Évaluation</th>
-                                        <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{textAlign: "center"}}>Désignation</th>
-                                        <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{textAlign: "center"}}>Formation</th>
-                                        <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{textAlign: "center"}}>Promotion</th>
-                                        <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{textAlign: "center"}}>UE</th>
-                                        <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{textAlign: "center"}}>EC</th>
-                                        <th scope="col" className="px-4 py-4 text-sm font-normal text-center rtl:text-right text-black-400 dark:text-gray-400">État</th>
-                                        <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" >Actions</th>
-                                    </tr>
+                                        <tr>
+                                            <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{ textAlign: "center" }}>No Évaluation</th>
+                                            <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{ textAlign: "center" }}>Désignation</th>
+                                            <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{ textAlign: "center" }}>Formation</th>
+                                            <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{ textAlign: "center" }}>Promotion</th>
+                                            <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{ textAlign: "center" }}>UE</th>
+                                            <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{ textAlign: "center" }}>EC</th>
+                                            <th scope="col" className="px-4 py-4 text-sm font-normal text-center rtl:text-right text-black-400 dark:text-gray-400">État</th>
+                                            <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" >Actions</th>
+                                        </tr>
                                     </thead>
                                     <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                                    {evaluations.map((evaluation, index) => (
-                                        <tr key={index}>
-                                            <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{textAlign: "center"}}>{evaluation.noEvaluation}</td>
-                                            <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{textAlign: "center"}}>{evaluation.designation}</td>
-                                            <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{textAlign: "center"}}>{evaluation.codeFormation}</td>
-                                            <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{textAlign: "center"}}>{evaluation.promotion}</td>
-                                            <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{textAlign: "center"}}>{evaluation.codeUE}</td>
-                                            <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{textAlign: "center"}}>{evaluation.codeEC}</td>
-                                            <td className="px-4 py-4 text-sm font-medium  text-center text-gray-700 whitespace-nowrap">{handleEtat(evaluation.etat)}</td>
-                                            <td className="px-4 py-4 text-sm whitespace-nowrap">
-                                                <div className="flex items-center gap-x-6">
-                                                    <button onClick={() => handleOpenDialogDelete(evaluation.id)} className="text-gray-500 transition-colors duration-200 dark:hover:text-red-500 dark:text-gray-300 hover:text-red-500 focus:outline-none">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
-                                                        </svg>
-                                                    </button>
-                                                    <button className="text-gray-500 transition-colors duration-200 dark:hover:text-yellow-500 dark:text-gray-300 hover:text-yellow-500 focus:outline-none">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/>
-                                                        </svg>
-                                                    </button>
-                                                    <button className="text-gray-500 transition-colors duration-200 dark:hover:text-yellow-500 dark:text-gray-300 hover:text-yellow-500 focus:outline-none" onClick={() => handleOpenDialog(evaluation)}>
-                                                        <FontAwesomeIcon icon={faEye} className="w-5 h-5"/>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
+                                        {evaluations.map((evaluation, index) => (
+                                            <tr key={index}>
+                                                <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{ textAlign: "center" }}>{evaluation.noEvaluation}</td>
+                                                <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{ textAlign: "center" }}>{evaluation.designation}</td>
+                                                <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{ textAlign: "center" }}>{evaluation.codeFormation}</td>
+                                                <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{ textAlign: "center" }}>{evaluation.promotion}</td>
+                                                <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{ textAlign: "center" }}>{evaluation.codeUE}</td>
+                                                <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{ textAlign: "center" }}>{evaluation.codeEC}</td>
+                                                <td className="px-4 py-4 text-sm font-medium  text-center text-gray-700 whitespace-nowrap">{handleEtat(evaluation.etat)}</td>
+
+                                                <td className="px-4 py-4 text-sm whitespace-nowrap">
+                                                    <div className="flex items-center gap-x-6">
+                                                        <button
+                                                            className="text-orange-300 transition-colors duration-200 dark:hover:text-yellow-500 dark:text-gray-300 hover:text-yellow-500 focus:outline-none"
+                                                            onClick={() => handleOpenDialog(evaluation)} >
+                                                            <FontAwesomeIcon icon={faEye} className="w-5 h-5" />
+
+                                                        </button>
+
+                                                        <button
+                                                            onClick={() => handleOpenDialogUpdate(evaluation)}
+                                                            disabled={evaluation.etat !== "ELA"}
+                                                            title={evaluation.etat !== "ELA" ? "Impossible de modifier cette évaluation car elle n'est pas en cours d'élaboration." : ""}
+                                                            className={`text-blue-600 transition-colors duration-200 dark:text-gray-400 dark:hover:text-yellow-400 hover:text-blue-600 focus:outline-none ${evaluation.etat !== "ELA" ? "cursor-not-allowed opacity-50" : ""}`}
+                                                        >
+                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                                            </svg>
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleOpenDialogDelete(evaluation.noEvaluation)}
+                                                            disabled={evaluation.etat !== "ELA"}
+                                                            title={evaluation.etat !== "ELA" ? "Impossible de supprimer cette évaluation car elle n'est pas en cours d'élaboration." : ""}
+                                                            className={`text-red-500 transition-colors duration-200 dark:text-gray-400 dark:hover:text-red-400 hover:text-red-500 focus:outline-none ${evaluation.etat !== "ELA" ? "cursor-not-allowed opacity-50" : ""}`}
+                                                        >
+                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                                            </svg>
+                                                        </button>
+
+
+
+                                                    </div>
+                                                </td>
+
+                                            </tr>
+                                        ))}
                                     </tbody>
                                 </table>
                             </div>
@@ -142,19 +205,29 @@ const EvaluationsList = () => {
                 </div>
             </section>
 
+            <EvaluationForm
+                open={isEvaluationFormOpen}
+                setOpen={setIsEvaluationFormOpen}
+                isUpdate={isUpdate} // Indique si c'est une mise à jour ou une création
+                initialData={evaluationToUpdate}
+            />
+
+
             <EvaluationDetails
                 open={dialogOpen}
                 setOpen={setDialogOpen}
-                initialData={evaluationToUpdate} // Passe les données de la rubrique à mettre à jour
+                initialData={evaluationToShow} // Passe les données de la rubrique à mettre à jour
             />
             <DialogDelete
                 open={dialogDeleteOpen}
                 onClose={() => setDialogDeleteOpen(false)}
-                title="Suppression du couple qualificatif"
-                messageComp="Voulez-vous vraiment supprimer ce couple qualificatif ?"
-                id={idQualificatif}
-                name={"qualificatif"}
+                title="Suppression d'une evaluation"
+                messageComp="Voulez-vous vraiment supprimer cette evaluation ?"
+                id={idEvaluation}
+                name={"evaluation"}
                 setOpen={setDialogDeleteOpen} />
+
+
         </>
     );
 }

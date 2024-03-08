@@ -3,21 +3,21 @@ import { RubriqueComposee } from './RubriqueComposee';
 
 
 export class Evaluation {
-    id: number;
-    noEnseignant: Enseignant;
-    codeFormation: string;
-    codeUE: string;
-    codeEC: string | null;
-    promotion: string;
-    noEvaluation: number;
-    designation: string;
-    etat: string;
-    periode: string;
-    debutReponse: string;
-    finReponse: string;
-    rubriques: RubriqueComposee[];
+    id: any;
+    noEnseignant: any;
+    codeFormation: any;
+    codeUE: any;
+    codeEC: any | null;
+    promotion: any;
+    noEvaluation: any;
+    designation: any;
+    etat: any;
+    periode: any;
+    debutReponse: any;
+    finReponse: any;
+    rubriques: any | RubriqueComposee[] ;
 
-    constructor(id: number, noEnseignant: Enseignant, codeFormation: string, codeUE: string, codeEC: string | null, promotion: string, noEvaluation: number, designation: string, etat: string, periode: string, debutReponse: string, finReponse: string, rubriques: RubriqueComposee[]) {
+    constructor(id: any, noEnseignant: any, codeFormation: any, codeUE: any, codeEC: any | null, promotion: any, noEvaluation: any, designation: any, etat: any, periode: any, debutReponse: any, finReponse: any, rubriques: any) {
         this.id = id;
         this.noEnseignant = noEnseignant;
         this.codeFormation = codeFormation;
