@@ -3,19 +3,29 @@ import { QuestionDTO } from "../model/QuestionDTO";
 import {RubriqueQuestions} from "../model/RubriqueQuestions";
 import {Question} from "../model/Question";
 import {AxiosResponse} from "axios";
+import {RubriqueQuestionDTOO} from "../model/RubriqueQuestionInterface";
 export class RubriqueQuestionService {
     private apiURL = "rubriqueQuestions";
 
-    public async getAll(): Promise<RubriqueQuestions[]> {
+    public async getAll(): Promise<RubriqueQuestionDTOO[]> {
         try {
-            const response = await api.get<RubriqueQuestions[]>(`${this.apiURL}/getAll`);
-            console.log("response data getAll : ",response.data);
+            const response = await api.get<RubriqueQuestionDTOO[]>(`${this.apiURL}/getAll`);
             return response.data;
         } catch (error) {
             console.error(error);
             throw error;
         }
     }
+
+    public async deleteRubriqueQuestion(rubriqueId: number, questionId: number): Promise<void> {
+        try {
+            await api.get(`${this.apiURL}/delete/${rubriqueId}/${questionId}`);
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
 
     public async addQuestion(rubriqueQuestion: RubriqueQuestions): Promise<string> {
         console.log(rubriqueQuestion)
@@ -35,6 +45,29 @@ export class RubriqueQuestionService {
         }
     }
 
+    public async createMultipleRubriqueQuestions(idRubrique: number, idQuestions: number[]): Promise<string> {
+        try {
+            const response: AxiosResponse<string> = await api.post(`${this.apiURL}/add-multiple/${idRubrique}`, { idQuestions });
+            return response.data;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+
+
+    public async getQuestionsNotInRubriqueId(rubriqueId: number): Promise<Question[]> {
+        try {
+            const response = await api.get<Question[]>(
+                `${this.apiURL}/getQuestions/${rubriqueId}`
+            );
+            return response.data;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
 
 public async delete(idRubrique: number): Promise<void> {
     try {

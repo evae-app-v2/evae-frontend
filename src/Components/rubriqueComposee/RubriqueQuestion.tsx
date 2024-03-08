@@ -1,36 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from "@material-tailwind/react";
 import { DialogDelete } from "../DialogDelete";
-import { RubriqueQuestionService } from "../../services/RubriqueQuestionService";
 import { Statics } from "../statics";
-import { RubriqueQuestionForm } from "../rubriqueComposee/RubriqueQuestionForm";
-import axios from "axios";
+import { RubriqueQuestionForm } from "./RubriqueQuestionForm";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { Rubrique, RubriqueQuestionDTOO } from '../../model/RubriqueQuestionInterface';
+import {RubriqueQuestionService} from "../../services/RubriqueQuestionService";
+import {RubriqueForm} from "../rubriqueSTD/RubriqueForm";
+import icon from "../../assets/glisser-deposer(2).png";
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import {RubriqueService} from "../../services/RubriqueService";
 
-interface Qualificatif {
-    id: number;
-    minimal: string;
-    maximal: string;
-}
-
-interface Question {
-    id: number;
-    type: string;
-    idQualificatif: Qualificatif;
-    intitule: string;
-    ordre: number;
-}
-
-interface Rubrique {
-    id: number;
-    type: string;
-    designation: string;
-    ordre: number;
-}
-
-interface RubriqueQuestionDTOO {
-    rubrique: Rubrique;
-    questions: Question[];
-}
 
 const RubriqueQuestion = () => {
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -40,53 +21,125 @@ const RubriqueQuestion = () => {
     const [rubriques, setRubriques] = useState<Rubrique[]>([]);
     const [rubriqueToUpdate, setRubriqueToUpdate] = useState<Rubrique | null>(null);
     const [visibleQuestions, setVisibleQuestions] = useState<{ [key: number]: boolean }>({});
-    const [rubriqueQuestions, setRubriqueQuestions] = useState<RubriqueQuestionDTOO[]>([]);
-
+    const [rubriqueQuestionDTOOs, setRubriqueQuestionDTOOs] = useState<RubriqueQuestionDTOO[]>([]);
     const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null);
+    const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
+    const [deletionData, setDeletionData] = useState<{ rubriqueId: number; questionId: number } | null>(null);
+    const [dialogRubriqueFormOpen, setDialogRubriqueFormOpen] = useState(false);
+
+    const rubriqueQuestionService = new RubriqueQuestionService();
+    const rubriqueService = new RubriqueService();
 
     useEffect(() => {
-        axios.get<RubriqueQuestionDTOO[]>('http://localhost:8085/rubriqueQuestions/getAll')
-            .then(response => setRubriqueQuestions(response.data))
-            .catch(error => console.error('Error fetching data:', error));
-    }, );
+        loadRubriqueQuestionDTOs();
+    }, []);
 
-    //[rubriqueQuestions]
-
-    const handleOpenDialog = (rubrique?: any) => {
-        setDialogOpen(true);
-        setIsUpdate(false);
+    const loadRubriqueQuestionDTOs = async () => {
+        try {
+            let response: RubriqueQuestionDTOO[] = [];
+            response = await rubriqueQuestionService.getAll();
+            response.sort((a, b) => a.rubrique.ordre - b.rubrique.ordre);
+            setRubriqueQuestionDTOOs(response);
+        } catch (error) {
+            console.error("Erreur lors du chargement des rubriques:", error);
+        }
     };
 
-    const handleOpenDialogUpdate = (rubrique: Rubrique) => {
+
+    //Add Rubrique
+    const handleOpenDialog = (rubrique?: any) => {
+        setRubriqueToUpdate(rubrique);
+        setIsUpdate(false);
+        setDialogRubriqueFormOpen(true);
+    };
+    //Update Rubrique
+    const handleOpenDialogRubriqueForm = (rubrique: Rubrique) => {
         setRubriqueToUpdate(rubrique);
         setIsUpdate(true);
-        setDialogOpen(true);
+        setDialogRubriqueFormOpen(true);
     };
 
+    //Delete Rubrique
     const handleOpenDialogDelete = (id: any) => {
         setIdRubrique(id);
         setDialogDeleteOpen(true);
     };
+    //Add Question
+    const handleOpenDialogUpdate = (id: any) => {
+        setIdRubrique(id);
+        setIsUpdate(true);
+        setDialogOpen(true);
+    };
 
+    //Delete Question
     const handleDeleteRubriqueQuestion = async (rubriqueId: number, questionId: number) => {
-        try {
-            await axios.get(`http://localhost:8085/rubriqueQuestions/delete/${rubriqueId}/${questionId}`);
-            const updatedRubriqueQuestions = await axios.get<RubriqueQuestionDTOO[]>('http://localhost:8085/rubriqueQuestions/getAll');
-            setRubriqueQuestions(updatedRubriqueQuestions.data);
-        } catch (error) {
-            console.error('Error deleting rubrique question:', error);
+        setConfirmationDialogOpen(true);
+        setDeletionData({ rubriqueId, questionId });
+    };
+
+    const handleConfirmDeletion = async () => {
+        if (deletionData) {
+            try {
+                await rubriqueQuestionService.deleteRubriqueQuestion(deletionData.rubriqueId, deletionData.questionId);
+                const updatedRubriqueQuestions = await rubriqueQuestionService.getAll();
+                setRubriqueQuestionDTOOs(updatedRubriqueQuestions);
+                setConfirmationDialogOpen(false);
+            } catch (error) {
+                console.error('Error deleting rubrique question:', error);
+            }
         }
     };
 
-    const handleDeleteRubriqueCompose = async (rubriqueId: number) => {
+    //DRAG AND DOWN RUB
+    /*const handleDragEnd = (result:any) => {
+        if (!result.destination) {
+            return;
+        }
+        const updatedRubriques = Array.from(rubriqueQuestionDTOOs);
+        const [removed] = updatedRubriques.splice(result.source.index, 1);
+        updatedRubriques.splice(result.destination.index, 0, removed);
+
+        setRubriqueQuestionDTOOs(updatedRubriques);
+    };
+*/
+
+    const onDragEnd = async (result: any) => {
+        if (!result.destination) {
+            return;
+        }
+
+        const { source, destination } = result;
+        const updatedRubriqueQuestionDTOOs = Array.from(rubriqueQuestionDTOOs);
+
+        // Check if the item is dropped at the end
+        const isDroppedAtEnd = destination.index === rubriqueQuestionDTOOs.length;
+
+        // If it's dropped at the end, update the order accordingly
+        if (isDroppedAtEnd) {
+            const [movedItem] = updatedRubriqueQuestionDTOOs.splice(source.index, 1);
+            updatedRubriqueQuestionDTOOs.push(movedItem);
+        } else {
+            // Otherwise, perform the usual reordering
+            const [movedItem] = updatedRubriqueQuestionDTOOs.splice(source.index, 1);
+            updatedRubriqueQuestionDTOOs.splice(destination.index, 0, movedItem);
+        }
+
+        setRubriqueQuestionDTOOs(updatedRubriqueQuestionDTOOs);
+
+        const updatedRubriquesData = updatedRubriqueQuestionDTOOs.map((rubriqueQuestion, index) => ({
+            ...rubriqueQuestion.rubrique,
+            ordre: index + 1,
+        }));
+
         try {
-            await axios.get(`http://localhost:8085/rubriqueQuestions/delete/${rubriqueId}`);
-            const updatedRubriqueQuestions = await axios.get<RubriqueQuestionDTOO[]>('http://localhost:8085/rubriqueQuestions/getAll');
-            setRubriqueQuestions(updatedRubriqueQuestions.data);
+            // Utilisez ici le service pour mettre à jour l'ordre des rubriques dans votre backend
+            await rubriqueService.updateOrdre(updatedRubriquesData);
         } catch (error) {
-            console.error('Error deleting rubrique question:', error);
+            console.error("Erreur lors de la mise à jour de l'ordre:", error);
         }
     };
+
+
 
     return (
         <>
@@ -94,12 +147,11 @@ const RubriqueQuestion = () => {
             <section className="container px-4 mx-auto" style={{ zIndex: 5 }}>
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-x-3 ">
                     <h2 className="text-lg font-medium text-gray-800 dark:text-white mb-4 sm:mb-0">
-                        Liste des rubriques Composées  &nbsp;
+                        Liste des rubriques &nbsp;
                         <span className="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full dark:bg-gray-800 dark:text-blue-400">
                             {rubriques.length}
                         </span>
                     </h2>
-
                     <Button
                         className="flex items-center justify-center w-full sm:w-auto px-5 py-2 text-sm tracking-wide text-white transition-colors duration-200 rounded-lg sm:shrink-0 gap-x-2 "
                         placeholder={undefined}
@@ -122,10 +174,15 @@ const RubriqueQuestion = () => {
                         <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
                             <div
                                 className="overflow-hidden border border-gray-200 dark:border-gray-700 md:rounded-lg"
-                                style={{ maxHeight: 'calc(6 * 70px)', overflowY: 'auto' }}
+                                style={{ maxHeight: 'calc(6 *100px)', overflowY: 'auto' }}
                             >
+                                <DragDropContext onDragEnd={onDragEnd}>
+                                    <Droppable droppableId="rubriques">
+                                        {(provided) => (
                                 <table
                                     className="w-full divide-y divide-gray-200 dark:divide-gray-700"
+                                    {...provided.droppableProps}
+                                    ref={provided.innerRef}
                                 >
                                     <thead className="bg-gray-50 dark:bg-gray-800 sticky top-0">
                                     <tr>
@@ -147,17 +204,29 @@ const RubriqueQuestion = () => {
                                     </tr>
                                     </thead>
                                     <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
-                                    {rubriqueQuestions.map((rubriqueQuestion: RubriqueQuestionDTOO, index) => (
+                                    {rubriqueQuestionDTOOs.map((rubriqueQuestion: RubriqueQuestionDTOO, index) => (
                                         <React.Fragment key={index}>
+                                            <Draggable
+                                                key={index}
+                                                draggableId={index.toString()}
+                                                index={index}>
+                                                {(provided) => (
                                             <tr
+                                                ref={provided.innerRef}
+                                                {...provided.draggableProps}
+                                                {...provided.dragHandleProps}
                                                 tabIndex={0}
-                                                className={index === selectedRowIndex ? 'bg-gray-200' : ''}
+                                                className={index === selectedRowIndex ? 'bg-gray-150' : 'bg-gray-100 dark:bg-gray-700'}
                                             >
                                                 <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
-                                                    <div className="inline-flex items-center gap-x-3">
-                                                        <div className="flex items-center gap-x-2">
+                                                    <div
+                                                        className="inline-flex items-center gap-x-3">
+                                                        <div
+                                                            className="flex items-center gap-x-2">
+                                                            <img src={icon} style={{width: '25px'}}/>&nbsp;
                                                             <div>
-                                                                <h2 className="font-medium text-gray-800 dark:text-white" style={{ textAlign: "center" }}>{rubriqueQuestion.rubrique.designation}</h2>
+                                                                <h2 className="font-medium text-gray-800 dark:text-white"
+                                                                    style={{textAlign: "center"}}>{rubriqueQuestion.rubrique.designation}</h2>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -166,7 +235,33 @@ const RubriqueQuestion = () => {
                                                 <td className="px-4 py-4 text-sm whitespace-nowrap">
                                                     <div className="flex items-center gap-x-6">
                                                         <button
-                                                            onClick={() => handleDeleteRubriqueCompose(rubriqueQuestion.rubrique.id)}
+                                                            onClick={() => handleOpenDialogUpdate(rubriqueQuestion.rubrique.id)}
+                                                            className="text-gray-500 transition-colors duration-200 dark:hover:text-yellow-500 dark:text-gray-300 hover:text-yellow-500 focus:outline-none"
+                                                        >
+                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                                 viewBox="0 0 24 24" stroke-width="1.5"
+                                                                 stroke="currentColor" className="w-5 h-5">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                      d="M12 6v12m-6-6h12"></path>
+                                                            </svg>
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleOpenDialogRubriqueForm(rubriqueQuestion.rubrique)}
+                                                            className="text-gray-500 transition-colors duration-200 dark:hover:text-yellow-500 dark:text-gray-300 hover:text-yellow-500 focus:outline-none">
+                                                            <svg
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                fill="none"
+                                                                viewBox="0 0 24 24"
+                                                                stroke-width="1.5"
+                                                                stroke="currentColor"
+                                                                className="w-5 h-5">
+                                                                <path stroke-linecap="round"
+                                                                      stroke-linejoin="round"
+                                                                      d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/>
+                                                            </svg>
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleOpenDialogDelete(rubriqueQuestion.rubrique.id)}
                                                             className="text-gray-500 transition-colors duration-200 dark:hover:text-red-500 dark:text-gray-300 hover:text-red-500 focus:outline-none">
                                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                                                                  viewBox="0 0 24 24"
@@ -176,41 +271,40 @@ const RubriqueQuestion = () => {
                                                                       d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
                                                             </svg>
                                                         </button>
-
                                                         <button
-                                                            onClick={() => handleOpenDialogUpdate(rubriqueQuestion.rubrique)}
-                                                            className="text-gray-500 transition-colors duration-200 dark:hover:text-yellow-500 dark:text-gray-300 hover:text-yellow-500 focus:outline-none">
-                                                            Ajouter Question
-                                                        </button>
-
-                                                        <button onClick={() => setVisibleQuestions((prev) => ({
-                                                            ...prev,
-                                                            [index]: !prev[index]
-                                                        }))}
-                                                                className="text-gray-500 transition-colors duration-200 dark:hover:text-blue-500 dark:text-gray-300 hover:text-blue-500 focus:outline-none">
-                                                            {visibleQuestions[index] ? 'Masquer Questions' : 'Afficher Questions'}
+                                                            className={`text-gray-500 transition-colors duration-200 focus:outline-none
+                                                                ${rubriqueQuestion.questions.length > 0 ? 'hover:text-blue-500 dark:hover:text-blue-500 dark:text-gray-300' : 'hidden'}`}
+                                                              onClick={() => setVisibleQuestions((prev) => ({
+                                                                ...prev,
+                                                                [index]: !prev[index]
+                                                            }))}>
+                                                            <FontAwesomeIcon
+                                                                icon={visibleQuestions[index] ? faChevronUp : faChevronDown}/>
                                                         </button>
                                                     </div>
                                                 </td>
-                                            </tr>
 
+                                            </tr>)}
+                                            </Draggable>
                                             {visibleQuestions[index] && rubriqueQuestion.questions
                                                 .sort((a, b) => a.ordre - b.ordre)
                                                 .map((question, qIndex) => (
                                                     <tr key={`q${qIndex}`}>
-                                                        <td className="px-8 py-2 text-sm font-medium text-gray-700">
+                                                        <td className="px-16 py-2 text-sm font-medium text-gray-700">
                                                             <div className="flex items-center gap-x-2">
                                                                 <strong>{question.intitule}</strong>{' '}
                                                                 ( {question.idQualificatif.minimal}/{question.idQualificatif.maximal})
                                                             </div>
                                                         </td>
                                                         <td className="px-4 py-2 text-sm whitespace-nowrap">
-                                                            <button onClick={() => handleDeleteRubriqueQuestion(rubriqueQuestion.rubrique.id, question.id)}
-                                                                    className="text-gray-500 transition-colors duration-200 dark:hover:text-red-500 dark:text-gray-300 hover:text-red-500 focus:outline-none">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                                     stroke-width="1.5" stroke="currentColor" className="w-5 h-5">
+                                                            <button
+                                                                onClick={() => handleDeleteRubriqueQuestion(rubriqueQuestion.rubrique.id, question.id)}
+                                                                className="text-gray-500 transition-colors duration-200 dark:hover:text-red-500 dark:text-gray-300 hover:text-red-500 focus:outline-none">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                                     viewBox="0 0 24 24" stroke-width="2" stroke="red"
+                                                                     className="w-5 h-5">
                                                                     <path stroke-linecap="round" stroke-linejoin="round"
-                                                                          d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                                                          d="M6 18L18 6M6 6l12 12"></path>
                                                                 </svg>
                                                             </button>
                                                         </td>
@@ -220,27 +314,62 @@ const RubriqueQuestion = () => {
                                     ))}
                                     </tbody>
                                 </table>
+                                        )}
+                                    </Droppable>
+                                </DragDropContext>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
-
             <RubriqueQuestionForm
                 open={dialogOpen}
                 setOpen={setDialogOpen}
                 isUpdate={isUpdate}
-                initialData={rubriqueToUpdate}
+                //initialData={rubriqueToUpdate}
+                id={idRubrique}
+
             />
             <DialogDelete
                 open={dialogDeleteOpen}
                 onClose={() => setDialogDeleteOpen(false)}
-                title="Suppression du rubrique"
-                messageComp="Voulez-vous vraiment supprimer cette rubrique ?"
+                title="Suppression d'une rubrique question"
+                messageComp="Voulez-vous vraiment supprimer cette rubrique question ?"
                 id={idRubrique}
-                name={"rubrique"}
+                name={"rubriqueQuestion"}
                 setOpen={setDialogDeleteOpen}
             />
+            <RubriqueForm
+                open={dialogRubriqueFormOpen}
+                setOpen={setDialogRubriqueFormOpen}
+                isUpdate={isUpdate}
+                initialData={rubriqueToUpdate}
+            />
+
+            {confirmationDialogOpen && (
+                <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center">
+                    <div className="bg-white p-4 rounded-md">
+                        <p>Confirmez-vous la suppression ?</p>
+                        <div className="mt-4 flex justify-end">
+                            <Button
+                                onClick={() => setConfirmationDialogOpen(false)}
+                                color="gray"
+                                placeholder="annuler"
+                            >
+                                Annuler
+                            </Button>
+                            <Button
+                                onClick={handleConfirmDeletion}
+                                color="red"
+                                className="ml-2"
+                                placeholder="supprimer"
+                            >
+                                Supprimer
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 }
