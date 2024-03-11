@@ -203,7 +203,7 @@ const EvaluationEtudiantList = () => {
                                                     <div className="flex items-center gap-x-2">
                                                         <div>
                                                             <h2 className="font-medium text-gray-800 dark:text-white"
-                                                                style={{textAlign: "center"}}>{evaluation.codeEC}</h2>
+                                                                style={{textAlign: "center"}}>{evaluation.codeEC ? evaluation.codeEC : '--'}</h2>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -224,7 +224,7 @@ const EvaluationEtudiantList = () => {
 
 
                                                     <button
-                                                        className="text-blue-800 transition-colors duration-200 dark:text-gray-300 focus:outline-none"
+                                                        className="text-orange-300 transition-colors duration-200 dark:text-gray-300 focus:outline-none"
                                                         onClick={() => handleOpenDialog(evaluation)}>
                                                         <FontAwesomeIcon icon={faEye} className="w-5 h-5"/>
                                                     </button>
