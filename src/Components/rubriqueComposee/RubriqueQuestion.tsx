@@ -35,7 +35,7 @@ const RubriqueQuestion = () => {
 
     useEffect(() => {
         loadRubriqueQuestionDTOs();
-    }, []);
+    }, [rubriqueQuestionDTOOs]);
 
     const loadRubriqueQuestionDTOs = async () => {
         try {
@@ -98,23 +98,16 @@ const RubriqueQuestion = () => {
         if (!result.destination) {
             return;
         }
-
         const { source, destination } = result;
         const updatedRubriqueQuestionDTOOs = Array.from(rubriqueQuestionDTOOs);
-
-        // Check if the item is dropped at the end
         const isDroppedAtEnd = destination.index === rubriqueQuestionDTOOs.length;
-
-        // If it's dropped at the end, update the order accordingly
         if (isDroppedAtEnd) {
             const [movedItem] = updatedRubriqueQuestionDTOOs.splice(source.index, 1);
             updatedRubriqueQuestionDTOOs.push(movedItem);
         } else {
-            // Otherwise, perform the usual reordering
             const [movedItem] = updatedRubriqueQuestionDTOOs.splice(source.index, 1);
             updatedRubriqueQuestionDTOOs.splice(destination.index, 0, movedItem);
         }
-
         setRubriqueQuestionDTOOs(updatedRubriqueQuestionDTOOs);
 
         const updatedRubriquesData = updatedRubriqueQuestionDTOOs.map((rubriqueQuestion, index) => ({
@@ -123,7 +116,6 @@ const RubriqueQuestion = () => {
         }));
 
         try {
-            // Utilisez ici le service pour mettre à jour l'ordre des rubriques dans votre backend
             await rubriqueService.updateOrdre(updatedRubriquesData);
         } catch (error) {
             console.error("Erreur lors de la mise à jour de l'ordre:", error);
@@ -143,13 +135,6 @@ const RubriqueQuestion = () => {
 
     const handleQuestionReorder = async (rubriqueId: number, reorderedQuestions: RubriqueQuestions[]) => {
         try {
-            /*const rubriqueQuestions: RubriqueQuestions[] = reorderedQuestions.map((question, ordre) => ({
-                idRubrique: rubriqueId,
-                idQuestion: question.id,
-                ordre: ordre + 1,
-            }));*/
-
-            // await rubriqueQuestionService.updateOrdreRubriqueQuestions(rubriqueQuestions);
             await rubriqueQuestionService.updateOrdreRubriqueQuestions(reorderedQuestions);
             await loadRubriqueQuestionDTOs();
             handleClosePopup();
@@ -157,8 +142,6 @@ const RubriqueQuestion = () => {
             console.error("Erreur lors de la mise à jour de l'ordre des questions:", error);
         }
     };
-
-
 
     return (
         <>
@@ -382,7 +365,7 @@ const RubriqueQuestion = () => {
                             </Button>
                             <Button
                                 onClick={handleConfirmDeletion}
-                                color="red"
+                                color="gray"
                                 className="ml-2"
                                 placeholder="supprimer"
                             >

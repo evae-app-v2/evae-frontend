@@ -85,18 +85,6 @@ public async delete(idRubrique: number): Promise<void> {
         }
     }
 
-    /*public async getQuestionsByRubriqueId(rubriqueId: number): Promise<Question[]> {
-        try {
-            const response = await api.get<Question[]>(
-                `${this.apiURL}/getQuestionsByRubriqueId/${rubriqueId}`
-            );
-            return response.data;
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
-    }*/
-
     public async getQuestionsByRubriqueId(rubriqueId: number): Promise<Question[]> {
         try {
             const rubriqueQuestionsDTOs = await this.getAll();
