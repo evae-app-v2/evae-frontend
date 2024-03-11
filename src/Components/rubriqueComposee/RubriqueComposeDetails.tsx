@@ -1,190 +1,247 @@
-import React, {useEffect, useState} from "react";
-import {Button, Dialog, DialogBody, DialogFooter, Typography,} from "@material-tailwind/react";
-import {Evaluation} from "../../model/Evaluation";
-import {AgGridReact} from "ag-grid-react";
-import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
-import "ag-grid-community/styles/ag-theme-quartz.css"; // Optional Theme applied to the grid
-import { ColDef } from 'ag-grid-community'; // Importez ColDef depuis ag-grid-community
-import { TECollapse } from "tw-elements-react";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCircleXmark, faEye, faXmark} from "@fortawesome/free-solid-svg-icons";
-type DialogWithFormProps = {
-    open: boolean;
-    setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    initialData?: Evaluation; // Type modifié pour correspondre à Evaluation
-};
+import React, { useEffect, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import {Question, Rubrique, RubriqueQuestionDTOO} from '../../model/RubriqueQuestionInterface';
+import { RubriqueQuestionService } from "../../services/RubriqueQuestionService";
+import icon from "../../assets/glisser-deposer(2).png";
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { RubriqueService } from "../../services/RubriqueService";
+import { RubriqueQuestions } from "../../model/RubriqueQuestions";
+import { Statics } from "../statics";
+import QuestionReorderPopup from "./QuestionReordrePopup";
 
-export function RubriqueComposeDetails({ open, setOpen, initialData }: DialogWithFormProps) {
+const RubriqueComposeDetails = () => {
+    const [rubriques, setRubriques] = useState<Rubrique[]>([]);
+    const [visibleQuestions, setVisibleQuestions] = useState<{ [key: number]: boolean }>({});
+    const [rubriqueQuestionDTOOs, setRubriqueQuestionDTOOs] = useState<RubriqueQuestionDTOO[]>([]);
+    const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null);
+    const [popupOpen, setPopupOpen] = useState<boolean>(false);
+    const [selectedRubriqueId, setSelectedRubriqueId] = useState<number | null>(null);
 
-    const handleClose = () => {
-        setOpen((prevOpen) => !prevOpen);
-    }
-    const [evaluation, setEvaluation] = useState<Evaluation | undefined>(initialData); // Utilisation de initialData pour initialiser l'évaluation
-
-    const handleOpen = () => setOpen((cur) => !cur);
+    const rubriqueQuestionService = new RubriqueQuestionService();
+    const rubriqueService = new RubriqueService();
 
     useEffect(() => {
-        // Mise à jour de l'évaluation si les données initiales changent
-        setEvaluation(initialData);
-    }, [initialData]);
+        loadRubriqueQuestionDTOs();
+    }, []);
+
+    const loadRubriqueQuestionDTOs = async () => {
+        try {
+            let response: RubriqueQuestionDTOO[] = [];
+            response = await rubriqueQuestionService.getAll();
+            response.sort((a, b) => a.rubrique.ordre - b.rubrique.ordre);
+            setRubriqueQuestionDTOOs(response);
+        } catch (error) {
+            console.error("Erreur lors du chargement des rubriques:", error);
+        }
+    };
+
+    const onDragEnd = async (result: any) => {
+        if (!result.destination) {
+            return;
+        }
+        const {source, destination} = result;
+        const updatedRubriqueQuestionDTOOs = Array.from(rubriqueQuestionDTOOs);
+        const isDroppedAtEnd = destination.index === rubriqueQuestionDTOOs.length;
+        if (isDroppedAtEnd) {
+            const [movedItem] = updatedRubriqueQuestionDTOOs.splice(source.index, 1);
+            updatedRubriqueQuestionDTOOs.push(movedItem);
+        } else {
+            const [movedItem] = updatedRubriqueQuestionDTOOs.splice(source.index, 1);
+            updatedRubriqueQuestionDTOOs.splice(destination.index, 0, movedItem);
+        }
+
+        setRubriqueQuestionDTOOs(updatedRubriqueQuestionDTOOs);
+
+        const updatedRubriquesData = updatedRubriqueQuestionDTOOs.map((rubriqueQuestion, index) => ({
+            ...rubriqueQuestion.rubrique,
+            ordre: index + 1,
+        }));
+
+        try {
+            await rubriqueService.updateOrdre(updatedRubriquesData);
+        } catch (error) {
+            console.error("Erreur lors de la mise à jour de l'ordre:", error);
+        }
+    };
+
+    const handleOpenPopup = (rubriqueId: number) => {
+        setSelectedRubriqueId(rubriqueId);
+        setPopupOpen(true);
+    };
+
+    const handleClosePopup = () => {
+        setSelectedRubriqueId(null);
+        setPopupOpen(false);
+    };
+
+    const handleQuestionReorder = async (rubriqueId: number, reorderedQuestions: RubriqueQuestions[]) => {
+        try {
+            /*const rubriqueQuestions: RubriqueQuestions[] = reorderedQuestions.map((question, ordre) => ({
+                idRubrique: rubriqueId,
+                idQuestion: question.id,
+                ordre: ordre + 1,
+            }));*/
+
+            // await rubriqueQuestionService.updateOrdreRubriqueQuestions(rubriqueQuestions);
+            await rubriqueQuestionService.updateOrdreRubriqueQuestions(reorderedQuestions);
+            await loadRubriqueQuestionDTOs();
+            handleClosePopup();
+        } catch (error) {
+            console.error("Erreur lors de la mise à jour de l'ordre des questions:", error);
+        }
+    };
 
 
     return (
         <>
-            <Dialog size="xl" open={open} handler={handleOpen} placeholder={undefined}>
-                <section className="bg-white dark:bg-gray-900">
-                    <div className="w-auto bg-white h-auto tracking-wide border border-black-800 mx-1 rounded-lg relative">
-                        <div className="flex justify-between items-center w-auto">
-                            <div>
-                                <div className="small-banner w-1 h-20 bg-blue-600 absolute rounded-tl-md"></div>
-                                <h5 className="text-2xl font-semibold pl-6 pt-6 pr-6 pb-2">
-                                    {evaluation?.designation}
-                                </h5>
-                                <p className="text-md font-regular p-6 pt-2 text-gray-500">
-                                    Master 2 DOSI
-                                </p>
-                            </div>
+            <Statics/>
+            <section className="container px-4 mx-auto" style={{zIndex: 5}}>
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-x-3 ">
+                    <h2 className="text-lg font-medium text-gray-800 dark:text-white mb-4 sm:mb-0">
+                        Liste des rubriques &nbsp;
+                        <span
+                            className="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full dark:bg-gray-800 dark:text-blue-400">
+                            {rubriques.length}
+                        </span>
+                    </h2>
+                </div>
+                <div className="flex flex-col mt-8">
+                    <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                        <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+                            <div
+                                className="overflow-hidden border border-gray-200 dark:border-gray-700 md:rounded-lg"
+                                style={{maxHeight: 'calc(6 *100px)', overflowY: 'auto'}}
+                            >
+                                <DragDropContext onDragEnd={onDragEnd}>
+                                    <Droppable droppableId="rubriques">
+                                        {(provided) => (
+                                            <table
+                                                className="w-full divide-y divide-gray-200 dark:divide-gray-700"
+                                                {...provided.droppableProps}
+                                                ref={provided.innerRef}
+                                            >
+                                                <thead className="bg-gray-50 dark:bg-gray-800 sticky top-0">
+                                                <tr>
+                                                    <th
+                                                        scope="col"
+                                                        className="px-12 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                                                    >
+                                                        <button className="flex items-center gap-x-2">
+                                                            <span>Désignation des rubriques</span>
+                                                        </button>
+                                                    </th>
 
-                            <div className="min-w-32"> {/* Utilisez la classe min-w-{value} pour spécifier la largeur minimale */}
-                                <span className="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-sm mr-6">En Cours</span>
-                            </div>
+                                                    <th
+                                                        scope="col"
+                                                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                                                    >
+                                                        Actions
+                                                    </th>
+                                                </tr>
+                                                </thead>
+                                                <tbody
+                                                    className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
+                                                {rubriqueQuestionDTOOs.map((rubriqueQuestion: RubriqueQuestionDTOO, index) => (
+                                                    <React.Fragment key={index}>
+                                                        <Draggable
+                                                            key={index}
+                                                            draggableId={index.toString()}
+                                                            index={index}>
+                                                            {(provided) => (
+                                                                <tr
+                                                                    ref={provided.innerRef}
+                                                                    {...provided.draggableProps}
+                                                                    {...provided.dragHandleProps}
+                                                                    tabIndex={0}
+                                                                    className={index === selectedRowIndex ? 'bg-gray-150' : 'bg-gray-100 dark:bg-gray-700'}
+                                                                >
+                                                                    <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
+                                                                        <div
+                                                                            className="inline-flex items-center gap-x-3">
+                                                                            <div
+                                                                                className="flex items-center gap-x-2">
+                                                                                <img src={icon}
+                                                                                     style={{width: '25px'}}/>&nbsp;
+                                                                                <div>
+                                                                                    <h2 className="font-medium text-gray-800 dark:text-white"
+                                                                                        style={{textAlign: "center"}}>{rubriqueQuestion.rubrique.designation}</h2>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </td>
 
+                                                                    <td className="px-4 py-4 text-sm whitespace-nowrap">
+                                                                        <div className="flex items-center gap-x-6">
+                                                                            {/*<button
+                                                                                // onClick={() => handleOpenDialogUpdateOrdre(rubriqueQuestion.rubrique.id)}
+                                                                                className="text-gray-500 transition-colors duration-200 dark:hover:text-yellow-500 dark:text-gray-300 hover:text-yellow-500 focus:outline-none"
+                                                                            >
+                                                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                                                     fill="none"
+                                                                                     viewBox="0 0 24 24"
+                                                                                     stroke-width="1.5"
+                                                                                     stroke="currentColor"
+                                                                                     className="w-5 h-5">
+                                                                                    <path stroke-linecap="round"
+                                                                                          stroke-linejoin="round"
+                                                                                          d="M12 6v12m-6-6h12"></path>
+                                                                                </svg>
+                                                                            </button>*/}
+                                                                            <td>
+                                                                                <button
+                                                                                    onClick={() => handleOpenPopup(rubriqueQuestion.rubrique.id)}>
+                                                                                    Ordre
+                                                                                </button>
+                                                                            </td>
+                                                                            <button
+                                                                                className={`text-gray-500 transition-colors duration-200 focus:outline-none
+                                                                ${rubriqueQuestion.questions.length > 0 ? 'hover:text-blue-500 dark:hover:text-blue-500 dark:text-gray-300' : 'hidden'}`}
+                                                                                onClick={() => setVisibleQuestions((prev) => ({
+                                                                                    ...prev,
+                                                                                    [index]: !prev[index]
+                                                                                }))}>
+                                                                                <FontAwesomeIcon
+                                                                                    icon={visibleQuestions[index] ? faChevronUp : faChevronDown}/>
+                                                                            </button>
+                                                                        </div>
+                                                                    </td>
+
+                                                                </tr>)}
+                                                        </Draggable>
+                                                        {visibleQuestions[index] && rubriqueQuestion.questions
+                                                            .sort((a, b) => a.ordre - b.ordre)
+                                                            .map((question, qIndex) => (
+                                                                <tr key={`q${qIndex}`}>
+                                                                    <td className="px-16 py-2 text-sm font-medium text-gray-700">
+                                                                        <div className="flex items-center gap-x-2">
+                                                                            <strong>{question.intitule}</strong>{' '}
+                                                                            ( {question.idQualificatif.minimal}/{question.idQualificatif.maximal})
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            ))}
+                                                    </React.Fragment>
+                                                ))}
+                                                </tbody>
+                                            </table>
+                                        )}
+                                    </Droppable>
+                                </DragDropContext>
+                                {popupOpen && selectedRubriqueId !== null && (
+                                    <QuestionReorderPopup
+                                        rubriqueId={selectedRubriqueId}
+                                        open={popupOpen}
+                                        onClose={handleClosePopup}
+                                        onReorder={handleQuestionReorder}
+                                    />
+                                )}
+                            </div>
                         </div>
-
                     </div>
-
-                    <div className="container px-4 py-8 mx-auto">
-                        <div className="grid grid-cols-1 gap-4  l:gap-12 md:grid-cols-3 xl:grid-cols-3"
-                             style={{justifyItems: 'space-between'}}>
-                            <div className="bg-white text-black w-full max-w-md flex flex-col rounded-xl shadow-lg p-4">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center space-x-4">
-                                        <div className="rounded-full w-4 h-4 border border-purple-500"></div>
-                                        <div className="text-md font-bold">{evaluation?.codeUE}</div>
-                                    </div>
-                                </div>
-                                <div className="mt-4 text-gray-500 font-bold text-sm">
-                                    # Unité d'enseignement
-                                </div>
-                            </div>
-                            <div className="bg-white text-black w-full max-w-md flex flex-col rounded-xl shadow-lg p-4">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center space-x-4">
-                                        <div className="rounded-full w-4 h-4 border border-purple-500"></div>
-                                        <div className="text-md font-bold">{evaluation?.codeEC}</div>
-                                    </div>
-                                </div>
-                                <div className="mt-4 text-gray-500 font-bold text-sm">
-                                    # Element Constitutif
-                                </div>
-                            </div>
-                            <div className="bg-white text-black w-full max-w-md flex flex-col rounded-xl shadow-lg p-4">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center space-x-4">
-                                        <div className="rounded-full w-4 h-4 border border-purple-500"></div>
-                                        <div className="text-md font-bold">{evaluation?.periode}</div>
-                                    </div>
-                                </div>
-                                <div className="mt-4 text-gray-500 font-bold text-sm">
-                                    # Période
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <DialogBody placeholder={undefined}>
-                    <div className=" px-0" style={{maxHeight: 'calc(6 * 40px)', overflowY: 'auto'}}>
-                        <table className="w-full min-w-max table-auto text-left border border-blue-gray-200">
-                            <tbody>
-                            {evaluation?.rubriques.map((rubrique : any, index: any) => {
-                                return (
-                                    <React.Fragment key={index}>
-                                        <tr>
-                                            <th className="cursor-pointer bg-blue-gray-50/50 p-4 transition-colors hover:bg-blue-gray-50 border border-blue-gray-200">
-                                                <p className="antialiased font-sans text-sm text-blue-gray-900 flex items-center justify-between gap-2 font-normal leading-none opacity-70">{rubrique.designation}</p>
-                                            </th>
-                                            <th className="cursor-pointer bg-blue-gray-50/50 p-4 transition-colors hover:bg-blue-gray-50 border border-blue-gray-200"></th>
-                                            {/*                          <th className="cursor-pointer bg-blue-gray-50/50 p-4 transition-colors hover:bg-blue-gray-50 border border-blue-gray-200">
-                                                    <p className="antialiased font-sans text-sm text-blue-gray-900 flex items-center justify-between gap-2 font-normal leading-none opacity-70">1</p>
-                                                </th>
-                                                <th className="cursor-pointer bg-blue-gray-50/50 p-4 transition-colors hover:bg-blue-gray-50 border border-blue-gray-200">
-                                                    <p className="antialiased font-sans text-sm text-blue-gray-900 flex items-center justify-between gap-2 font-normal leading-none opacity-70">2</p>
-                                                </th>
-                                                <th className="cursor-pointer bg-blue-gray-50/50 p-4 transition-colors hover:bg-blue-gray-50border border-blue-gray-200">
-                                                    <p className="antialiased font-sans text-sm text-blue-gray-900 flex items-center justify-between gap-2 font-normal leading-none opacity-70">3</p>
-                                                </th>
-                                                <th className="cursor-pointer bg-blue-gray-50/50 p-4 transition-colors hover:bg-blue-gray-50 border border-blue-gray-200">
-                                                    <p className="antialiased font-sans text-sm text-blue-gray-900 flex items-center justify-between gap-2 font-normal leading-none opacity-70">4</p>
-                                                </th>
-                                                <th className="cursor-pointer bg-blue-gray-50/50 p-4 transition-colors hover:bg-blue-gray-50 border border-blue-gray-200">
-                                                    <p className="antialiased font-sans text-sm text-blue-gray-900 flex items-center justify-between gap-2 font-normal leading-none opacity-70">5</p>
-                                                </th>*/}
-                                            <th className="cursor-pointer bg-blue-gray-50/50 p-4 transition-colors hover:bg-blue-gray-50 border border-blue-gray-200"></th>
-                                        </tr>
-                                        {rubrique.questions.map((question:any, indexQ:any) => (
-                                            <tr key={indexQ}>
-                                                <td className="p-4 border border-blue-gray-200">
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="flex flex-col">
-                                                            <p className="block antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal">{question.intitule}</p>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td className="p-4 border border-blue-gray-200">
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="flex flex-col">
-                                                            <p className="block antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal">{question.idQualificatif?.minimal}</p>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                {/*                                                    <td className="p-4  border border-blue-gray-200"></td>
-                                                    <td className="p-4  border border-blue-gray-200"></td>
-                                                    <td className="p-4  border border-blue-gray-200"></td>
-                                                    <td className="p-4  border border-blue-gray-200"></td>
-                                                    <td className="p-4  border border-blue-gray-200"></td>*/}
-                                                <td className="p-4  border border-blue-gray-200">
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="flex flex-col">
-                                                            <p className="block antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal">{question.idQualificatif?.maximal}</p>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </React.Fragment>
-                                );
-                            })}
-                            </tbody>
-                        </table>
-                    </div>
-
-
-                </DialogBody>
-
-                <DialogFooter placeholder={undefined} className="flex justify-between mb-2">
-
-
-                    <button className="flex px-3 py-2 bg-orange-400 text-white font-semibold rounded">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                             stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                  d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.397.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                        </svg>
-                        <span className="ml-1">Modifier</span>
-                    </button>
-                    <button className="flex px-3 py-2 bg-red-400 mr-1 text-white font-semibold rounded"
-                            onClick={handleClose}>
-
-                        <FontAwesomeIcon icon={faXmark} className="w-6 h-6 mr-2" style={{color: "#ffffff",}} />
-                        <span className="ml-1">Fermer</span>
-                    </button>
-                </DialogFooter>
-            </Dialog>
+                </div>
+            </section>
         </>
-    )
-        ;
-
+    );
 }
+export default RubriqueComposeDetails;

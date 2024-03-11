@@ -12,6 +12,7 @@ import {LoginPage} from "./Components/LoginPage";
 import EvaluationsList from "./Components/evaluation/evaluationsList";
 import RubriqueQuestion from "./Components/rubriqueComposee/RubriqueQuestion";
 import EvaluationEtudiantList from "./Components/evaluation/evaluationEtudiantList";
+import RubriqueComposeDetails from "./Components/rubriqueComposee/RubriqueComposeDetails";
 function App() {
     return (
         <BrowserRouter>
@@ -38,7 +39,6 @@ function AppContent() {
             {/* Private route using ProtectedRoute component */}
             <Route path="/" element={<ProtectedRoute />}>
                 <Route path="/evae/home" element={<Layout><EmptyCompoenent/></Layout>}/>
-                <Route path="/evae/rubrique-standars" element={<Layout><RubriquesListe/></Layout>}/>
                 <Route path="/evae/test" element={<Layout><LoginPage/></Layout>}/>
                 <Route path="/evae/couple-qualificatif" element={<Layout><QualificatifList/></Layout>}/>
                 <Route path="/evae/rubrique-composee" element={<Layout><RubriqueQuestion/></Layout>}/>
