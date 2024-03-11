@@ -1,9 +1,7 @@
 import { api } from "../config/axios";
-import { QuestionDTO } from "../model/QuestionDTO";
 import {RubriqueQuestions} from "../model/RubriqueQuestions";
-import {Question} from "../model/Question";
 import {AxiosResponse} from "axios";
-import {RubriqueQuestionDTOO} from "../model/RubriqueQuestionInterface";
+import {Question, RubriqueQuestionDTOO} from "../model/RubriqueQuestionInterface";
 export class RubriqueQuestionService {
     private apiURL = "rubriqueQuestions";
 
@@ -78,22 +76,44 @@ public async delete(idRubrique: number): Promise<void> {
     }
 }
 
-/*
-async getQuestionsByRubrique(rubriqueId: number): Promise<QuestionDTO[]> {
-    try {
-        const response = await api.get<RubriqueQuestions[]>(`${this.apiURL}/${rubriqueId}/questions`);
-
-        // Assuming RubriqueQuestions has a property named 'questionDTO'
-        const questions = response.data
-            .map((rubriqueQuestion) => rubriqueQuestion.questionDTO)
-            .filter((questionDTO): questionDTO is QuestionDTO => questionDTO !== undefined);
-
-        return questions;
-    } catch (error) {
-        console.error('Error fetching questions by rubrique:', error);
-        throw error;
+    public async updateOrdreRubriqueQuestions(rubriqueQuestionDTOs: RubriqueQuestions[]): Promise<void> {
+        try {
+            await api.post<void>(`${this.apiURL}/update-ordre-question`, rubriqueQuestionDTOs);
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
     }
-}*/
+
+    /*public async getQuestionsByRubriqueId(rubriqueId: number): Promise<Question[]> {
+        try {
+            const response = await api.get<Question[]>(
+                `${this.apiURL}/getQuestionsByRubriqueId/${rubriqueId}`
+            );
+            return response.data;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }*/
+
+    public async getQuestionsByRubriqueId(rubriqueId: number): Promise<Question[]> {
+        try {
+            const rubriqueQuestionsDTOs = await this.getAll();
+
+            const filteredQuestions = rubriqueQuestionsDTOs
+                .filter(rubriqueQuestion => rubriqueQuestion.rubrique.id === rubriqueId)
+                .flatMap(rubriqueQuestion => rubriqueQuestion.questions);
+
+            const sortedQuestions = filteredQuestions.sort((a, b) => a.ordre - b.ordre);
+
+            return sortedQuestions;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
 
 
 }

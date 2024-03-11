@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from "@material-tailwind/react";
 import { DialogDelete } from "../DialogDelete";
-import { Statics } from "../statics";
 import { RubriqueQuestionForm } from "./RubriqueQuestionForm";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import {faChevronUp, faChevronDown, faArrowDown19} from '@fortawesome/free-solid-svg-icons';
 import { Rubrique, RubriqueQuestionDTOO } from '../../model/RubriqueQuestionInterface';
 import {RubriqueQuestionService} from "../../services/RubriqueQuestionService";
 import {RubriqueForm} from "../rubriqueSTD/RubriqueForm";
 import icon from "../../assets/glisser-deposer(2).png";
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import {RubriqueService} from "../../services/RubriqueService";
+import {RubriqueQuestions} from "../../model/RubriqueQuestions";
+import QuestionReorderPopup from "./QuestionReordrePopup";
 
 
 const RubriqueQuestion = () => {
@@ -26,6 +27,8 @@ const RubriqueQuestion = () => {
     const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
     const [deletionData, setDeletionData] = useState<{ rubriqueId: number; questionId: number } | null>(null);
     const [dialogRubriqueFormOpen, setDialogRubriqueFormOpen] = useState(false);
+    const [popupOpen, setPopupOpen] = useState<boolean>(false);
+    const [selectedRubriqueId, setSelectedRubriqueId] = useState<number | null>(null);
 
     const rubriqueQuestionService = new RubriqueQuestionService();
     const rubriqueService = new RubriqueService();
@@ -91,18 +94,6 @@ const RubriqueQuestion = () => {
     };
 
     //DRAG AND DOWN RUB
-    /*const handleDragEnd = (result:any) => {
-        if (!result.destination) {
-            return;
-        }
-        const updatedRubriques = Array.from(rubriqueQuestionDTOOs);
-        const [removed] = updatedRubriques.splice(result.source.index, 1);
-        updatedRubriques.splice(result.destination.index, 0, removed);
-
-        setRubriqueQuestionDTOOs(updatedRubriques);
-    };
-*/
-
     const onDragEnd = async (result: any) => {
         if (!result.destination) {
             return;
@@ -139,11 +130,38 @@ const RubriqueQuestion = () => {
         }
     };
 
+    //DRAG AND DOWN QUESTIONS
+    const handleOpenPopup = (rubriqueId: number) => {
+        setSelectedRubriqueId(rubriqueId);
+        setPopupOpen(true);
+    };
+
+    const handleClosePopup = () => {
+        setSelectedRubriqueId(null);
+        setPopupOpen(false);
+    };
+
+    const handleQuestionReorder = async (rubriqueId: number, reorderedQuestions: RubriqueQuestions[]) => {
+        try {
+            /*const rubriqueQuestions: RubriqueQuestions[] = reorderedQuestions.map((question, ordre) => ({
+                idRubrique: rubriqueId,
+                idQuestion: question.id,
+                ordre: ordre + 1,
+            }));*/
+
+            // await rubriqueQuestionService.updateOrdreRubriqueQuestions(rubriqueQuestions);
+            await rubriqueQuestionService.updateOrdreRubriqueQuestions(reorderedQuestions);
+            await loadRubriqueQuestionDTOs();
+            handleClosePopup();
+        } catch (error) {
+            console.error("Erreur lors de la mise à jour de l'ordre des questions:", error);
+        }
+    };
+
 
 
     return (
         <>
-            <Statics />
             <section className="container px-4 mx-auto" style={{ zIndex: 5 }}>
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-x-3 ">
                     <h2 className="text-lg font-medium text-gray-800 dark:text-white mb-4 sm:mb-0">
@@ -246,6 +264,10 @@ const RubriqueQuestion = () => {
                                                             </svg>
                                                         </button>
                                                         <button
+                                                            onClick={() => handleOpenPopup(rubriqueQuestion.rubrique.id)}>
+                                                            <FontAwesomeIcon icon={faArrowDown19} />
+                                                        </button>
+                                                        <button
                                                             onClick={() => handleOpenDialogRubriqueForm(rubriqueQuestion.rubrique)}
                                                             className="text-gray-500 transition-colors duration-200 dark:hover:text-yellow-500 dark:text-gray-300 hover:text-yellow-500 focus:outline-none">
                                                             <svg
@@ -274,7 +296,7 @@ const RubriqueQuestion = () => {
                                                         <button
                                                             className={`text-gray-500 transition-colors duration-200 focus:outline-none
                                                                 ${rubriqueQuestion.questions.length > 0 ? 'hover:text-blue-500 dark:hover:text-blue-500 dark:text-gray-300' : 'hidden'}`}
-                                                              onClick={() => setVisibleQuestions((prev) => ({
+                                                            onClick={() => setVisibleQuestions((prev) => ({
                                                                 ...prev,
                                                                 [index]: !prev[index]
                                                             }))}>
@@ -290,7 +312,7 @@ const RubriqueQuestion = () => {
                                                 .sort((a, b) => a.ordre - b.ordre)
                                                 .map((question, qIndex) => (
                                                     <tr key={`q${qIndex}`}>
-                                                        <td className="px-16 py-2 text-sm font-medium text-gray-700">
+                                                    <td className="px-16 py-2 text-sm font-medium text-gray-700">
                                                             <div className="flex items-center gap-x-2">
                                                                 <strong>{question.intitule}</strong>{' '}
                                                                 ( {question.idQualificatif.minimal}/{question.idQualificatif.maximal})
@@ -369,6 +391,14 @@ const RubriqueQuestion = () => {
                         </div>
                     </div>
                 </div>
+            )}
+            {popupOpen && selectedRubriqueId !== null && (
+                <QuestionReorderPopup
+                    rubriqueId={selectedRubriqueId}
+                    open={popupOpen}
+                    onClose={handleClosePopup}
+                    onReorder={handleQuestionReorder}
+                />
             )}
         </>
     );

@@ -10,7 +10,6 @@ type DialogWithFormProps = {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isUpdate: boolean;
-  //initialData?: any;
   id: any;
 };
 
@@ -19,7 +18,6 @@ export function RubriqueQuestionForm({ open, setOpen, isUpdate, id }: DialogWith
   const [questions, setQuestions] = useState<Question[]>([]);
   const [selectedRubriqueId, setSelectedRubriqueId] = useState<number | null>(null);
   const [selectedQuestionIds, setSelectedQuestionIds] = useState<number[]>([]);
-  const questionService = new QuestionService();
   const rubriqueQuestionService = new RubriqueQuestionService();
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -86,50 +84,6 @@ export function RubriqueQuestionForm({ open, setOpen, isUpdate, id }: DialogWith
   };
 
   return (
-      /*<>
-        {contextHolder}
-        <Dialog
-            size="xs"
-            open={open}
-            handler={handleOpen}
-            className="bg-transparent shadow-none"
-            style={{ zIndex: 10 }}
-            placeholder={undefined}
-        >
-          <Card className="mx-auto w-full max-w-[24rem]" placeholder={undefined}>
-            <CardBody className="flex flex-col gap-4" placeholder={undefined}>
-              <Typography variant="h4" color="blue-gray" placeholder={undefined}>
-                Ajouter des questions
-              </Typography>
-              {questions.map((q) => (
-                  <div key={q.id}>
-                    <input
-                        type="checkbox"
-                        checked={selectedQuestionIds.includes(q.id!== undefined ? q.id : 0)}
-                        onChange={() => handleCheckboxChange(q.id!== undefined ? q.id : 0)}
-                    />
-                    {q.intitule}
-                  </div>
-              ))}
-            </CardBody>
-            <CardFooter className="pt-0" placeholder={undefined}>
-              <Button
-                  variant="gradient"
-                  onClick={handleSubmit}
-                  fullWidth
-                  placeholder={undefined}
-              >
-                {isUpdate ? "Ajouter" : "Ajouter"}
-              </Button>
-            </CardFooter>
-            <CardFooter className="pt-0" style={{ marginTop: '-3%' }} placeholder={undefined}>
-              <Button variant="gradient" onClick={handleClose} fullWidth placeholder={undefined}>
-                Annuler
-              </Button>
-            </CardFooter>
-          </Card>
-        </Dialog>
-      </>*/
       <>
         {contextHolder}
         <Dialog
@@ -140,23 +94,35 @@ export function RubriqueQuestionForm({ open, setOpen, isUpdate, id }: DialogWith
             style={{ zIndex: 10, maxHeight: '80vh', overflowY: 'auto', width:'160vh' }} // Add max height and scrollbar
             placeholder={undefined}
         >
-          <Card className="mx-auto w-full max-w-[24rem]" placeholder={undefined}>
+          <Card className="mx-auto w-full max-w-[48rem]" placeholder={undefined}>
             <CardBody className="flex flex-col gap-4" placeholder={undefined}>
               <Typography variant="h4" color="blue-gray" placeholder={undefined}>
-                Ajouter des questions
+                Ajouter
               </Typography>
               {questions.map((q) => (
-                  <div key={q.id}>
+                  <div key={q.id} style={{display: 'flex', alignItems: 'center', marginBottom: '8px'}}>
                     <input
                         type="checkbox"
                         checked={selectedQuestionIds.includes(q.id !== undefined ? q.id : 0)}
                         onChange={() => handleCheckboxChange(q.id !== undefined ? q.id : 0)}
+                        style={{marginRight: '8px'}}
                     />
                     {q.intitule}
                   </div>
+
               ))}
             </CardBody>
-            <CardFooter className="pt-0" placeholder={undefined}>
+            <CardFooter className="mx-auto w-full max-w-[24rem]" placeholder={undefined}>
+              <div className="flex justify-end">
+                <Button
+                    variant="gradient"
+                    onClick={handleClose}
+                    fullWidth
+                    placeholder={undefined}
+                    style={{ marginRight: '16px' }}
+                >
+                  Annuler
+                </Button>
               <Button
                   variant="gradient"
                   onClick={handleSubmit}
@@ -165,12 +131,9 @@ export function RubriqueQuestionForm({ open, setOpen, isUpdate, id }: DialogWith
               >
                 {isUpdate ? "Ajouter" : "Ajouter"}
               </Button>
-            </CardFooter>
-            <CardFooter className="pt-0" style={{ marginTop: '-3%' }} placeholder={undefined}>
-              <Button variant="gradient" onClick={handleClose} fullWidth placeholder={undefined}>
-                Annuler
-              </Button>
-            </CardFooter>
+
+              </div>
+            </CardFooter >
           </Card>
         </Dialog>
       </>
