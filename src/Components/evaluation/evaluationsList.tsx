@@ -145,8 +145,8 @@ const EvaluationsList = () => {
                                             <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{ textAlign: "center" }}>Promotion</th>
                                             <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{ textAlign: "center" }}>UE</th>
                                             <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{ textAlign: "center" }}>EC</th>
-                                            <th scope="col" className="px-4 py-4 text-sm font-normal text-center rtl:text-right text-black-400 dark:text-gray-400">État</th>
-                                            <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" >Actions</th>
+                                            <th scope="col" className="px-4 py-4 text-sm font-normal text-center rtl:text-right text-black-400 dark:text-gray-400" style={{ textAlign: "center" }}>État</th>
+                                            <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{ textAlign: "center" }}>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -157,7 +157,7 @@ const EvaluationsList = () => {
                                                 <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{ textAlign: "center" }}>{evaluation.codeFormation}</td>
                                                 <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{ textAlign: "center" }}>{evaluation.promotion}</td>
                                                 <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{ textAlign: "center" }}>{evaluation.codeUE}</td>
-                                                <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{ textAlign: "center" }}>{evaluation.codeEC}</td>
+                                                <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{ textAlign: "center" }}>{evaluation.codeEC ? evaluation.codeEC : '--'}</td>
                                                 <td className="px-4 py-4 text-sm font-medium  text-center text-gray-700 whitespace-nowrap">{handleEtat(evaluation.etat)}</td>
 
                                                 <td className="px-4 py-4 text-sm whitespace-nowrap">
@@ -165,7 +165,7 @@ const EvaluationsList = () => {
                                                         <button
                                                             className="text-orange-300 transition-colors duration-200 dark:hover:text-yellow-500 dark:text-gray-300 hover:text-yellow-500 focus:outline-none"
                                                             onClick={() => handleOpenDialog(evaluation)} >
-                                                            <FontAwesomeIcon icon={faEye} className="w-5 h-5" style={{color: '#4c51bf'}} />
+                                                            <FontAwesomeIcon icon={faEye} className="w-5 h-5" />
 
                                                         </button>
 
@@ -182,7 +182,7 @@ const EvaluationsList = () => {
                                                         <button
                                                             onClick={() => handleOpenDialogDelete(evaluation.noEvaluation)}
                                                             disabled={evaluation.etat !== "ELA"}
-                                                            title={evaluation.etat !== "ELA" ? "Impossible de supprimer cette évaluation car elle n'est pas en cours d'élaboration." : ""}
+                                                            title={evaluation.etat !== "ELA" ? "Impossible de supprimer cette évaluation car elle n'est plus en cours d'élaboration." : ""}
                                                             className={`text-red-500 transition-colors duration-200 dark:text-gray-400 dark:hover:text-red-400 hover:text-red-500 focus:outline-none ${evaluation.etat !== "ELA" ? "cursor-not-allowed opacity-50" : ""}`}
                                                         >
                                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
