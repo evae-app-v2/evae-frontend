@@ -102,35 +102,35 @@ const EvaluationEtudiantList = () => {
                                     <thead className="bg-gray-50 dark:bg-gray-800">
                                     <tr>
                                         <th scope="col"
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">No
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold">No
                                             Évaluation
                                         </th>
                                         <th scope="col"
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Désignation
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold">Désignation
                                         </th>
                                         <th scope="col"
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Code
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold">Code
                                             Formation
                                         </th>
 
                                         <th scope="col"
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Enseignant
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold">Enseignant
                                         </th>
                                         <th scope="col"
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Promotion
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold">Promotion
                                         </th>
                                         <th scope="col"
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">UE
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold">UE
                                         </th>
                                         <th scope="col"
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">EC
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold">EC
                                         </th>
 
                                         <th scope="col"
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">État
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold">État
                                         </th>
                                         <th scope="col"
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold">Action
                                         </th>
                                     </tr>
                                     </thead>
@@ -224,15 +224,23 @@ const EvaluationEtudiantList = () => {
 
 
                                                     <button
-                                                        className="text-gray-500 transition-colors duration-200 dark:hover:text-yellow-500 dark:text-gray-300 hover:text-yellow-500 focus:outline-none"
+                                                        className="text-blue-800 transition-colors duration-200 dark:text-gray-300 focus:outline-none"
                                                         onClick={() => handleOpenDialog(evaluation)}>
                                                         <FontAwesomeIcon icon={faEye} className="w-5 h-5"/>
                                                     </button>
                                                     <button
-                                                        className="text-gray-500 transition-colors duration-200 dark:hover:text-yellow-500 dark:text-gray-300 hover:text-yellow-500 focus:outline-none">
-                                                        <FontAwesomeIcon icon={faCircleCheck} className="w-5 h-5"/>
-
+                                                        disabled={evaluation.etat === "CLO"}
+                                                        title={evaluation.etat === "CLO" ? "Évaluation est clôturée" : ""}
+                                                    >
+                                                        <img
+                                                            width="20"
+                                                            height="20"
+                                                            src="https://img.icons8.com/external-microdots-premium-microdot-graphic/20/external-exam-education-science-vol1-microdots-premium-microdot-graphic.png"
+                                                            alt="external-exam-education-science-vol1-microdots-premium-microdot-graphic"
+                                                            className={evaluation.etat === "CLO" ? "filter grayscale" : ""}
+                                                        />
                                                     </button>
+
                                                 </div>
                                             </td>
                                         </tr>
@@ -257,7 +265,7 @@ const EvaluationEtudiantList = () => {
                 messageComp="Voulez-vous vraiment supprimer ce couple qualificatif ?"
                 id={idQualificatif}
                 name={"qualificatif"}
-                setOpen={setDialogDeleteOpen} />
+                setOpen={setDialogDeleteOpen}/>
         </>
     );
 }
