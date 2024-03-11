@@ -102,35 +102,35 @@ const EvaluationEtudiantList = () => {
                                     <thead className="bg-gray-50 dark:bg-gray-800">
                                     <tr>
                                         <th scope="col"
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold">No
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold" style={{ textAlign: "center" }}>No
                                             Évaluation
                                         </th>
                                         <th scope="col"
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold">Désignation
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold" style={{ textAlign: "center" }}>Désignation
                                         </th>
                                         <th scope="col"
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold">Code
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold"style={{ textAlign: "center" }}>Code
                                             Formation
                                         </th>
 
                                         <th scope="col"
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold">Enseignant
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold"style={{ textAlign: "center" }}>Enseignant
                                         </th>
                                         <th scope="col"
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold">Promotion
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold"style={{ textAlign: "center" }}>Promotion
                                         </th>
                                         <th scope="col"
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold">UE
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold"style={{ textAlign: "center" }}>UE
                                         </th>
                                         <th scope="col"
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold">EC
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold" style={{ textAlign: "center" }}>EC
                                         </th>
 
                                         <th scope="col"
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold">État
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold" style={{ textAlign: "center" }}>État
                                         </th>
                                         <th scope="col"
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold">Action
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold" >Action
                                         </th>
                                     </tr>
                                     </thead>
@@ -138,17 +138,17 @@ const EvaluationEtudiantList = () => {
                                         className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                                     {evaluations.map((evaluation, index) => (
                                         <tr key={index}>
-                                            <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
+                                            <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{ textAlign: "center" }}>
                                                 <div className="inline-flex items-center gap-x-3">
                                                     <div className="flex items-center gap-x-2">
-                                                        <div>
+                                                        <div >
                                                             <h2 className="font-medium text-gray-800 dark:text-white"
                                                                 style={{textAlign: "center"}}>{evaluation.noEvaluation}</h2>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
+                                            <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{ textAlign: "center" }}>
                                                 <div className="inline-flex items-center gap-x-3">
                                                     <div className="flex items-center gap-x-2">
                                                         <div>
@@ -158,7 +158,7 @@ const EvaluationEtudiantList = () => {
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
+                                            <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{ textAlign: "center" }}>
                                                 <div className="inline-flex items-center gap-x-3">
                                                     <div className="flex items-center gap-x-2">
                                                         <div>
@@ -168,7 +168,7 @@ const EvaluationEtudiantList = () => {
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
+                                            <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{ textAlign: "center" }}>
                                                 <div className="inline-flex items-center gap-x-3">
                                                     <div className="flex items-center gap-x-2">
                                                         <div>
@@ -178,7 +178,7 @@ const EvaluationEtudiantList = () => {
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
+                                            <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{ textAlign: "center" }}>
                                                 <div className="inline-flex items-center gap-x-3">
                                                     <div className="flex items-center gap-x-2">
                                                         <div>
@@ -188,7 +188,7 @@ const EvaluationEtudiantList = () => {
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
+                                            <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{ textAlign: "center" }}>
                                                 <div className="inline-flex items-center gap-x-3">
                                                     <div className="flex items-center gap-x-2">
                                                         <div>
@@ -198,7 +198,7 @@ const EvaluationEtudiantList = () => {
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
+                                            <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{ textAlign: "center" }}>
                                                 <div className="inline-flex items-center gap-x-3">
                                                     <div className="flex items-center gap-x-2">
                                                         <div>
@@ -208,7 +208,7 @@ const EvaluationEtudiantList = () => {
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
+                                            <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{ textAlign: "center" }}>
                                                 <div className="inline-flex items-center gap-x-3">
                                                     <div className="flex items-center gap-x-2">
                                                         <div>
@@ -219,8 +219,8 @@ const EvaluationEtudiantList = () => {
                                                 </div>
                                             </td>
 
-                                            <td className="px-4 py-4 text-sm whitespace-nowrap">
-                                                <div className="flex items-center gap-x-6">
+                                            <td className="px-4 py-4 text-sm whitespace-nowrap" style={{ textAlign: "center" }}>
+                                                <div className="flex items-center justify-center gap-x-6">
 
 
                                                     <button

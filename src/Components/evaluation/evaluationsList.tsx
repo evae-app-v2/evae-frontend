@@ -161,7 +161,7 @@ const EvaluationsList = () => {
                                                 <td className="px-4 py-4 text-sm font-medium  text-center text-gray-700 whitespace-nowrap">{handleEtat(evaluation.etat)}</td>
 
                                                 <td className="px-4 py-4 text-sm whitespace-nowrap">
-                                                    <div className="flex items-center gap-x-6">
+                                                    <div className="flex items-center justify-center gap-x-6">
                                                         <button
                                                             className="text-orange-300 transition-colors duration-200 dark:hover:text-yellow-500 dark:text-gray-300 hover:text-yellow-500 focus:outline-none"
                                                             onClick={() => handleOpenDialog(evaluation)} >

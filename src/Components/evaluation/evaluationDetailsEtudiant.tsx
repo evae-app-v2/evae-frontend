@@ -198,16 +198,16 @@ export function EvaluationDetails({open, setOpen, initialData}: DialogWithFormPr
                                                         const disabled = position < question.idQualificatif?.minimal || position > question.idQualificatif?.maximal;
                                                         return (
                                                             <div key={index} className="text-center flex flex-col">
-                                                                <input
-                                                                    value={position}
-                                                                    checked={position === question.positionnements}
-                                                                    disabled={disabled}
-                                                                    type="radio" name="radio-3" className="radio radio-secondary"
-                                                                />
-                                                                <span className="font-medium text-xs font-semibold">{position}</span>
+                                                            <input
+                                                                key={index}
+                                                                type="radio"
+                                                                value={position}
+                                                                checked={position === question.positionnements}
+                                                                disabled={disabled}
+                                                            />
+                                                        <span className="font-medium text-xs font-semibold">{index + 1}</span> </div>
 
-                                                            </div>
-                                                        );
+                                                    );
                                                     })}
                                                 </div>
                                             </td>
