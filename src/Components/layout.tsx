@@ -30,7 +30,7 @@ const adminMenu = [
         icon: faQuestion
     },
     {
-        name: "Rubrique ",
+        name: "Rubrique Standard",
         path: "/evae/rubrique-question",
         icon: faBars
     }
