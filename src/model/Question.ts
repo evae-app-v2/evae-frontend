@@ -1,7 +1,7 @@
 import { Qualificatif } from './Qualificatif'; // Assurez-vous d'importer correctement la classe Qualificatif
 
 export class Question {
-    id?: number;
+    id?: any;
     type: string;
     idQualificatif: Qualificatif | null;
     intitule: string;

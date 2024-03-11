@@ -6,7 +6,7 @@ import "ag-grid-community/styles/ag-theme-quartz.css"; // Optional Theme applied
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {EvaluationService} from "../../services/EvaluationService";
 import {message} from "antd";
-import {faBan, faChevronDown, faChevronUp, faPaperPlane, faXmark} from "@fortawesome/free-solid-svg-icons";
+import {faChevronDown, faChevronUp, faXmark} from "@fortawesome/free-solid-svg-icons";
 
 type DialogWithFormProps = {
     open: boolean;
@@ -38,7 +38,6 @@ export function EvaluationDetails({open, setOpen, initialData}: DialogWithFormPr
             messageApi.open({
                 type: 'success',
                 content: 'Opération réalisé avec succès ',
-                duration: 15,
             });
         };
 
@@ -47,7 +46,6 @@ export function EvaluationDetails({open, setOpen, initialData}: DialogWithFormPr
             messageApi.open({
                 type: 'error',
                 content: " Opération annulé, demande non valide ",
-                duration: 15,
             });
         };
         evaluationService.avancerWorkflow(id).then(handleSuccess)
@@ -120,43 +118,6 @@ export function EvaluationDetails({open, setOpen, initialData}: DialogWithFormPr
                     </div>
 
                     <div className="container">
-                        {/*
-                            <div className="grid grid-cols-1 gap-4  l:gap-12 md:grid-cols-3 xl:grid-cols-3" style={{justifyItems: 'space-between'}}>
-                                <div className="bg-white text-black w-full max-w-md flex flex-col rounded-xl shadow-lg p-4">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center space-x-4">
-                                            <div className="rounded-full w-4 h-4 border border-purple-500"></div>
-                                            <div className="text-md font-bold">{evaluation?.codeUE}</div>
-                                        </div>
-                                    </div>
-                                    <div className="mt-4 text-gray-500 font-bold text-sm">
-                                        # Unité d'enseignement
-                                    </div>
-                                </div>
-                                <div className="bg-white text-black w-full max-w-md flex flex-col rounded-xl shadow-lg p-4">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center space-x-4">
-                                            <div className="rounded-full w-4 h-4 border border-purple-500"></div>
-                                            <div className="text-md font-bold">{evaluation?.codeEC}</div>
-                                        </div>
-                                    </div>
-                                    <div className="mt-4 text-gray-500 font-bold text-sm">
-                                        # Element Constitutif
-                                    </div>
-                                </div>
-                                <div className="bg-white text-black w-full max-w-md flex flex-col rounded-xl shadow-lg p-4">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center space-x-4">
-                                            <div className="rounded-full w-4 h-4 border border-purple-500"></div>
-                                            <div className="text-md font-bold">{evaluation?.periode}</div>
-                                        </div>
-                                    </div>
-                                    <div className="mt-4 text-gray-500 font-bold text-sm">
-                                        # Période
-                                    </div>
-                                </div>
-                            </div>
-*/}
                         <div className="md:col-span-3 h-auto space-y-2 p-3 w-full">
 
                             <div className="flex ">
@@ -186,7 +147,7 @@ export function EvaluationDetails({open, setOpen, initialData}: DialogWithFormPr
                     <div className="px-0" style={{maxHeight: 'calc(8 * 68px)', overflowY: 'auto'}}>
                         <table className="w-full min-w-max table-auto text-left border border-blue-gray-200">
                             <tbody>
-                            {evaluation?.rubriques.map((rubrique :any, index:any) => (
+                            {evaluation?.rubriques.map((rubrique:any, index:any) => (
                                 <React.Fragment key={index}>
                                     <tr onClick={() => {
                                         toggleQuestionVisibility(index);
@@ -197,7 +158,7 @@ export function EvaluationDetails({open, setOpen, initialData}: DialogWithFormPr
                                     }}>
                                         <th
                                             className="cursor-pointer bg-blue-gray-50/50 p-4 transition-colors hover:bg-blue-gray-50 border border-blue-gray-200"
-                                            colSpan={3} // Utilisez colSpan pour fusionner les cellules sur trois colonnes
+                                            colSpan={4} // Utilisez colSpan pour fusionner les cellules sur trois colonnes
                                         >
                                             <p className="antialiased font-sans text-sm text-blue-gray-900 flex items-center justify-between gap-2 font-normal leading-none opacity-70 flex justify-between items-center font-semibold">{rubrique.designation}
                                                 <button
@@ -223,20 +184,42 @@ export function EvaluationDetails({open, setOpen, initialData}: DialogWithFormPr
                                                 </div>
                                             </td>
                                             <td className="p-4">
-                                                <div className="flex justify-end gap-5 border-r"
-                                                     style={{borderRight: '2px solid black'}}>
+                                                <div className="flex justify-end gap-5"
+                                                >
                                                     <div className="flex flex-col">
                                                         <p className="block antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal pr-8">{question.idQualificatif?.minimal}</p>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="p-4">
+                                            <td className="p-4 flex justify-center">
                                                 <div className="flex items-center gap-3">
+                                                    {[...Array(5)].map((_, index) => {
+                                                        const position = index + 1;
+                                                        const disabled = position < question.idQualificatif?.minimal || position > question.idQualificatif?.maximal;
+                                                        return (
+                                                            <div key={index} className="text-center flex flex-col">
+                                                                <input
+                                                                    value={position}
+                                                                    checked={position === question.positionnements}
+                                                                    disabled={disabled}
+                                                                    type="radio" name="radio-3" className="radio radio-secondary"
+                                                                />
+                                                                <span className="font-medium text-xs font-semibold">{position}</span>
+
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
+                                            </td>
+                                            <td className="p-4">
+                                                <div className="flex items-center gap-3 ">
                                                     <div className="flex flex-col">
                                                         <p className="block antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal">{question.idQualificatif?.maximal}</p>
                                                     </div>
                                                 </div>
                                             </td>
+
+
                                         </tr>
                                     ))}
                                 </React.Fragment>
@@ -247,27 +230,16 @@ export function EvaluationDetails({open, setOpen, initialData}: DialogWithFormPr
                 </DialogBody>
 
                 <DialogFooter placeholder={undefined} className="flex justify-end mb-2">
-
                     <div className="flex justify-end space-x-4">
-                        {evaluation?.etat !== 'CLO' && (
-                            <button
-                                className={`flex px-3 py-2 ${evaluation?.etat === 'ELA' ? 'bg-green-400' : 'bg-red-400'} text-white font-semibold rounded items-center`}
-                                onClick={() => handleAvancerWorkflow(evaluation?.id)}
-                            > <FontAwesomeIcon icon={ evaluation?.etat === 'ELA' ? faPaperPlane: faBan } />&nbsp;&nbsp;
-                                <span className="mr-1">
-                {evaluation?.etat === 'ELA' ? 'Publier Evaluation' : 'Cloturer Evaluation'}
-            </span>
-
-                            </button>
-                        )}
-
                         <button className="flex px-3 py-2 bg-red-400 text-white font-semibold rounded"
                                 onClick={handleClose}
                         >
                             <FontAwesomeIcon icon={faXmark} className="w-6 h-6 mr-2" style={{color: "#ffffff"}}/>
-                            <span className="ml-1">Fermer</span></button>
+                            <span className="ml-1">Fermer</span>
+                        </button>
                     </div>
                 </DialogFooter>
+
             </Dialog>
 
         </>

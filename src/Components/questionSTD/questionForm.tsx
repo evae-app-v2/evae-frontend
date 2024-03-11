@@ -43,6 +43,12 @@ export function QuestionForm({ open, setOpen, isUpdate, initialData }: DialogWit
             setIdQualificatif(initialData.idQualificatif);
         }
     }, [initialData]);
+    useEffect(() => {
+        if (!open) {
+            setIntitule("");
+            setIdQualificatif("");
+        }
+    }, [open]);
 
     const loadQualificatifs = async () => {
         try {
@@ -83,6 +89,7 @@ export function QuestionForm({ open, setOpen, isUpdate, initialData }: DialogWit
             messageApi.open({
                 type: 'success',
                 content: 'Opération réussie',
+                duration: 15,
             });
         };
 
@@ -90,7 +97,8 @@ export function QuestionForm({ open, setOpen, isUpdate, initialData }: DialogWit
             handleOpen();
             messageApi.open({
                 type: 'error',
-                content: error.response.data.message,});
+                content: error.response.data.message,
+                duration: 15,});
         };
 
        if (isUpdate) {

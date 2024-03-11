@@ -20,7 +20,7 @@ const adminMenu = [
         icon: faHouse
     },
     {
-        name: "Couple des qualificatifs",
+        name: "Couple de Qualificatif",
         path: "/evae/couple-qualificatif",
         icon: faSquarespace
     },
@@ -179,7 +179,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 className="fixed w-full z-30 flex bg-white dark:bg-[#0F172A] p-2 items-center justify-center h-16 px-10">
                 <div
                     className="logo ml-12 dark:text-white  transform ease-in-out duration-500 flex-none h-full flex items-center justify-center">
-                    Evae-app
+                    Module Evaluation
 
                 </div>
                 <div className="grow h-full flex items-center justify-center">
@@ -211,7 +211,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     <div
                         className="flex items-center space-x-3 group bg-gradient-to-r dark:from-cyan-500 dark:to-blue-500 from-indigo-500 via-purple-500 to-purple-500  pl-10 pr-2 py-1 rounded-full text-white  ">
                         <div className="transform ease-in-out duration-300 mr-12">
-                            Evae-app
+                            Module Evaluation
                         </div>
                     </div>
                 </div>
@@ -231,9 +231,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                              onClick={() => handleClick(menu)}
                              className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-500 bg-[#1E293B] p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
                             {/* <FontAwesomeIcon icon={menu.icon} style={{color: "#f6f5f4"}}/> */}
-                            <div>
+                            <button>
                                 {menu.name}
-                            </div>
+                            </button>
                         </div>
                     ))}
                     <div className="hover:ml-4 w-full text-white hover:text-purple-500 dark:hover:text-blue-500 bg-[#1E293B] p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
@@ -253,7 +253,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                                     d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
                                 />
                             </svg>
-                            <span>Se déconnecter</span>
+                            <span>Se Déconnecter</span>
                         </button>
                     </div>
                 </div>
