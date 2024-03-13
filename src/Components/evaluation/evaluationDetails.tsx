@@ -170,8 +170,8 @@ export function EvaluationDetails({open, setOpen, initialData}: DialogWithFormPr
                     <span
                         className="text-sm border bg-blue-600 font-bold uppercase border-2 rounded-l px-4 py-2 bg-gray-50 whitespace-no-wrap w-2/6">Element Constitutif</span>
                                 <p
-                                    className="px-4 border-l-0 cursor-default text-black border-gray-300 focus:outline-none  rounded-md rounded-l-none shadow-sm -ml-1 w-4/6 mt-2"
-                                >{evaluation?.codeEC}</p>
+                                    className="px-4 border-l-0 cursor-default text-blackborder-gray-300 focus:outline-none  rounded-md rounded-l-none shadow-sm -ml-1 w-4/6 mt-2"
+                                >{evaluation?.codeEC ? evaluation.codeEC : '-- '}</p>
                             </div>
                             <div className="flex ">
                     <span
