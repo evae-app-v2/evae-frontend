@@ -107,8 +107,8 @@ export const LoginPage = () => {
                 <div className="lg:flex w-1/2 hidden bg-gray-500 bg-no-repeat bg-cover relative items-center" style={{ backgroundImage: `url(${backgroundPic})` }}>
                     <div className="absolute bg-black opacity-60 inset-0 z-0"></div>
                     <div className="w-full px-24 z-10">
-                        <h1 className="text-5xl font-bold text-left tracking-wide">Explorez l'exceptionnel</h1>
-                        <p className="text-3xl my-4"> Capturez chaque instant d'apprentissage de manière unique, où que vous soyez.</p>
+                        <h1 className="text-5xl font-bold justify-center text-left tracking-wide">Bienvenue sur la plateforme de gestion des évaluations de l'UBO </h1>
+                        <p className="text-3xl my-4"></p>
                     </div>
                     <div className="bottom-0 absolute p-4 text-center right-0 left-0 flex justify-center space-x-4">
                 <span>

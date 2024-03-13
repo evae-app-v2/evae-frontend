@@ -141,6 +141,8 @@ const QualificatifList = () => {
                                 <table className="w-full divide-y divide-gray-200 dark:divide-gray-700">
                                     <thead className="bg-gray-50 dark:bg-gray-800 sticky top-0" >
                                     <tr>
+
+
                                         <th scope="col"
                                             className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400">
                                             <button className="flex items-center gap-x-2">
