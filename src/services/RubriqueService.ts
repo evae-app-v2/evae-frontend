@@ -78,4 +78,14 @@ export class RubriqueService {
         }
     }
 
+    public async rubriqueIsUsedInEvaluation(id: any): Promise<boolean> {
+        try {
+            const response = await  api.get(`${this.apiURL}/rubriqueIsUsedInEvaluation/${id}`)
+            return response.data;
+        } catch (error) {
+            console.error(error);
+            return Promise.reject(error);
+        }
+    }
+
 }
