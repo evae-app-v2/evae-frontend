@@ -3,6 +3,7 @@ import { Evaluation } from '../model/Evaluation';
 import { ElementConstitutif } from "../model/ElementConstitutif";
 import { Promotion } from "../model/Promotion";
 import { UniteEnseignement } from "../model/UniteEnseignement";
+import { PreparedData } from "../model/PreparedData";
 
 
 export class EvaluationService {

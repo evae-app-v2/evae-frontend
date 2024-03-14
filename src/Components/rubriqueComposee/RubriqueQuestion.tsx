@@ -32,7 +32,7 @@ const RubriqueQuestion = () => {
 
     const rubriqueQuestionService = new RubriqueQuestionService();
     const rubriqueService = new RubriqueService();
-
+    
     useEffect(() => {
         loadRubriqueQuestionDTOs();
     }, [rubriqueQuestionDTOOs]);
