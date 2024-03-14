@@ -10,12 +10,15 @@ import { EvaluationService } from "../../services/EvaluationService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { EvaluationForm } from './evaluationForm';
+import {DialogChangeEtat} from "./dialogueChangeEtat";
 
 const EvaluationsList = () => {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [isUpdate, setIsUpdate] = useState(false);
     const [idQualificatif, setIdQualificatif] = useState();
     const [dialogDeleteOpen, setDialogDeleteOpen] = useState(false);
+    const [dialogueChangeOpen, setDialogeChangeOpen] = useState(false);
+
     const [qualificatifs, setQualificatifs] = useState<Qualificatif[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
@@ -24,6 +27,7 @@ const EvaluationsList = () => {
     const [evaluationToShow, setEvaluationToShow] = useState<Evaluation>();
     const [isEvaluationFormOpen, setIsEvaluationFormOpen] = useState(false);
     const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
+    const [evaluation, setEvaluation] = useState<Evaluation>();
     const evaluationService = new EvaluationService();
 
 
@@ -92,8 +96,6 @@ const EvaluationsList = () => {
         // Ouvre le formulaire
     };
 
-
-
     const handleEtat = (etat: string) => {
         switch (etat) {
             case "ELA":
@@ -109,6 +111,25 @@ const EvaluationsList = () => {
                 return null;
         }
     };
+    function handleEtat2(etat: string) {
+        switch (etat) {
+            case "ELA":
+                return "Êtes-vous sûr(e) de vouloir publier cette évaluation ?";
+            case "DIS":
+                return "Êtes-vous sûr(e) de vouloir clôturer cette évaluation ?";
+            case "CLO":
+                return "Impossible de changer l'état de cette évaluation car elle est déjà clôturée.";
+            default:
+                return "Changer l'état de l'évaluation !";
+        }
+    }
+
+    const handleChange= (evaluation:any) => {
+        setEvaluation(evaluation);
+        setDialogeChangeOpen(true);
+
+
+    }
 
     return (
         <>
@@ -124,9 +145,9 @@ const EvaluationsList = () => {
                         onClick={handleCreateNewEvaluation}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"
-                            stroke="currentColor" className="w-5 h-5">
+                             stroke="currentColor" className="w-5 h-5">
                             <path strokeLinecap="round" strokeLinejoin="round"
-                                d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                  d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         <span>Ajouter</span>
                     </Button>
@@ -138,36 +159,36 @@ const EvaluationsList = () => {
                             <div className="overflow-hidden border border-gray-200 dark:border-gray-700 md:rounded-lg" style={{ maxHeight: 'calc(6 * 90px)', overflowY: 'auto' }}>
                                 <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                                     <thead className="bg-gray-100 dark:bg-gray-700 sticky top-0 ">
-                                        <tr>
-                                            <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{ textAlign: "center" }}>No Évaluation</th>
-                                            <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{ textAlign: "center" }}>Désignation</th>
-                                            <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{ textAlign: "center" }}>Formation</th>
-                                            <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{ textAlign: "center" }}>Promotion</th>
-                                            <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{ textAlign: "center" }}>UE</th>
-                                            <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{ textAlign: "center" }}>EC</th>
-                                            <th scope="col" className="px-4 py-4 text-sm font-normal text-center rtl:text-right text-black-400 dark:text-gray-400" style={{ textAlign: "center" }}>État</th>
-                                            <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{ textAlign: "center" }}>Action</th>
-                                        </tr>
+                                    <tr>
+                                        <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{ textAlign: "center" }}>No Évaluation</th>
+                                        <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{ textAlign: "center" }}>Désignation</th>
+                                        <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{ textAlign: "center" }}>Formation</th>
+                                        <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{ textAlign: "center" }}>Promotion</th>
+                                        <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{ textAlign: "center" }}>UE</th>
+                                        <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{ textAlign: "center" }}>EC</th>
+                                        <th scope="col" className="px-4 py-4 text-sm font-normal text-center rtl:text-right text-black-400 dark:text-gray-400" style={{ textAlign: "center" }}>État</th>
+                                        <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400" style={{ textAlign: "center" }}>Action</th>
+                                    </tr>
                                     </thead>
                                     <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                                        {evaluations.map((evaluation, index) => (
-                                            <tr key={index}>
-                                                <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{ textAlign: "center" }}>{evaluation.noEvaluation}</td>
-                                                <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{ textAlign: "center" }}>{evaluation.designation}</td>
-                                                <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{ textAlign: "center" }}>{evaluation.codeFormation}</td>
-                                                <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{ textAlign: "center" }}>{evaluation.promotion}</td>
-                                                <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{ textAlign: "center" }}>{evaluation.codeUE}</td>
-                                                <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{ textAlign: "center" }}>{evaluation.codeEC ? evaluation.codeEC : '--'}</td>
-                                                <td className="px-4 py-4 text-sm font-medium  text-center text-gray-700 whitespace-nowrap">{handleEtat(evaluation.etat)}</td>
+                                    {evaluations.map((evaluation, index) => (
+                                        <tr key={index}>
+                                            <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{ textAlign: "center" }}>{evaluation.noEvaluation}</td>
+                                            <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{ textAlign: "center" }}>{evaluation.designation}</td>
+                                            <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{ textAlign: "center" }}>{evaluation.codeFormation}</td>
+                                            <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{ textAlign: "center" }}>{evaluation.promotion}</td>
+                                            <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{ textAlign: "center" }}>{evaluation.codeUE}</td>
+                                            <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{ textAlign: "center" }}>{evaluation.codeEC ? evaluation.codeEC : '--'}</td>
+                                            <td className="px-4 py-4 text-sm font-medium  text-center text-gray-700 whitespace-nowrap"><button onClick={()=>handleChange(evaluation)}> {handleEtat(evaluation.etat)}</button></td>
 
-                                                <td className="px-4 py-4 text-sm whitespace-nowrap">
-                                                    <div className="flex items-center justify-center gap-x-6">
-                                                        <button
-                                                            className="text-orange-300 transition-colors duration-200 dark:hover:text-yellow-500 dark:text-gray-300 hover:text-yellow-500 focus:outline-none"
-                                                            onClick={() => handleOpenDialog(evaluation)} >
-                                                            <FontAwesomeIcon icon={faEye} className="w-5 h-5" />
+                                            <td className="px-4 py-4 text-sm whitespace-nowrap">
+                                                <div className="flex items-center justify-center gap-x-6">
+                                                    <button
+                                                        className="text-orange-300 transition-colors duration-200 dark:hover:text-yellow-500 dark:text-gray-300 hover:text-yellow-500 focus:outline-none"
+                                                        onClick={() => handleOpenDialog(evaluation)} >
+                                                        <FontAwesomeIcon icon={faEye} className="w-5 h-5" />
 
-                                                        </button>
+                                                    </button>
 
                                                         <button
                                                             onClick={() => handleOpenDialogUpdate(evaluation)}
@@ -190,14 +211,11 @@ const EvaluationsList = () => {
                                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                                                             </svg>
                                                         </button>
+                                                </div>
+                                            </td>
 
-
-
-                                                    </div>
-                                                </td>
-
-                                            </tr>
-                                        ))}
+                                        </tr>
+                                    ))}
                                     </tbody>
                                 </table>
                             </div>
@@ -227,6 +245,14 @@ const EvaluationsList = () => {
                 id={idEvaluation}
                 name={"evaluation"}
                 setOpen={setDialogDeleteOpen} />
+            <DialogChangeEtat
+                open={dialogueChangeOpen}
+                onClose={() => setDialogeChangeOpen(false)}
+                title="Faire Avancé l'état d'une evaluation"
+                messageComp={handleEtat2(evaluation?.etat)}
+                eva={evaluation}
+                name={"evaluation"}
+                setOpen={setDialogeChangeOpen} />
 
 
         </>
