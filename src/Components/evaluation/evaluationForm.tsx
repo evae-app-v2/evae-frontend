@@ -18,7 +18,7 @@ import { ElementConstitutif } from "../../model/ElementConstitutif";
 import { message } from "antd";
 import { Evaluation } from "../../model/Evaluation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faX } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown, faChevronUp, faX } from "@fortawesome/free-solid-svg-icons";
 import { RubriqueQuestionService } from "../../services/RubriqueQuestionService";
 import { RubriqueService } from "../../services/RubriqueService";
 import { RubriqueQuestionDTOO } from "../../model/RubriqueQuestionInterface";
@@ -357,15 +357,15 @@ export function EvaluationForm({ open, setOpen, isUpdate, initialData }: DialogW
         //setPreparedData(rubriqueEvaluations);
 
         const evaluationUpdateDTO = {
-            id : null,
-            noEnseignant : null,
+            id: null,
+            noEnseignant: null,
             codeFormation: selectedCodeFormation,
             codeUE: selectedCodeUE,
             codeEC: selectedCodeEC,
             promotion: selectedPromotion,
             noEvaluation: initialData?.noEvaluation.toString(),
             designation: designation,
-            etat : null,
+            etat: null,
             periode: periode,
             debutReponse: debutReponse,
             finReponse: finReponse,
@@ -375,7 +375,7 @@ export function EvaluationForm({ open, setOpen, isUpdate, initialData }: DialogW
 
         console.log("Evaluation Update DTO :", evaluationUpdateDTO);
         return evaluationUpdateDTO;
-        
+
 
     };
 
@@ -469,12 +469,40 @@ export function EvaluationForm({ open, setOpen, isUpdate, initialData }: DialogW
         setSelectedCodeEC(value);
     };
 
-    const handleSubmit = async () => {
+    const [debutReponseError, setDebutReponseError] = useState('');
+    const [finReponseError, setFinReponseError] = useState('');
 
-        /*messageApi.open({
-            type: 'success',
-            content: 'Évaluation créée avec succès',
-        });*/
+    const validateDates = () => {
+        const startDate = new Date(debutReponse);
+        const endDate = new Date(finReponse);
+        const currentDate = new Date();
+        let isValid = true;
+
+        // Réinitialisez les messages d'erreur
+        setDebutReponseError('');
+        setFinReponseError('');
+
+        // La date de début doit être antérieure à la date de fin
+        if (startDate >= endDate) {
+            setFinReponseError('La date de fin doit être postérieure à la date de début.');
+            isValid = false;
+        }
+
+        // La date de début doit être supérieure à la date actuelle
+        if (startDate < currentDate) {
+            setDebutReponseError('La date de début doit être future à la date actuelle.');
+            isValid = false;
+        }
+
+        return isValid; // Retourne false si une erreur de validation est trouvée
+    };
+
+
+
+    const handleSubmit = async () => {
+        if (!validateDates()) {
+            return; // Arrêtez la soumission si la validation échoue
+        }
 
         const dataToSend = prepareAndSendData();
 
@@ -557,6 +585,17 @@ export function EvaluationForm({ open, setOpen, isUpdate, initialData }: DialogW
         setSelectedPromotion("");
     };
 
+
+    const inlineErrorStyle = {
+        color: '#d32f2f',
+        fontSize: '0.875rem',
+        marginTop: '4px',
+        fontWeight: 'normal',
+        fontStyle: 'italic',
+    };
+
+
+
     return (
         <>
             {contextHolder}
@@ -601,6 +640,7 @@ export function EvaluationForm({ open, setOpen, isUpdate, initialData }: DialogW
                                         onChange={(e) => setDebutReponse(e.target.value)} crossOrigin={undefined}
                                         required={true}
                                     />
+                                    {debutReponseError && <div style={inlineErrorStyle}>{debutReponseError}</div>}
                                     <Input
                                         type="date"
                                         label="Fin de Réponse"
@@ -608,6 +648,7 @@ export function EvaluationForm({ open, setOpen, isUpdate, initialData }: DialogW
                                         onChange={(e) => setFinReponse(e.target.value)} crossOrigin={undefined}
                                         required={true}
                                     />
+                                    {finReponseError && <div style={inlineErrorStyle}>{finReponseError}</div>}
                                 </div>
                             </div>
 
@@ -615,7 +656,7 @@ export function EvaluationForm({ open, setOpen, isUpdate, initialData }: DialogW
                             <div className="flex flex-col flex-1 gap-4">
                                 <div className="flex gap-4">
                                     <Select
-                                        label="Promotion"
+                                        label="Promotion*"
                                         value={selectedPromotion}
                                         placeholder={undefined}
                                         onChange={(value: any | undefined) => {
@@ -633,7 +674,7 @@ export function EvaluationForm({ open, setOpen, isUpdate, initialData }: DialogW
                                     </Select>
                                     <Select
                                         key={`formation-${formations.length}`}
-                                        label="Formation"
+                                        label="Formation*"
                                         value={selectedCodeFormation}
                                         onChange={(value: any | undefined) => {
                                             if (value) {
@@ -649,7 +690,7 @@ export function EvaluationForm({ open, setOpen, isUpdate, initialData }: DialogW
 
                                     <Select
                                         key={`Unite Enseignements-${uniteEnseignements.length}`}
-                                        label="Code UE"
+                                        label="Code UE*"
                                         value={selectedCodeUE}
                                         onChange={(value: any | undefined) => {
                                             if (value) {
@@ -708,14 +749,16 @@ export function EvaluationForm({ open, setOpen, isUpdate, initialData }: DialogW
                                             variant="gradient"
                                             color="green"
                                             onClick={handleAjoutRubrique} placeholder={undefined}>
-                                            Ajouter
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M12 4v16m8-8H4" />
+                                            </svg>
                                         </Button>
 
                                     </div>
                                 </div>
 
                                 {/* Affichage des rubriques ajoutées */}
-                                <div>
+                                <div style={{ maxHeight: '500px', overflowY: 'scroll' as 'scroll' }}>
                                     <DragDropContext onDragEnd={handleOnDragEnd}>
                                         <Droppable droppableId="rubriques" type="rubriques">
                                             {(provided) => (
@@ -746,9 +789,8 @@ export function EvaluationForm({ open, setOpen, isUpdate, initialData }: DialogW
                                                                                         </svg>
                                                                                     ) : (
                                                                                         // Icône pour ouvrir (plus)
-                                                                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                                                                                        </svg>
+                                                                                        <FontAwesomeIcon
+                                                                                            icon={faChevronDown} />
                                                                                     )}
                                                                                 </button>
                                                                                 <button
@@ -784,7 +826,9 @@ export function EvaluationForm({ open, setOpen, isUpdate, initialData }: DialogW
                                                                                         variant="gradient"
                                                                                         color="green"
                                                                                         onClick={handleAjoutQuestion} placeholder={undefined}                                                        >
-                                                                                        Ajouter
+                                                                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M12 4v16m8-8H4" />
+                                                                                        </svg>
                                                                                     </Button>
                                                                                 </div>
                                                                                 {/* Section for displaying added questions beneath the question selection */}
@@ -848,16 +892,17 @@ export function EvaluationForm({ open, setOpen, isUpdate, initialData }: DialogW
                         </div>
                     </CardBody>
                     <CardFooter className="flex justify-end gap-4" placeholder={undefined}>
-                        <Button variant="gradient" color="green" onClick={handleSubmit} placeholder={undefined}
-                            disabled={!selectedCodeUE || !selectedCodeFormation || !selectedPromotion || !designation || !periode || !debutReponse || !finReponse}
-                        >
-                            {isUpdate ? "Modifier" : "Créer"}
-                        </Button>
                         <Button variant="gradient" color="red" onClick={handleClose} placeholder={undefined}>
                             <FontAwesomeIcon icon={faX} className="mr-1" />
 
                             Annuler
                         </Button>
+                        <Button variant="gradient" color="green" onClick={handleSubmit} placeholder={undefined}
+                            disabled={!selectedCodeUE || !selectedCodeFormation || !selectedPromotion || !designation || !periode || !debutReponse || !finReponse}
+                        >
+                            {isUpdate ? "Modifier" : "Créer"}
+                        </Button>
+
                     </CardFooter>
                 </Card>
             </Dialog>
