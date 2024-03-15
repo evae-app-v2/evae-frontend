@@ -9,7 +9,9 @@ import {faSquarespace} from "@fortawesome/free-brands-svg-icons";
 import AlertComp from "../utils/alert";
 import {Link, useNavigate} from "react-router-dom";
 import {Footer} from "./footer";
-import logo from "../assets/output-onlinepngtools.png";
+import logo from "../assets/pagegarde1.png";
+import logoW from "../assets/LogoW.png";
+
 import userIcon from "../assets/userIcon.png";
 import {useAuth} from "../routes/AuthProvider";
 
@@ -183,7 +185,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
                 </div>
                 <div className="grow h-full flex items-center justify-center">
-                        <img src={logo} alt="UBO Logo" className="w-20 sm:h-10 inline-flex mt-3"/>
+                    <img src={logo} alt="UBO Logo" className="w-32 h-32 sm:w-40 sm:h-10 inline-flex mt-3"/>
                 </div>
 
                 <div className="flex-none h-full text-center flex items-center justify-center">
@@ -217,12 +219,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 </div>
 
                 <div onClick={() => openNav()}
-                     className="-right-6 transition transform ease-in-out duration-500 flex border-4 border-white dark:border-[#0F172A] bg-[#1E293B] dark:hover:bg-blue-500 hover:bg-purple-500 absolute top-2 p-3 rounded-full text-white hover:rotate-45">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3}
-                         stroke="currentColor" className="w-4 h-4">
-                        <path strokeLinecap="round" strokeLinejoin="round"
-                              d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/>
-                    </svg>
+                     className="-right-10 transition transform ease-in-out duration-500 flex border-4 border-white dark:border-[#0F172A] bg-[#1E293B] dark:hover:bg-blue-500 hover:bg-purple-500 absolute top-2 p-3 rounded-full text-white hover:rotate-45">
+                    <img src={logoW} alt="UBO Logo" className="w-4 h-4" />
+
                 </div>
                 {/* CONTENT Menu */}
                 <div className="max hidden text-white mt-20 flex-col space-y-2 w-full h-[calc(100vh)]">
