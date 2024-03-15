@@ -53,17 +53,29 @@ export function DialogChangeEtat({ title, messageComp, eva, name, open, setOpen,
     }
 
     function handleAvancerWorkflow(id: number | undefined) {
-        console.log(eva.rubriques);
         if (!eva.rubriques || eva.rubriques.length === 0) {
             handleOpen();
             messageApi.open({
                 type: 'error',
-                content: "Cette évaluation ne peut pas être publiée car elle ne contient aucune rubrique .",
+                content: "Cette évaluation ne peut pas être publiée car elle ne contient aucune rubrique.",
                 duration: 10,
             });
             return; // Arrêter l'exécution de la fonction
         }
 
+        // Vérification si toutes les rubriques ont des questions
+        const rubriquesWithoutQuestions = eva.rubriques.filter((rubrique: any) => !rubrique.questions || rubrique.questions.length === 0);
+        if (rubriquesWithoutQuestions.length > 0) {
+            handleOpen();
+            messageApi.open({
+                type: 'error',
+                content: "Cette évaluation ne peut pas être publiée car une ou plusieurs rubriques ne contiennent pas de questions.",
+                duration: 10,
+            });
+            return; // Arrêter l'exécution de la fonction
+        }
+
+        // Si toutes les vérifications sont passées, continuer avec l'avancement du workflow
         const handleFailure = (error: any) => {
             handleOpen();
             messageApi.open({
