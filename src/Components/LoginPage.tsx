@@ -154,7 +154,7 @@ export const LoginPage = () => {
                                 <input className="block w-full p-4 text-lg rounded-sm bg-black" type="password"
                                        id="password"
                                        name="motpasse"
-                                       placeholder="Mot de pass *" required={true} onChange={(e) => setMotpasse(e.target.value)}/>
+                                       placeholder="Mot de passe *" required={true} onChange={(e) => setMotpasse(e.target.value)}/>
                             </div>
 
                             <div className="px-4 pb-2 pt-4">
