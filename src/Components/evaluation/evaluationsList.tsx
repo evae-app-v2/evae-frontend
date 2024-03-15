@@ -207,7 +207,8 @@ const EvaluationsList = () => {
                                                             </svg>
                                                         </button>
                                                         <button
-                                                            onClick={() => handleOpenDialogDelete(evaluation.id, evaluation)}
+                                                            onClick={() => handleOpenDialogDelete(evaluation.noEvaluation, evaluation)}
+
                                                             disabled={evaluation.etat !== "ELA"}
                                                             title={evaluation.etat !== "ELA" ? "Impossible de supprimer cette évaluation car elle n'est plus en cours d'élaboration." : ""}
 

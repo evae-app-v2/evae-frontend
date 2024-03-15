@@ -53,6 +53,17 @@ export function DialogChangeEtat({ title, messageComp, eva, name, open, setOpen,
     }
 
     function handleAvancerWorkflow(id: number | undefined) {
+        console.log(eva.rubriques);
+        if (!eva.rubriques || eva.rubriques.length === 0) {
+            handleOpen();
+            messageApi.open({
+                type: 'error',
+                content: "Cette évaluation ne peut pas être publiée car elle ne contient aucune rubrique .",
+                duration: 10,
+            });
+            return; // Arrêter l'exécution de la fonction
+        }
+
         const handleFailure = (error: any) => {
             handleOpen();
             messageApi.open({
@@ -61,10 +72,12 @@ export function DialogChangeEtat({ title, messageComp, eva, name, open, setOpen,
                 duration: 15,
             });
         };
+
         evaluationService.avancerWorkflow(id)
             .then(handleSuccess)
             .catch(handleFailure);
     }
+
 
     return (
         <>
