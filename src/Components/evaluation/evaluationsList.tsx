@@ -29,6 +29,8 @@ const EvaluationsList = () => {
     const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
     const [evaluation, setEvaluation] = useState<Evaluation>();
     const evaluationService = new EvaluationService();
+    const [messageToDelete, setMessageToDelete] = useState("");
+
 
 
     /*const loadEvaluations = async () => {
@@ -82,10 +84,14 @@ const EvaluationsList = () => {
         setIsUpdate(true);
         setIsEvaluationFormOpen(true);
     };
-    const handleOpenDialogDelete = (id: any) => {
+    const handleOpenDialogDelete = (id: any , evaluation: Evaluation) => {
         console.log(id);
         setIdEvaluation(id)
+        setEvaluation(evaluation);
+        const message = `Voulez-vous vraiment supprimer l'évaluation ${evaluation.designation}?`;
+        setMessageToDelete(message);
         setDialogDeleteOpen(true);
+
     };
 
     const handleCreateNewEvaluation = () => {
@@ -201,7 +207,7 @@ const EvaluationsList = () => {
                                                             </svg>
                                                         </button>
                                                         <button
-                                                            onClick={() => handleOpenDialogDelete(evaluation.noEvaluation)}
+                                                            onClick={() => handleOpenDialogDelete(evaluation.noEvaluation, evaluation)}
                                                             disabled={evaluation.etat !== "ELA"}
                                                             title={evaluation.etat !== "ELA" ? "Impossible de supprimer cette évaluation car elle n'est plus en cours d'élaboration." : ""}
 
@@ -240,11 +246,14 @@ const EvaluationsList = () => {
             <DialogDelete
                 open={dialogDeleteOpen}
                 onClose={() => setDialogDeleteOpen(false)}
-                title="Suppression d'une evaluation"
-                messageComp="Voulez-vous vraiment supprimer cette evaluation ?"
+                title="Suppression d'une évaluation"
+                messageComp={messageToDelete}
                 id={idEvaluation}
-                name={"evaluation"}
-                setOpen={setDialogDeleteOpen} />
+                name="evaluation"
+                setOpen={setDialogDeleteOpen}
+            />
+
+
             <DialogChangeEtat
                 open={dialogueChangeOpen}
                 onClose={() => setDialogeChangeOpen(false)}
