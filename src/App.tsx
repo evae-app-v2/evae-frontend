@@ -45,8 +45,8 @@ function AppContent() {
                 <Route path="/evae/question-standars" element={<Layout><QuestionSTDList/></Layout>}/>
                 <Route path="/evae/evaluations" element={<Layout><EvaluationsList/></Layout>}/>
                 <Route path="/evae/etud/evaluations" element={<Layout><EvaluationEtudiantList/></Layout>}/>
-                <Route path="/evae/rubrique-question" element={<Layout><RubriqueQuestion/></Layout>}/>
-
+                {/*<Route path="/evae/rubrique-question" element={<Layout><RubriqueQuestion/></Layout>}/>*/}
+                <Route path="/evae/rubrique-question" element={<Layout><RubriqueComposeDetails/></Layout>}/>
             </Route>
         </Routes>
     );

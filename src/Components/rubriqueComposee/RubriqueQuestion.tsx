@@ -29,22 +29,48 @@ const RubriqueQuestion = () => {
     const [dialogRubriqueFormOpen, setDialogRubriqueFormOpen] = useState(false);
     const [popupOpen, setPopupOpen] = useState<boolean>(false);
     const [selectedRubriqueId, setSelectedRubriqueId] = useState<number | null>(null);
+    const [disabledButtons, setDisabledButtons] = useState<{[id: number]: boolean}>({});
 
     const rubriqueQuestionService = new RubriqueQuestionService();
     const rubriqueService = new RubriqueService();
     
     useEffect(() => {
-        loadRubriqueQuestionDTOs();
-    }, [rubriqueQuestionDTOOs]);
+        fetchData();
+    }, [rubriqueQuestionDTOOs, rubriques]);
 
-    const loadRubriqueQuestionDTOs = async () => {
+    const fetchData = async () => {
         try {
-            let response: RubriqueQuestionDTOO[] = [];
-            response = await rubriqueQuestionService.getAll();
+            const response = await rubriqueQuestionService.getAll();
             response.sort((a, b) => a.rubrique.ordre - b.rubrique.ordre);
             setRubriqueQuestionDTOOs(response);
+
+            const updatedRubriques = response.map(dto => dto.rubrique);
+            setRubriques(updatedRubriques);
+
+            const updatedDisabledButtons: { [id: number]: boolean } = {};
+            const promises = updatedRubriques.map(async (rubrique) => {
+                const isDisabled = await testDisabled(rubrique.id);
+                updatedDisabledButtons[rubrique.id ?? ''] = isDisabled;
+            });
+            await Promise.all(promises);
+            setDisabledButtons(updatedDisabledButtons);
         } catch (error) {
-            console.error("Erreur lors du chargement des rubriques:", error);
+            console.error("Une erreur s'est produite :", error);
+            setRubriques([]);
+            setRubriqueQuestionDTOOs([]);
+            setDisabledButtons({});
+        }
+    };
+
+    const testDisabled = async (id: any): Promise<boolean> => {
+        try {
+            const response = await rubriqueService.rubriqueIsUsedInEvaluation(id);
+            console.log(id);
+            console.log(response);
+            return response;
+        } catch (error) {
+            console.error("Une erreur s'est produite :", error);
+            return false;
         }
     };
 
@@ -136,7 +162,7 @@ const RubriqueQuestion = () => {
     const handleQuestionReorder = async (rubriqueId: number, reorderedQuestions: RubriqueQuestions[]) => {
         try {
             await rubriqueQuestionService.updateOrdreRubriqueQuestions(reorderedQuestions);
-            await loadRubriqueQuestionDTOs();
+            await fetchData();
             handleClosePopup();
         } catch (error) {
             console.error("Erreur lors de la mise à jour de l'ordre des questions:", error);
@@ -236,7 +262,7 @@ const RubriqueQuestion = () => {
                                                     <div className="flex items-center gap-x-6">
                                                         <button
                                                             onClick={() => handleOpenDialogUpdate(rubriqueQuestion.rubrique.id)}
-                                                            className="text-gray-500 transition-colors duration-200 dark:hover:text-yellow-500 dark:text-gray-300 hover:text-yellow-500 focus:outline-none"
+                                                            className="text-green-500 transition-colors duration-200 dark:hover:text-yellow-500 dark:text-gray-300 hover:text-yellow-500 focus:outline-none"
                                                         >
                                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                                                                  viewBox="0 0 24 24" stroke-width="1.5"
@@ -245,13 +271,16 @@ const RubriqueQuestion = () => {
                                                                       d="M12 6v12m-6-6h12"></path>
                                                             </svg>
                                                         </button>
+
                                                         <button
                                                             onClick={() => handleOpenPopup(rubriqueQuestion.rubrique.id)}>
-                                                            <FontAwesomeIcon icon={faArrowDown19} />
+                                                            <FontAwesomeIcon icon={faArrowDown19}/>
                                                         </button>
                                                         <button
                                                             onClick={() => handleOpenDialogRubriqueForm(rubriqueQuestion.rubrique)}
-                                                            className="text-gray-500 transition-colors duration-200 dark:hover:text-yellow-500 dark:text-gray-300 hover:text-yellow-500 focus:outline-none">
+                                                            disabled={disabledButtons[rubriqueQuestion.rubrique.id ?? '']}
+                                                            className={`transition-colors duration-200 hover:text-blue-600 focus:outline-none ${disabledButtons[rubriqueQuestion.rubrique.id] ? "text-gray-500 dark:text-gray-500 cursor-not-allowed opacity-50" : "text-blue-600 dark:hover:text-yellow-400"}`}
+                                                        >
                                                             <svg
                                                                 xmlns="http://www.w3.org/2000/svg"
                                                                 fill="none"
@@ -266,7 +295,10 @@ const RubriqueQuestion = () => {
                                                         </button>
                                                         <button
                                                             onClick={() => handleOpenDialogDelete(rubriqueQuestion.rubrique.id)}
-                                                            className="text-gray-500 transition-colors duration-200 dark:hover:text-red-500 dark:text-gray-300 hover:text-red-500 focus:outline-none">
+                                                            disabled={disabledButtons[rubriqueQuestion.rubrique.id ?? '']}
+                                                            title={disabledButtons[rubriqueQuestion.rubrique.id ?? ''] ? "Impossible de supprimer la question car elle est déjà utilisée" : ""}
+                                                            className={`transition - colors duration-200 hover:text-red-500 focus:outline-none ${disabledButtons[rubriqueQuestion.rubrique.id] ? "text-gray-500 dark:text-gray-500 cursor-not-allowed opacity-50" : "text-red-500 dark:hover:text-red-400"}`}>
+
                                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                                                                  viewBox="0 0 24 24"
                                                                  stroke-width="1.5" stroke="currentColor"
