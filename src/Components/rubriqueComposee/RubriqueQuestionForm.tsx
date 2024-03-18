@@ -1,9 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { Button, Dialog, Card, CardBody, CardFooter, Typography, Select, Option } from "@material-tailwind/react";
+import {
+  Button,
+  Dialog,
+  Card,
+  CardBody,
+  CardFooter,
+  Typography,
+  Select,
+  Option,
+  CardHeader
+} from "@material-tailwind/react";
 import { message } from "antd";
 import { Question } from "../../model/Question";
 import { QuestionService } from "../../services/QuestionService";
 import { RubriqueQuestionService } from "../../services/RubriqueQuestionService";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faArrowDownAZ} from "@fortawesome/free-solid-svg-icons";
 
 
 type DialogWithFormProps = {
@@ -49,6 +61,7 @@ export function RubriqueQuestionForm({ open, setOpen, isUpdate, id }: DialogWith
 
   const handleSubmit = async () => {
     if (selectedRubriqueId !== null && selectedQuestionIds.length > 0) {
+      console.log(selectedRubriqueId)
       rubriqueQuestionService.createMultipleRubriqueQuestions(selectedRubriqueId, selectedQuestionIds)
           .then(handleSuccess)
           .catch(handleFailure);
@@ -58,22 +71,22 @@ export function RubriqueQuestionForm({ open, setOpen, isUpdate, id }: DialogWith
   };
 
 
-    const handleSuccess = () => {
-      setSelectedQuestionId(null);
-      handleOpen();
-      messageApi.open({
-        type: 'success',
-        content: 'Opération réussie',
-      });
-    };
+  const handleSuccess = () => {
+    setSelectedQuestionId(null);
+    handleOpen();
+    messageApi.open({
+      type: 'success',
+      content: 'Opération réussie',
+    });
+  };
 
-    const handleFailure = (error: any) => {
-      handleOpen();
-      messageApi.open({
-        type: 'error',
-        content: error.response.data.message,
-      });
-    };
+  const handleFailure = (error: any) => {
+    handleOpen();
+    messageApi.open({
+      type: 'error',
+      content: error.response.data.message,
+    });
+  };
 
   const handleCheckboxChange = (questionId: number) => {
     if (selectedQuestionIds.includes(questionId)) {
@@ -87,50 +100,52 @@ export function RubriqueQuestionForm({ open, setOpen, isUpdate, id }: DialogWith
       <>
         {contextHolder}
         <Dialog
-            size="xl" // Adjust the size as needed
+            size="xl"
             open={open}
             handler={handleOpen}
             className="bg-transparent shadow-none"
-            style={{ zIndex: 10, maxHeight: '80vh', overflowY: 'auto', width:'160vh' }} // Add max height and scrollbar
             placeholder={undefined}
         >
           <Card className="mx-auto w-full max-w-[48rem]" placeholder={undefined}>
-            <CardBody className="flex flex-col gap-4" placeholder={undefined}>
-              <Typography variant="h4" color="blue-gray" placeholder={undefined}>
-                Ajouter
-              </Typography>
-              {questions.map((q) => (
-                  <div key={q.id} style={{display: 'flex', alignItems: 'center', marginBottom: '8px'}}>
-                    <input
-                        type="checkbox"
-                        checked={selectedQuestionIds.includes(q.id !== undefined ? q.id : 0)}
-                        onChange={() => handleCheckboxChange(q.id !== undefined ? q.id : 0)}
-                        style={{marginRight: '8px'}}
-                    />
-                    {q.intitule}
-                  </div>
+            <Typography className=" mx-8 mt-7 -mb-2" variant="h6" placeholder={undefined}>
+              <span>Les nouvelles questions <FontAwesomeIcon icon={faArrowDownAZ} /> </span>
+            </Typography>
+            <CardBody className=" mx-6 flex flex-col gap-4 overflow-y-auto max-h-[50vh]" placeholder={undefined}>
+              {questions
+                  .sort((a, b) => a.intitule.localeCompare(b.intitule))
+                  .map((q) => ((
+                      <div key={q.id} >
+                        <input
+                            type="checkbox"
+                            checked={selectedQuestionIds.includes(q.id !== undefined ? q.id : 0)}
+                            onChange={() => handleCheckboxChange(q.id !== undefined ? q.id : 0)}
+                            className="mx-6"
+                            style={{ transform: "scale(1.2)" }}
+                        />
+                        <span className="text-black">  {q.intitule} </span>
 
-              ))}
+                      </div>
+
+                  )))}
             </CardBody>
-            <CardFooter className="mx-auto w-full max-w-[24rem]" placeholder={undefined}>
-              <div className="flex justify-end">
+            <CardFooter className="mx-auto  border border-gray-300 w-full " placeholder={undefined}>
+              <div className="flex space-x-4  max-w-[24rem]  ">
                 <Button
-                    variant="gradient"
                     onClick={handleClose}
                     fullWidth
                     placeholder={undefined}
-                    style={{ marginRight: '16px' }}
+                    className="bg-red-400"
                 >
                   Annuler
                 </Button>
-              <Button
-                  variant="gradient"
-                  onClick={handleSubmit}
-                  fullWidth
-                  placeholder={undefined}
-              >
-                {isUpdate ? "Ajouter" : "Ajouter"}
-              </Button>
+                <Button
+                    variant="gradient"
+                    onClick={handleSubmit}
+                    fullWidth
+                    placeholder={undefined}
+                >
+                  {isUpdate ? "Ajouter" : "Ajouter"}
+                </Button>
 
               </div>
             </CardFooter >
