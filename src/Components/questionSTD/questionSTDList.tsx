@@ -21,6 +21,8 @@ const QuestionSTDList = () => {
     const [rubriqueToUpdate, setRubriqueToUpdate] = useState<Question | null>(null);
     const [disabledButtons, setDisabledButtons] = useState<{[id: number]: boolean}>({});
     const questionService=new QuestionService();
+    const questionToDelete = questions.find(question => question.id === idQuestion);
+
     useEffect(() => {
         //setRubriqueToUpdate(null);
         loadQuestions().then(async r => await fetchData());;
@@ -261,7 +263,8 @@ const QuestionSTDList = () => {
                 open={dialogDeleteOpen}
                 onClose={() => setDialogDeleteOpen(false)}
                 title="Suppression du Question"
-                messageComp="Voulez-vous vraiment supprimer cette Question ?"
+                messageComp={`Voulez-vous vraiment supprimer la question : "${questionToDelete?.intitule}" ?`}
+
                 id={idQuestion}
                 name={"question"}
                 setOpen={setDialogDeleteOpen}/>

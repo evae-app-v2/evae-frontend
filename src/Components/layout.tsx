@@ -172,6 +172,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         navigate("/evae/login"); // Redirect to the login page after logout
     };
 
+    const [showDropdown, setShowDropdown] = useState(false);
+    const toggleDropdown = () => setShowDropdown(!showDropdown);
     // @ts-ignore
     return (
 
@@ -180,28 +182,60 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div
                 className="fixed w-full z-30 flex bg-white dark:bg-[#0F172A] p-2 items-center justify-center h-16 px-10">
                 <div
-                    className="logo ml-12 dark:text-white  transform ease-in-out duration-500 flex-none h-full flex items-center justify-center">
+                    className="logo ml-12 dark:text-white transform ease-in-out duration-500 flex-none h-full flex items-center justify-center"
+                    style={{fontWeight: "500", marginLeft : "65px"}}>
                     Module Evaluation
-
                 </div>
+
                 <div className="grow h-full flex items-center justify-center">
                     <img src={logo} alt="UBO Logo" className="w-32 h-32 sm:w-40 sm:h-10 inline-flex mt-3"/>
                 </div>
 
                 <div className="flex-none h-full text-center flex items-center justify-center">
 
-                    <div className="flex space-x-3 items-center px-3">
-                        <div className="flex-none flex justify-center">
-                            <div className="w-8 h-8 flex ">
-                                <img
-                                    src={userIcon}
-                                    alt="profile" className="shadow rounded-full object-cover"/>
+                    <div className="flex items-center justify-between px-3">
+                        <div
+                            className="hidden md:flex items-center space-x-3 text-sm md:text-md text-black dark:text-white" style={{fontWeight: "500"}}>
+                            {username}
+                            <div className="cursor-pointer" style={{marginLeft: "15px"}} onClick={handleLogout}>
+                                <svg
+                                    aria-hidden="true"
+                                    className="w-6 h-6"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                                    />
+                                </svg>
                             </div>
                         </div>
-
-                        <div className="hidden md:block text-sm md:text-md text-black dark:text-white">{username}
+                        <div className="md:hidden flex items-center">
+                            <div className="cursor-pointer" onClick={handleLogout}>
+                                <svg
+                                    aria-hidden="true"
+                                    className="w-6 h-6"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                                    />
+                                </svg>
+                            </div>
                         </div>
                     </div>
+
 
                 </div>
             </div>
@@ -220,7 +254,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
                 <div onClick={() => openNav()}
                      className="-right-10 transition transform ease-in-out duration-500 flex border-4 border-white dark:border-[#0F172A] bg-[#1E293B] dark:hover:bg-blue-500 hover:bg-purple-500 absolute top-2 p-3 rounded-full text-white hover:rotate-45">
-                    <img src={logoW} alt="UBO Logo" className="w-4 h-4" />
+                    <img src={logoW} alt="UBO Logo" className="w-4 h-4"/>
 
                 </div>
                 {/* CONTENT Menu */}

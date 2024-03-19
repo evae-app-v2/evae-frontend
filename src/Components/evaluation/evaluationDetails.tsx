@@ -7,6 +7,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {EvaluationService} from "../../services/EvaluationService";
 import {message} from "antd";
 import {faBan, faChevronDown, faChevronUp, faPaperPlane, faXmark} from "@fortawesome/free-solid-svg-icons";
+import {DialogChangeEtat} from "./dialogueChangeEtat";
 
 type DialogWithFormProps = {
     open: boolean;
@@ -23,6 +24,7 @@ export function EvaluationDetails({open, setOpen, initialData}: DialogWithFormPr
     const [evaluation, setEvaluation] = useState<Evaluation | undefined>(initialData); // Use initialData to initialize evaluation
     const [visibleQuestions, setVisibleQuestions] = useState<{ [key: number]: boolean }>({});
     const [showQuestions, setShowQuestions] = useState<boolean[]>(initialData?.rubriques.map(() => false) ?? []);
+    const [dialogueChangeOpen, setDialogeChangeOpen] = useState(false);
 
     useEffect(() => {
         // Update evaluation when initial data changes
@@ -84,6 +86,19 @@ export function EvaluationDetails({open, setOpen, initialData}: DialogWithFormPr
         });
     };
 
+    function handleEtat2(etat: string) {
+        switch (etat) {
+            case "ELA":
+                return "Êtes-vous sûr(e) de vouloir publier cette évaluation ?";
+            case "DIS":
+                return "Êtes-vous sûr(e) de vouloir clôturer cette évaluation ?";
+            case "CLO":
+                return "Impossible de changer l'état de cette évaluation car elle est déjà clôturée.";
+            default:
+                return "Changer l'état de l'évaluation !";
+        }
+    }
+
     const handleQuestionDoubleClick = (index: number) => {
         setShowQuestions(prev => {
             const updatedVisibility = [...prev];
@@ -91,6 +106,14 @@ export function EvaluationDetails({open, setOpen, initialData}: DialogWithFormPr
             return updatedVisibility;
         });
     };
+
+
+    const handleChange= (evaluation:any) => {
+        setEvaluation(evaluation);
+        setDialogeChangeOpen(true);
+
+
+    }
     return (
         <>
             {contextHolder}
@@ -110,10 +133,11 @@ export function EvaluationDetails({open, setOpen, initialData}: DialogWithFormPr
                                 </p>
                             </div>
 
-                            <div
-                                className="min-w-32"> {/* Utilisez la classe min-w-{value} pour spécifier la largeur minimale */}
-                                {handleEtat(evaluation?.etat)}
+                            <div className="min-w-32">
+                                <button onClick={() => handleChange(evaluation)}>{handleEtat(evaluation?.etat)}</button>
                             </div>
+
+
 
                         </div>
 
@@ -249,17 +273,7 @@ export function EvaluationDetails({open, setOpen, initialData}: DialogWithFormPr
                 <DialogFooter placeholder={undefined} className="flex justify-end mb-2">
 
                     <div className="flex justify-end space-x-4">
-                        {evaluation?.etat !== 'CLO' && (
-                            <button
-                                className={`flex px-3 py-2 ${evaluation?.etat === 'ELA' ? 'bg-green-400' : 'bg-red-400'} text-white font-semibold rounded items-center`}
-                                onClick={() => handleAvancerWorkflow(evaluation?.id)}
-                            > <FontAwesomeIcon icon={ evaluation?.etat === 'ELA' ? faPaperPlane: faBan } />&nbsp;&nbsp;
-                                <span className="mr-1">
-                {evaluation?.etat === 'ELA' ? 'Publier Evaluation' : 'Cloturer Evaluation'}
-            </span>
 
-                            </button>
-                        )}
 
                         <button className="flex px-3 py-2 bg-red-400 text-white font-semibold rounded"
                                 onClick={handleClose}
@@ -269,8 +283,20 @@ export function EvaluationDetails({open, setOpen, initialData}: DialogWithFormPr
                     </div>
                 </DialogFooter>
             </Dialog>
+            <DialogChangeEtat
+                open={dialogueChangeOpen}
+                onClose={() => setDialogeChangeOpen(false)}
+                title="Faire Avancé l'état d'une evaluation"
+                messageComp={handleEtat2(evaluation?.etat)}
+                eva={evaluation}
+                name={"evaluation"}
+                setOpen={setDialogeChangeOpen} />
+
 
         </>
+
+
+
 
     )
 
