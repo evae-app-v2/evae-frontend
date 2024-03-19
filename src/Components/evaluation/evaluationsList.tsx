@@ -30,8 +30,7 @@ const EvaluationsList = () => {
     const [evaluation, setEvaluation] = useState<Evaluation>();
     const evaluationService = new EvaluationService();
     const [messageToDelete, setMessageToDelete] = useState("");
-
-
+    const [initialLoadDone, setInitialLoadDone] = useState(false); // Etat pour suivre si le chargement initial est effectué
 
     /*const loadEvaluations = async () => {
         try {

@@ -11,6 +11,8 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEye} from "@fortawesome/free-solid-svg-icons";
 import {faPlay} from "@fortawesome/free-solid-svg-icons/faPlay";
 import {faCircleCheck} from "@fortawesome/free-solid-svg-icons/faCircleCheck";
+import RepondreEvaluation from "./repondreEvaluation";
+import {useNavigate} from "react-router-dom";
 
 const EvaluationEtudiantList = () => {
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -21,13 +23,15 @@ const EvaluationEtudiantList = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
     const [evaluationToUpdate, setEvaluationToUpdate] = useState<Evaluation >();
+    const [evaluation, setEvaluation] = useState<Evaluation | undefined>(); // Use initialData to initialize evaluation
 
     const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
     const evaluationService = new EvaluationService();
+    const navigate = useNavigate();
 
     useEffect(() => {
         loadEvaluations();
-    }, [evaluations]);
+    }, []);
 
     const loadEvaluations = async () => {
         try {
@@ -80,6 +84,13 @@ const EvaluationEtudiantList = () => {
                 // Traitement par défaut si etat ne correspond à aucun des cas précédents
                 break;
         }
+    };
+
+    const handleRepondre = (id:any) => {
+        // Supposons que vous avez un ID à passer
+
+        // Rediriger vers le nouveau composant avec l'ID dans l'URL
+        navigate(`/evae/repondre-evaluation/${id}`);
     };
 
     return (
@@ -231,6 +242,7 @@ const EvaluationEtudiantList = () => {
                                                     <button
                                                         disabled={evaluation.etat === "CLO"}
                                                         title={evaluation.etat === "CLO" ? "Évaluation est clôturée" : ""}
+                                                        onClick={()=>handleRepondre(evaluation.id)}
                                                     >
                                                         <img
                                                             width="20"

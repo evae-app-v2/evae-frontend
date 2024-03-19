@@ -13,6 +13,7 @@ import EvaluationsList from "./Components/evaluation/evaluationsList";
 import RubriqueQuestion from "./Components/rubriqueComposee/RubriqueQuestion";
 import EvaluationEtudiantList from "./Components/evaluation/evaluationEtudiantList";
 import RubriqueComposeDetails from "./Components/rubriqueComposee/RubriqueComposeDetails";
+import RepondreEvaluation from "./Components/evaluation/repondreEvaluation";
 function App() {
     return (
         <BrowserRouter>
@@ -47,6 +48,8 @@ function AppContent() {
                 <Route path="/evae/etud/evaluations" element={<Layout><EvaluationEtudiantList/></Layout>}/>
                 {/*<Route path="/evae/rubrique-question" element={<Layout><RubriqueQuestion/></Layout>}/>*/}
                 <Route path="/evae/rubrique-question" element={<Layout><RubriqueComposeDetails/></Layout>}/>
+                <Route path="/evae/repondre-evaluation/:id" element={<Layout><RepondreEvaluation/></Layout>} />
+
             </Route>
         </Routes>
     );

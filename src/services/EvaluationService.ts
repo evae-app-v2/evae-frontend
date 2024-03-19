@@ -4,6 +4,7 @@ import { ElementConstitutif } from "../model/ElementConstitutif";
 import { Promotion } from "../model/Promotion";
 import { UniteEnseignement } from "../model/UniteEnseignement";
 import { PreparedData } from "../model/PreparedData";
+import {ReponseEvaluationDTO} from "../model/ReponseEvaluationDTO";
 
 
 export class EvaluationService {
@@ -100,6 +101,23 @@ export class EvaluationService {
             return Promise.reject(error);
         }
     }
+    public async getEvaluationById(id:any): Promise<Evaluation> {
+        try {
+            const response = await api.get<Evaluation>(`${this.apiURL}/getEvaluationById/${id}`);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    }
+    public async repondreEvaluation(reponseEvaluationDTO:ReponseEvaluationDTO): Promise<any> {
+        try {
+            const response = await api.post<string>(`${this.apiURL}/repondre`,reponseEvaluationDTO);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    }
+
 
 
 

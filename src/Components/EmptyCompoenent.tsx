@@ -1,6 +1,8 @@
 import uboPic from "../assets/logo_UBO_white.png"
 import backgroundPic from "../assets/UBO_Brest.jpg";
+import {useEffect} from "react";
 export function EmptyCompoenent() {
+
     return(<>
         <div className="w-full">
             <div className="flex bg-white" style={{height: '85vh'}}>
