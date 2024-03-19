@@ -91,7 +91,34 @@ export function EvaluationForm({ open, setOpen, isUpdate, initialData }: DialogW
 
     const [selectedQuestion, setSelectedQuestion] = useState<string>('');
 
+    const [designationError, setDesignationError] = useState<string>("");
+    const [periodeError, setPeriodeError] = useState<string>("");
+    const DESIGNATION_LIMIT = 16;
+    const PERIODE_LIMIT = 64;
 
+    const handleDesignationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value.trim();
+        setDesignation(value);
+        if (value.length > DESIGNATION_LIMIT) {
+            setDesignationError("La saisie est trop longue (16 caractères max)");
+        } else {
+            setDesignationError("");
+        }
+    };
+
+    const handlePeriodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setPeriode(value);
+        if (value.length > PERIODE_LIMIT) {
+            setPeriodeError("La saisie est trop longue (64 char max)");
+        } else {
+            setPeriodeError("");
+        }
+    };
+
+    const isFormValid = () => {
+        return designation.length <= DESIGNATION_LIMIT && periode.length <= PERIODE_LIMIT && !designationError && !periodeError;
+    };
 
 
 
@@ -500,8 +527,13 @@ export function EvaluationForm({ open, setOpen, isUpdate, initialData }: DialogW
 
 
     const handleSubmit = async () => {
+
+
         if (!validateDates()) {
             return; // Arrêtez la soumission si la validation échoue
+        }
+        if(! isFormValid()){
+            return;
         }
 
         const dataToSend = prepareAndSendData();
@@ -620,16 +652,18 @@ export function EvaluationForm({ open, setOpen, isUpdate, initialData }: DialogW
                                     <Input
                                         label="Désignation"
                                         value={designation}
-                                        onChange={(e) => setDesignation(e.target.value)} crossOrigin={undefined}
+                                        onChange={handleDesignationChange} crossOrigin={undefined}
                                         required={true}
                                     />
+                                    {designationError && <p className="text-sm text-red-500">{designationError}</p>}
 
                                     <Input
                                         label="Période"
                                         value={periode}
-                                        onChange={(e) => setPeriode(e.target.value)} crossOrigin={undefined}
+                                        onChange={handlePeriodeChange} crossOrigin={undefined}
                                         required={true}
                                     />
+                                    {periodeError && <p className="text-sm text-red-500">{periodeError}</p>}
                                 </div>
                                 <div className="flex flex-col flex-1 gap-4"></div>
                                 <div className="flex gap-4">
@@ -901,9 +935,10 @@ export function EvaluationForm({ open, setOpen, isUpdate, initialData }: DialogW
                             variant="gradient"
                             color="green"
                             onClick={handleSubmit}
-                            disabled={!selectedCodeUE || !selectedCodeFormation || !selectedPromotion || !designation || !periode || !debutReponse || !finReponse}
+                            disabled={!isFormValid() || !selectedCodeUE || !selectedCodeFormation || !selectedPromotion || !designation || !periode || !debutReponse || !finReponse}
                             className="flex items-center justify-center gap-2" // Ajoutez cette ligne pour aligner l'icône et le texte
                             placeholder={undefined}                        >
+
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"
                                  stroke="currentColor" className="w-5 h-5">
                                 <path strokeLinecap="round" strokeLinejoin="round"

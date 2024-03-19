@@ -94,6 +94,9 @@ const QualificatifList = () => {
         setSortOrder(sortOrder === "asc" ? "desc" : "asc");
 
     };
+
+    const qualificatifToDelete = qualificatifs.find(qualificatif => qualificatif.id === idQualificatif);
+
     const handleOpenDialog = () => {
         setDialogOpen(true);
         setIsUpdate(false);
@@ -278,10 +281,12 @@ const QualificatifList = () => {
                 open={dialogDeleteOpen}
                 onClose={() => setDialogDeleteOpen(false)}
                 title="Suppression du couple qualificatif"
-                messageComp="Voulez-vous vraiment supprimer ce couple qualificatif ?"
+                messageComp={`Voulez-vous vraiment supprimer ce couple de qualificatif : "${qualificatifToDelete?.minimal} | ${qualificatifToDelete?.maximal}" ?`}
                 id={idQualificatif}
                 name={"qualificatif"}
                 setOpen={setDialogDeleteOpen}/>
+
+
         </>
     );
 }
