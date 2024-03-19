@@ -364,6 +364,7 @@ const RubriqueQuestion = () => {
                 isUpdate={isUpdate}
                 //initialData={rubriqueToUpdate}
                 id={idRubrique}
+                designation="designation"
 
             />
             <DialogDelete
