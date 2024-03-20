@@ -81,7 +81,7 @@ export function RubriqueQuestionForm({
     handleOpen();
     messageApi.open({
       type: "success",
-      content: `Ajout des nouvelles questions dans la rubrique ${designation} réussi`,
+      content: `Ajout des nouvelles questions dans la rubrique ${designation} est réalisée avec succès`,
     });
   };
 
@@ -114,7 +114,7 @@ export function RubriqueQuestionForm({
           <Card className="mx-auto w-full max-w-[48rem]" placeholder={undefined}>
             <Typography className="mx-8 mt-7 -mb-2" variant="h6" placeholder={undefined}>
             <span>
-              Les nouvelles questions <FontAwesomeIcon icon={faArrowDownAZ} />
+              Listes des questions <FontAwesomeIcon icon={faArrowDownAZ} />
             </span>
             </Typography>
             <CardBody className="mx-6 flex flex-col gap-4 overflow-y-auto max-h-[50vh]" placeholder={undefined}>

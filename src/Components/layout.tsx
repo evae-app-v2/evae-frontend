@@ -43,7 +43,7 @@ const enseignantMenu = [
         path: "/evae/home",
         icon: faHouse
     },{
-        name: "Evaluation",
+        name: "Évaluation",
         path: "/evae/evaluations",
         icon: faNoteSticky
     }
@@ -54,7 +54,7 @@ const etudiantMenu = [
         path: "/evae/home",
         icon: faHouse
     },{
-        name: "Evaluation",
+        name: "Évaluation",
         path: "/evae/etud/evaluations",
         icon: faNoteSticky
     }
@@ -65,6 +65,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
     const [menuName, setMenuName] = useState("");
+    const [menuNamePath, setMenuNamePath] = useState("");
     const [showSpinner, setShowSpinner] = useState(false);
     const dispatch = useDispatch(); // Initialize the dispatch function
     const [username, SetUsername] = useState("");
@@ -160,7 +161,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     // const roleUser = user?.role === "ADM" ? "ADMIN" : user?.role === "ENS" ? "ENSEIGNANT" : null;
     const handleClick = (menu: any) => {
         setMenuName(menu.name);
+        setMenuNamePath(menu.path)
         navigate(menu.path);
+
 
         // Vous pouvez maintenant utiliser le nom du menu cliqué comme vous le souhaitez
     };
@@ -328,7 +331,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                                           d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
                                           clipRule="evenodd"></path>
                                 </svg>
-                                <a href="#"
+                                <a href={menuNamePath}
                                    className="ml-1 text-sm font-medium text-gray-700 hover:text-gray-900 md:ml-2 dark:text-gray-400 dark:hover:text-white">{menuName}</a>
                             </div>
                         </li>

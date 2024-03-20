@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Dialog, DialogBody, DialogFooter,} from "@material-tailwind/react";
+import {Dialog, DialogBody, DialogFooter, Textarea, Typography} from "@material-tailwind/react";
 import {Evaluation} from "../../model/Evaluation";
 import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; // Optional Theme applied to the grid
@@ -7,6 +7,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {EvaluationService} from "../../services/EvaluationService";
 import {message} from "antd";
 import {faChevronDown, faChevronUp, faXmark} from "@fortawesome/free-solid-svg-icons";
+import {IconButton, Rating} from "@mui/material";
 
 type DialogWithFormProps = {
     open: boolean;
@@ -22,14 +23,26 @@ export function EvaluationDetails({open, setOpen, initialData}: DialogWithFormPr
     const evaluationService = new EvaluationService();
     const [evaluation, setEvaluation] = useState<Evaluation | undefined>(initialData); // Use initialData to initialize evaluation
     const [visibleQuestions, setVisibleQuestions] = useState<{ [key: number]: boolean }>({});
+    const [visibleCommentaire, setVisibleCommentaire] = useState(false);
     const [showQuestions, setShowQuestions] = useState<boolean[]>(initialData?.rubriques.map(() => false) ?? []);
+    const [commentaire, setCommentaire] = useState("");
 
     useEffect(() => {
-        // Update evaluation when initial data changes
-        setEvaluation(initialData);
-        setShowQuestions(initialData?.rubriques.map(() => false) ?? []);
+        const fetchData = async () => {
+            // Update evaluation when initial data changes
+            if(initialData?.id!=null){
+            const response = await evaluationService.isEtudiantRepondreEvaluation(initialData?.id);
+            setCommentaire(response.commentaire);}
+            setEvaluation(initialData);
+            setShowQuestions(initialData?.rubriques.map(() => false) ?? []);
+        };
+
+        fetchData();
     }, [initialData]);
 
+    const handleOpenCommentaire = () => {
+        setVisibleCommentaire((prevOpen) => !prevOpen);
+    };
 
 
     function handleAvancerWorkflow(id: number | undefined) {
@@ -54,6 +67,8 @@ export function EvaluationDetails({open, setOpen, initialData}: DialogWithFormPr
     const handleOpen = () => setOpen(cur => !cur);
     const handleClose = () => {
         setOpen(prevOpen => !prevOpen);
+        setCommentaire("")
+        setVisibleCommentaire(false)
     }
     const handleEtat = (etat: any) => {
         switch (etat) {
@@ -129,7 +144,7 @@ export function EvaluationDetails({open, setOpen, initialData}: DialogWithFormPr
                             </div>
                             <div className="flex ">
                     <span
-                        className="text-sm border bg-blue-600 font-bold uppercase border-2 rounded-l px-4 py-2 bg-gray-50 whitespace-no-wrap w-2/6">Element Constitutif</span>
+                        className="text-sm border bg-blue-600 font-bold uppercase border-2 rounded-l px-4 py-2 bg-gray-50 whitespace-no-wrap w-2/6">Élèment Constitutif</span>
                                 <p
                                     className="px-4 border-l-0 cursor-default text-blackborder-gray-300 focus:outline-none  rounded-md rounded-l-none shadow-sm -ml-1 w-4/6 mt-2"
                                 >{evaluation?.codeEC ? evaluation.codeEC : '-- '}</p>
@@ -156,10 +171,7 @@ export function EvaluationDetails({open, setOpen, initialData}: DialogWithFormPr
                                             [index]: !prev[index]
                                         }));
                                     }}>
-                                        <th
-                                            className="cursor-pointer bg-blue-gray-50/50 p-4 transition-colors hover:bg-blue-gray-50 border border-blue-gray-200"
-                                            colSpan={4} // Utilisez colSpan pour fusionner les cellules sur trois colonnes
-                                        >
+                                        <th className="cursor-pointer bg-blue-gray-50/50 p-4 transition-colors hover:bg-blue-gray-50 border border-blue-gray-200" colSpan={4} >
                                             <p className="antialiased font-sans text-sm text-blue-gray-900 flex items-center justify-between gap-2 font-normal leading-none opacity-70 flex justify-between items-center font-semibold">{rubrique.designation}
                                                 <button
 
@@ -184,8 +196,7 @@ export function EvaluationDetails({open, setOpen, initialData}: DialogWithFormPr
                                                 </div>
                                             </td>
                                             <td className="p-4">
-                                                <div className="flex justify-end gap-5"
-                                                >
+                                                <div className="flex justify-end gap-5">
                                                     <div className="flex flex-col">
                                                         <p className="block antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal pr-8">{question.idQualificatif?.minimal}</p>
                                                     </div>
@@ -193,22 +204,15 @@ export function EvaluationDetails({open, setOpen, initialData}: DialogWithFormPr
                                             </td>
                                             <td className="p-4 flex justify-center">
                                                 <div className="flex items-center gap-3">
-                                                    {[...Array(5)].map((_, index) => {
-                                                        const position = index + 1;
-                                                        const disabled = position < question.idQualificatif?.minimal || position > question.idQualificatif?.maximal;
-                                                        return (
-                                                            <div key={index} className="text-center flex flex-col">
-                                                            <input
-                                                                key={index}
-                                                                type="radio"
-                                                                value={position}
-                                                                checked={position === question.positionnements}
-                                                                disabled={disabled}
-                                                            />
-                                                        </div>
+                                                    <div key={index} className="text-center flex flex-col">
+                                                        <Rating
+                                                            name={`rating-${question.id}`}
+                                                            disabled
+                                                            value={question.positionnements} // Utilisez la valeur de positionnements pour la note
+                                                            //disabled={!question.idQualificatif} // Désactivez le Rating si idQualificatif n'est pas défini
+                                                        />
 
-                                                    );
-                                                    })}
+                                                    </div>
                                                 </div>
                                             </td>
                                             <td className="p-4">
@@ -224,6 +228,32 @@ export function EvaluationDetails({open, setOpen, initialData}: DialogWithFormPr
                                     ))}
                                 </React.Fragment>
                             ))}
+                            <tr onClick={handleOpenCommentaire}>
+                                <th className="cursor-pointer bg-blue-gray-50/50 p-4 transition-colors hover:bg-blue-gray-50 border border-blue-gray-200"
+                                    colSpan={4}>
+                                    <p className="antialiased font-sans text-sm text-blue-gray-900 flex items-center justify-between gap-2 font-normal leading-none opacity-70 flex justify-between items-center font-semibold"> Commentaire
+                                        <button
+
+
+                                            className={`text-gray-500 transition-colors duration-200 focus:outline-none
+                                                             ${visibleCommentaire ? 'text-blue-500 hover:text-blue-500 dark:text-gray-300' : 'hover:text-blue-500 dark:hover:text-blue-500 dark:text-gray-300'}`}>
+                                            <FontAwesomeIcon
+                                                icon={visibleCommentaire ? faChevronUp : faChevronDown}/>
+                                        </button>
+                                    </p>
+                                </th>
+
+                            </tr>
+                            { visibleCommentaire && <tr className="border-b border-blue-gray-200">
+                                <td className="p-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex flex-col">
+                                            <p className="block antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal">{commentaire}</p>
+                                        </div>
+                                    </div>
+                                </td>
+
+                            </tr>}
                             </tbody>
                         </table>
                     </div>
@@ -234,7 +264,7 @@ export function EvaluationDetails({open, setOpen, initialData}: DialogWithFormPr
                         <button className="flex px-3 py-2 bg-red-400 text-white font-semibold rounded"
                                 onClick={handleClose}
                         >
-                            <FontAwesomeIcon icon={faXmark} className="w-6 h-6 mr-2" style={{color: "#ffffff"}}/>
+                        <FontAwesomeIcon icon={faXmark} className="w-6 h-6 mr-2" style={{color: "#ffffff"}}/>
                             <span className="ml-1">Fermer</span>
                         </button>
                     </div>

@@ -25,8 +25,8 @@ const QuestionSTDList = () => {
 
     useEffect(() => {
         //setRubriqueToUpdate(null);
-        loadQuestions().then(async r => await fetchData());;
-    }, [questions,searchTerm]);
+        loadQuestions().then(async r => await fetchData());
+    }, [questions]);
     const testDisabled = async (id: any): Promise<boolean> => {
         try {
             const response = await questionService.questionIsUsedInRubriqueOrEvaluation(id);
@@ -104,13 +104,13 @@ const QuestionSTDList = () => {
 
                     <Button
                         className="flex items-center justify-center w-full sm:w-auto px-5 py-2 text-sm tracking-wide text-white transition-colors duration-200  rounded-lg sm:shrink-0 gap-x-2 "
-                        placeholder={undefined}>
+                        placeholder={undefined} onClick={handleOpenDialog}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"
                              stroke="currentColor" className="w-5 h-5">
                             <path strokeLinecap="round" strokeLinejoin="round"
                                   d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
-                        <span onClick={handleOpenDialog}> Ajouter</span>
+                        <span > Ajouter</span>
                     </Button>
                 </div>
 
@@ -128,7 +128,7 @@ const QuestionSTDList = () => {
                                         <th scope="col"
                                             className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400">
                                             <button className="flex items-center gap-x-2">
-                                                <span>Intitule</span>
+                                                <span>Intitulé</span>
 
                                                 <svg className="h-3" viewBox="0 0 10 11" fill="none" xmlns="http://www.w3.org/2000/svg" onClick={toggleSortOrder}>
                                                     {/* Le contenu de l'icône */}                                                            <path
@@ -164,7 +164,7 @@ const QuestionSTDList = () => {
 
                                         <th scope="col"
                                             className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400">
-                                            Couple de questions
+                                            Couple de qualificatifs
                                         </th>
                                         <th scope="col"
                                             className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400">

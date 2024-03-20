@@ -162,11 +162,11 @@ const RepondreEvaluation = () => {
                     className="bg-white shadow-xl shadow-gray-100 w-full  flex flex-col sm:flex-row gap-3 sm:items-center justify-between px-5 py-4 rounded-md">
                     <div>
                         <h3 className="font-bold mt-px">{evaluation?.designation}</h3>
-                        <button
+                        <div
                             className=" text-white font-medium mt-1 rounded-md flex items-center">
                                 <span
-                                    className="text-purple-800 text-sm">Creé par {evaluation?.noEnseignant.nom + " " + evaluation?.noEnseignant.prenom}</span>
-                        </button>
+                                    className="text-purple-800 text-sm">Créé par {evaluation?.noEnseignant.nom + " " + evaluation?.noEnseignant.prenom}</span>
+                        </div>
                     </div>
                     <div>
 

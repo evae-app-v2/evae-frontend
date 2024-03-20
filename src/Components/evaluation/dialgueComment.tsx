@@ -61,7 +61,7 @@ export function DialgueComment({ data, open, setOpen }: DialogWithFormProps) {
                 <div className="flex items-center justify-between">
                     <DialogHeader className="flex flex-col items-start" placeholder={undefined}>
                         <Typography className="mb-1" variant="h4" placeholder={undefined}>
-                            New message to @{" "}
+                            Commentaire
                         </Typography>
                     </DialogHeader>
                 </div>
@@ -141,5 +141,5 @@ export function DialgueComment({ data, open, setOpen }: DialogWithFormProps) {
                 </DialogBody>
             </Dialog>
         </>
-);
+    );
 }

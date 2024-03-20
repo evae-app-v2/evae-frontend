@@ -57,7 +57,7 @@ export function ConfirmationDialog({ title, messageComp, rubriqueId, name, quest
                 handleOpen();
                 messageApi.open({
                     type: 'error',
-                    content: error.response.data.message,
+                    content: 'Un erreur est survenue lors de la suppression, veuillez reverifier votre demande',
                 });
             });
     }
@@ -67,8 +67,8 @@ export function ConfirmationDialog({ title, messageComp, rubriqueId, name, quest
         <>
             {contextHolder}
             <Dialog open={open} handler={handleOpen} placeholder={undefined}>
-                <DialogHeader placeholder={undefined}> Suppression </DialogHeader>
-                <DialogBody placeholder={undefined}> Confirmez-vous la suppression de la question : "{questionIntitule}"?</DialogBody>
+                <DialogHeader placeholder={undefined}> Confirmez-vous la suppression ? </DialogHeader>
+                <DialogBody placeholder={undefined}> Confirmez-vous la suppression de la question : "{questionIntitule}" de cette rubrique?</DialogBody>
                 <DialogFooter placeholder={undefined}>
                     <Button
                         variant="text"

@@ -117,6 +117,14 @@ export class EvaluationService {
             throw error;
         }
     }
+    public async isEtudiantRepondreEvaluation(id:any): Promise<any> {
+        try {
+            const response = await api.get<any>(`${this.apiURL}/isEtudiantRepondreEvaluation/${id}`);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    }
 
 
 

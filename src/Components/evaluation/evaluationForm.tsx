@@ -97,21 +97,23 @@ export function EvaluationForm({ open, setOpen, isUpdate, initialData }: DialogW
     const PERIODE_LIMIT = 64;
 
     const handleDesignationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value.trim();
-        setDesignation(value);
+        const value = e.target.value;
+        //setDesignation(value);
         if (value.length > DESIGNATION_LIMIT) {
-            setDesignationError("La saisie est trop longue (16 caractères max)");
+            setDesignationError("Vous avez atteint la limite maximale de caractères. (16 max)");
         } else {
+            setDesignation(value);
             setDesignationError("");
         }
     };
 
     const handlePeriodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        setPeriode(value);
+        //setPeriode(value);
         if (value.length > PERIODE_LIMIT) {
-            setPeriodeError("La saisie est trop longue (64 char max)");
+            setPeriodeError("Vous avez atteint la limite maximale de caractères. (64 max)");
         } else {
+            setPeriode(value);
             setPeriodeError("");
         }
     };
@@ -212,7 +214,7 @@ export function EvaluationForm({ open, setOpen, isUpdate, initialData }: DialogW
                 }
                 return rubrique;
             });
-    
+
             setRubriquesAjoutees(updatedRubriques);
             // Réinitialise la sélection de question après l'ajout
             setSelectedQuestion('');
@@ -231,6 +233,7 @@ export function EvaluationForm({ open, setOpen, isUpdate, initialData }: DialogW
                     return rubrique;
                 }));
                 setSelectedQuestion(''); // Réinitialiser après l'ajout
+                setButtonQuestionDisabled(true);
             }
         }
     };
@@ -254,6 +257,7 @@ export function EvaluationForm({ open, setOpen, isUpdate, initialData }: DialogW
                 ]);
             }
             setSelectedRubrique('');
+            setButtonDisabled(true);
         }
     };
 
@@ -527,14 +531,13 @@ export function EvaluationForm({ open, setOpen, isUpdate, initialData }: DialogW
 
 
     const handleSubmit = async () => {
-
+        const trimmedDesignation = designation.trim();
+        const trimmedPeriode = periode.trim();
 
         if (!validateDates()) {
             return; // Arrêtez la soumission si la validation échoue
         }
-        if(! isFormValid()){
-            return;
-        }
+
 
         const dataToSend = prepareAndSendData();
 
@@ -546,9 +549,9 @@ export function EvaluationForm({ open, setOpen, isUpdate, initialData }: DialogW
             selectedCodeEC,
             selectedPromotion,
             null,
-            designation,
+            trimmedDesignation,
             null,
-            periode,
+            trimmedPeriode,
             debutReponse,
             finReponse,
             null
@@ -570,12 +573,22 @@ export function EvaluationForm({ open, setOpen, isUpdate, initialData }: DialogW
             setSelectedCodeFormation("");
             setSelectedCodeUE("");
             setSelectedPromotion("");
-            isUpdate = false;
+            //isUpdate = false;
             handleOpen();
-            messageApi.open({
-                type: 'success',
-                content: 'Evaluation ajoutée avec succès ',
-            });
+            if(isUpdate){
+                messageApi.open({
+                    type: 'success',
+                    content: `La modification de votre évaluation "${trimmedDesignation}"  est réalisée avec succès.`,
+                    duration: 10,
+                });
+            }else {
+                messageApi.open({
+                    type: 'success',
+                    content: `La création de votre évaluation "${trimmedDesignation}" est réalisée avec succès.`,
+                    duration: 10,
+                });
+            }
+
         };
 
         const handleFailure = (error: any) => {
@@ -625,6 +638,15 @@ export function EvaluationForm({ open, setOpen, isUpdate, initialData }: DialogW
         fontWeight: 'normal',
         fontStyle: 'italic',
     };
+
+    const [buttonDisabled, setButtonDisabled] = useState(true); // État pour suivre si le bouton doit être désactivé
+    const [buttonQuestionDisabled, setButtonQuestionDisabled] = useState(true); // État pour suivre si le bouton doit être désactivé
+
+    const getColor = (numQuestions : any) => {
+        return numQuestions > 0 ? 'green' : 'red';
+    };
+
+
 
 
 
@@ -770,11 +792,15 @@ export function EvaluationForm({ open, setOpen, isUpdate, initialData }: DialogW
                                             onChange={(value) => {
                                                 if (value) {
                                                     setSelectedRubrique(value);
+                                                    setButtonDisabled(!value);
                                                 }
                                             }} placeholder={undefined}                                        >
                                             {rubriqueQuestionDTOOs.map((rubrique) => (
                                                 <Option key={rubrique.rubrique.id} value={rubrique.rubrique.designation}>
-                                                    {`${rubrique.rubrique.designation} (${rubrique.questions.length})`}
+                                                    {`${rubrique.rubrique.designation} `}
+                                                    <span style={{ color: getColor(rubrique.questions.length) }}>
+                                                        ({rubrique.questions.length})
+                                                    </span>
                                                 </Option>
                                             ))}
                                         </Select>
@@ -782,7 +808,8 @@ export function EvaluationForm({ open, setOpen, isUpdate, initialData }: DialogW
                                         <Button
                                             variant="gradient"
                                             color="green"
-                                            onClick={handleAjoutRubrique} placeholder={undefined}>
+                                            onClick={handleAjoutRubrique}
+                                            disabled={buttonDisabled} placeholder={undefined}>
                                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M12 4v16m8-8H4" />
                                             </svg>
@@ -847,6 +874,8 @@ export function EvaluationForm({ open, setOpen, isUpdate, initialData }: DialogW
                                                                                         onChange={(value) => {
                                                                                             if (value) {
                                                                                                 setSelectedQuestion(value.toString());
+                                                                                                setButtonQuestionDisabled(!value);
+
                                                                                             }
                                                                                         }}
                                                                                     >
@@ -859,7 +888,8 @@ export function EvaluationForm({ open, setOpen, isUpdate, initialData }: DialogW
                                                                                     <Button
                                                                                         variant="gradient"
                                                                                         color="green"
-                                                                                        onClick={handleAjoutQuestion} placeholder={undefined}                                                        >
+                                                                                        onClick={handleAjoutQuestion}
+                                                                                        disabled={buttonQuestionDisabled} placeholder={undefined}                                                        >
                                                                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M12 4v16m8-8H4" />
                                                                                         </svg>
@@ -881,8 +911,17 @@ export function EvaluationForm({ open, setOpen, isUpdate, initialData }: DialogW
                                                                                                                     </Typography>
                                                                                                                     <button onClick={() => handleSupprimerQuestion(rubriqueSelectionneePourQuestions, question.id)} className="transition-colors duration-200 hover:text-red-500 focus:outline-none">
                                                                                                                         {/* Icon for question deletion */}
-                                                                                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
-                                                                                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                                                                                                        <svg
+                                                                                                                            xmlns="http://www.w3.org/2000/svg"
+                                                                                                                            fill="none"
+                                                                                                                            viewBox="0 0 24 24"
+                                                                                                                            stroke-width="2"
+                                                                                                                            stroke="red"
+                                                                                                                            className="w-5 h-5">
+                                                                                                                            <path
+                                                                                                                                stroke-linecap="round"
+                                                                                                                                stroke-linejoin="round"
+                                                                                                                                d="M6 18L18 6M6 6l12 12"></path>
                                                                                                                         </svg>
                                                                                                                     </button>
                                                                                                                 </div>
@@ -935,14 +974,14 @@ export function EvaluationForm({ open, setOpen, isUpdate, initialData }: DialogW
                             variant="gradient"
                             color="green"
                             onClick={handleSubmit}
-                            disabled={!isFormValid() || !selectedCodeUE || !selectedCodeFormation || !selectedPromotion || !designation || !periode || !debutReponse || !finReponse}
+                            disabled={ !selectedCodeUE || !selectedCodeFormation || !selectedPromotion || !designation || !periode || !debutReponse || !finReponse}
                             className="flex items-center justify-center gap-2" // Ajoutez cette ligne pour aligner l'icône et le texte
                             placeholder={undefined}                        >
 
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"
                                  stroke="currentColor" className="w-5 h-5">
                                 <path strokeLinecap="round" strokeLinejoin="round"
-                                      d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/>
+                                      d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                             </svg>
                             {isUpdate ? " Modifier" : " Créer"}
                         </Button>

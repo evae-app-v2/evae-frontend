@@ -37,29 +37,30 @@ export function QualificatifForm({ open, setOpen ,isUpdate,initialData}: DialogW
     const MINIMAL_LIMIT = 16;
 
     const handleMaximalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value.trim(); // Trim the input value
-        setMaximal(value);
+        const value = e.target.value;
         if (value.length > MAXIMAL_LIMIT) {
-            setMaximalError("La saisie est trop longue (16 caractères max)");
+            setMaximalError("Vous avez atteint la limite maximale de caractères. (16 max)");
         } else {
+            setMaximal(value);
             setMaximalError(null);
         }
     };
 
     const handleMinimalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value.trim(); // Trim the input value
-        setMinimal(value);
+        const value = e.target.value;
         if (value.length > MINIMAL_LIMIT) {
-            setMinimalError("La saisie est trop longue (16 caractères max)");
+            setMinimalError("Vous avez atteint la limite maximale de caractères. (16 max)");
         } else {
+            setMinimal(value);
             setMinimalError(null);
         }
     };
 
-
     const isFormValid = () => {
         return maximal.length <= MAXIMAL_LIMIT && minimal.length <= MINIMAL_LIMIT && !maximalError && !minimalError;
     };
+
+
     useEffect(() => {
         if (initialData) {
             console.log(" initialisation ")
@@ -93,50 +94,57 @@ export function QualificatifForm({ open, setOpen ,isUpdate,initialData}: DialogW
         }
     }
     const handleSubmit = async () => {
-        if(!isFormValid()){
-            return;
+        const trimmedMinimal = minimal.trim();
+        const trimmedMaximal = maximal.trim();
+
+        const newQualificatif = new Qualificatif(
+            trimmedMaximal,
+            trimmedMinimal,
+            null
+        );
+
+        if (isUpdate) {
+            newQualificatif.id = initialData?.id;
         }
-            const newQualificatif = new Qualificatif(
-                maximal,
-                minimal,
-                null
-            );
 
+        const qualificatifService = new QualificatifService();
+
+        const handleSuccess = () => {
+            setMinimal("");
+            setMaximal("");
+            handleOpen();
             if (isUpdate) {
-                newQualificatif.id = initialData?.id;
-            }
-
-            const qualificatifService = new QualificatifService();
-
-            const handleSuccess = () => {
-                setMinimal("");
-                setMaximal("");
-                handleOpen();
                 messageApi.open({
                     type: 'success',
-                    content: 'Opération réalisé avec succès ',
-                    duration: 15,
-                });
-            };
-
-            const handleFailure = (error: any) => {
-                handleOpen();
+                    content: `La modification du couple de qualificatifs : ${minimal} / ${maximal} est réalisée avec succès.`,
+                    duration: 10,
+                });}else {
                 messageApi.open({
-                    type: 'error',
-                    content: " Opération annulé, demande non valide ",
-                    duration: 15,
+                    type: 'success',
+                    content: `La création du couple de qualificatifs : ${minimal} / ${maximal} est réalisée avec succès.`,
+                    duration: 10,
                 });
-            };
-
-            if (isUpdate) {
-                qualificatifService.updateQualificatif(newQualificatif)
-                    .then(handleSuccess)
-                    .catch(handleFailure);
-            } else {
-                qualificatifService.addQualificatif(newQualificatif)
-                    .then(handleSuccess)
-                    .catch(handleFailure);
             }
+        };
+
+        const handleFailure = (error: any) => {
+            handleOpen();
+            messageApi.open({
+                type: 'error',
+                content: `Opération annulée, le minimal : ${minimal} ,ou, le maximal : ${maximal} existe déjà.`,
+                duration: 10,
+            });
+        };
+
+        if (isUpdate) {
+            qualificatifService.updateQualificatif(newQualificatif)
+                .then(handleSuccess)
+                .catch(handleFailure);
+        } else {
+            qualificatifService.addQualificatif(newQualificatif)
+                .then(handleSuccess)
+                .catch(handleFailure);
+        }
     };
 
     return (
@@ -150,10 +158,10 @@ export function QualificatifForm({ open, setOpen ,isUpdate,initialData}: DialogW
                 placeholder={undefined}
                 style={{ zIndex: 10 }} // Assurez-vous que la boîte de dialogue a un z-index inférieur à celui de l'alerte
             >
-                <Card className="mx-auto w-full max-w-[24rem]" placeholder={undefined}>
+                <Card className="mx-auto w-full max-w-[55rem]" placeholder={undefined}>
                     <CardBody className="flex flex-col gap-4" placeholder={undefined}>
                         <Typography variant="h4" color="blue-gray" placeholder={undefined}>
-                            {isUpdate ? "Modifier un Qualificatif" : "Créer un Qualificatif "}
+                            {isUpdate ? "Modifier un Couple de Qualificatifs" : "Créer un Couple de Qualificatifs "}
                         </Typography>
 
 
@@ -166,13 +174,13 @@ export function QualificatifForm({ open, setOpen ,isUpdate,initialData}: DialogW
                     </CardBody>
                     <CardFooter className="pt-0 flex items-center justify-center" placeholder={undefined}>
                         <Button  placeholder={undefined}
-                                 variant="gradient" color={"green"} onClick={handleSubmit} fullWidth disabled={!isFormValid() || !maximal || maximal.length < 2 && !minimal || minimal.length < 2}>
+                                 variant="gradient" color={"green"} onClick={handleSubmit} fullWidth disabled={ !maximal || maximal.length < 2 && !minimal || minimal.length < 2}>
 
 
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5 inline-block mr-2">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/>
                             </svg>
-                            <span>{isUpdate ? "Modifier" : "Ajouter"}</span>
+                            <span>{isUpdate ? "Modifier" : "Créer"}</span>
                         </Button>
                     </CardFooter>
                     <CardFooter className="pt-0" placeholder={undefined} style={{marginTop:'-3%'}}>

@@ -37,11 +37,13 @@ export function QuestionForm({ open, setOpen, isUpdate, initialData }: DialogWit
     const [intituleError, setIntituleError] = useState<string | null>(null);
     const INTITULE_LIMIT = 64;
     const handleIntituleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value.trim();
-        setIntitule(value);
+        const value = e.target.value;
         if (value.length > INTITULE_LIMIT) {
-            setIntituleError("La saisie est trop longue (64 caractères max)");
+
+            setIntituleError("Vous avez atteint la limite maximale de caractères. (64 max)");
         } else {
+
+            setIntitule(value);
             setIntituleError(null);
         }
     };
@@ -85,15 +87,13 @@ export function QuestionForm({ open, setOpen, isUpdate, initialData }: DialogWit
         setIdQualificatif("");
     }
     const handleSubmit = async () => {
-        if(!isFormValid()){
-            return;
-        }
+        const trimmedIntitule = intitule.trim();
+
         const newQuestion = new Question(
             "QUS", // À remplir avec le type approprié
             idQualificatif,
-            intitule
+            trimmedIntitule
         );
-
         if (isUpdate) {
             newQuestion.id = initialData?.id;
         }
@@ -104,19 +104,26 @@ export function QuestionForm({ open, setOpen, isUpdate, initialData }: DialogWit
             setIntitule("");
             setIdQualificatif(null);
             handleOpen();
-            messageApi.open({
-                type: 'success',
-                content: 'Opération réussie',
-                duration: 15,
-            });
+            if (isUpdate) {
+                messageApi.open({
+                    type: 'success',
+                    content: `La modification de la question : ${intitule}  est réalisée avec succès.`,
+                    duration: 10,
+                });}else {
+                messageApi.open({
+                    type: 'success',
+                    content: `La création de la question : ${intitule}  est réalisée avec succès.`,
+                    duration: 10,
+                });
+            }
         };
 
         const handleFailure = (error: any) => {
             handleOpen();
             messageApi.open({
                 type: 'error',
-                content: error.response.data.message,
-                duration: 15,});
+                content: `Opération annulée, la question : ${intitule}  existe déjà.`,
+                duration: 10,});
         };
 
        if (isUpdate) {
@@ -149,7 +156,7 @@ export function QuestionForm({ open, setOpen, isUpdate, initialData }: DialogWit
                         </Typography>
 
                         <Input
-                            label="Intitulé"
+                            label="Intitulé *"
                             size="lg"
                             value={intitule}
                             onChange={handleIntituleChange}
@@ -157,7 +164,7 @@ export function QuestionForm({ open, setOpen, isUpdate, initialData }: DialogWit
                         {intituleError && <p className="text-sm text-red-500">{intituleError}</p>}
                         {/* Ici, vous pouvez ajouter d'autres champs pour les autres propriétés de la question */}
                         <Select
-                            label="Couple Qualificatif"
+                            label="Couple Qualificatif *"
                             value={idQualificatif ? idQualificatif.id || "" : ""}
                             onChange={(value: string | undefined) => {
                                 if (value) {
@@ -185,7 +192,7 @@ export function QuestionForm({ open, setOpen, isUpdate, initialData }: DialogWit
                             color="green"
                             onClick={handleSubmit}
                             fullWidth
-                            disabled={!isFormValid() || !intitule || intitule.length < 2}
+                            disabled={!intitule || intitule.length < 2 || !idQualificatif}
                             placeholder={undefined}
                         > <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5 inline-block mr-2">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/>

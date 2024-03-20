@@ -8,7 +8,7 @@ import { Qualificatif } from '../../model/Qualificatif';
 import { Statics } from '../statics';
 import {EvaluationService} from "../../services/EvaluationService";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faEye} from "@fortawesome/free-solid-svg-icons";
+import {faBan, faCheckCircle, faEye, faGear, faPaperPlane} from "@fortawesome/free-solid-svg-icons";
 import {faPlay} from "@fortawesome/free-solid-svg-icons/faPlay";
 import {faCircleCheck} from "@fortawesome/free-solid-svg-icons/faCircleCheck";
 import RepondreEvaluation from "./repondreEvaluation";
@@ -24,14 +24,18 @@ const EvaluationEtudiantList = () => {
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
     const [evaluationToUpdate, setEvaluationToUpdate] = useState<Evaluation >();
     const [evaluation, setEvaluation] = useState<Evaluation | undefined>(); // Use initialData to initialize evaluation
+    const [disabledButtons, setDisabledButtons] = useState<{ [id: number]: boolean }>({});
 
     const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
     const evaluationService = new EvaluationService();
     const navigate = useNavigate();
 
     useEffect(() => {
-        loadEvaluations();
-    }, []);
+        fetchData().then((data)=>{
+            console.log(disabledButtons)
+        })
+       // loadEvaluations();
+    }, [evaluations]);
 
     const loadEvaluations = async () => {
         try {
@@ -43,10 +47,51 @@ const EvaluationEtudiantList = () => {
             toast.error("Erreur lors du chargement des évaluations.");
         }
     };
+    const fetchData = async () => {
+        try {
+            const response = await evaluationService.getEvaluationsEtudiant();
+            response.sort((a, b) => b.noEvaluation - a.noEvaluation);
+            setEvaluations(response);
+
+            const updatedDisabledButtons: { [id: number]: boolean } = {};
+            const promises = evaluations.map(async (evaluation) => {
+                const isDisabled = await testDisabled(evaluation.id);
+                updatedDisabledButtons[evaluation.id ?? ''] = isDisabled;
+            });
+            await Promise.all(promises);
+            setDisabledButtons(updatedDisabledButtons);
+        } catch (error) {
+            console.error("Erreur lors du chargement des évaluations:", error);
+            toast.error("Erreur lors du chargement des évaluations.");
+        }
+    };
 
     const toggleSortOrder = () => {
         setSortOrder(sortOrder === "asc" ? "desc" : "asc");
     };
+   /* const estRepondre = async (id: any): Promise<boolean> => {
+        try {
+            const response = await evaluationService.isEtudiantRepondreEvaluation(id);
+            return response?.estRepondre; // Utilisez !! pour convertir la valeur en booléen
+        } catch (error) {
+            console.error("Une erreur s'est produite lors de la récupération des données :", error);
+            return false; // Retourner une valeur par défaut ou gérer l'erreur selon les besoins de votre application
+        }
+    };*/
+    const estRepondre = async (id: any): Promise<boolean> => {
+        try {
+            const response = await evaluationService.isEtudiantRepondreEvaluation(id);
+            return response?.estRepondre; // Utilisez !! pour convertir la valeur en booléen
+        } catch (error) {
+            console.error("Une erreur s'est produite lors de la récupération des données :", error);
+            return false; // Retourner une valeur par défaut ou gérer l'erreur selon les besoins de votre application
+        }
+    };
+
+    const testDisabled=async (id: any) => {
+        return await estRepondre(id);
+    }
+
     const handleOpenDialog = (evaluation:any) => {
         setEvaluationToUpdate(evaluation)
         setDialogOpen(true);
@@ -67,25 +112,30 @@ const EvaluationEtudiantList = () => {
 
 
     const handleEtat = (etat: string) => {
+        // Style pour les spans
+        const spanStyle: React.CSSProperties = {
+            padding: '0.3rem 1rem', // Ajustez les valeurs de marge selon vos besoins
+            fontWeight: '600',
+            borderRadius: '0.5rem', // Arrondi des coins
+            display: 'inline-block',
+            textAlign: 'center' as React.CSSProperties['textAlign'], // Forcer le type TextAlign
+            minWidth: '13rem', // Largeur fixe pour les spans
+        };
+
         switch (etat) {
             case "ELA":
-                // Traitement à effectuer lorsque etat === "ELA"
-                return <span className="px-2 py-1 font-semibold leading-tight text-orange-700 bg-orange-100 rounded-sm mr-6">En cours d'élaboration</span>;
+                return <span style={{ ...spanStyle, color: '#D18000', backgroundColor: '#FFDAB9' }}> En cours d'élaboration</span>;
 
             case "DIS":
-                // Traitement à effectuer lorsque etat === "DIS"
-                return <span className="px-2 py-1 font-semibold leading-tight text-green-800 bg-green-100 rounded-sm mr-6">Mise à disposition</span>;
+                return <span style={{ ...spanStyle, color: '#008000', backgroundColor: '#98FB98' }}> Mise à disposition</span>;
 
             case "CLO":
-                // Traitement à effectuer lorsque etat === "CLO"
-                return <span className="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-sm mr-6">Clôturée</span>;
+                return <span style={{ ...spanStyle, color: '#8B0000', backgroundColor: '#FFC0CB' }}>  Clôturée</span>;
 
             default:
-                // Traitement par défaut si etat ne correspond à aucun des cas précédents
-                break;
+                return null;
         }
     };
-
     const handleRepondre = (id:any) => {
         // Supposons que vous avez un ID à passer
 
@@ -113,35 +163,35 @@ const EvaluationEtudiantList = () => {
                                     <thead className="bg-gray-50 dark:bg-gray-800">
                                     <tr>
                                         <th scope="col"
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold" style={{ textAlign: "center" }}>No
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400  tracking-wider font-semibold" style={{ textAlign: "center" }}>No
                                             Évaluation
                                         </th>
                                         <th scope="col"
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold" style={{ textAlign: "center" }}>Désignation
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400  tracking-wider font-semibold" style={{ textAlign: "center" }}>Désignation
                                         </th>
                                         <th scope="col"
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold"style={{ textAlign: "center" }}>Code
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400  tracking-wider font-semibold"style={{ textAlign: "center" }}>Code
                                             Formation
                                         </th>
 
                                         <th scope="col"
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold"style={{ textAlign: "center" }}>Enseignant
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400  tracking-wider font-semibold"style={{ textAlign: "center" }}>Enseignant
                                         </th>
                                         <th scope="col"
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold"style={{ textAlign: "center" }}>Promotion
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400  tracking-wider font-semibold"style={{ textAlign: "center" }}>Promotion
                                         </th>
                                         <th scope="col"
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold"style={{ textAlign: "center" }}>UE
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400  tracking-wider font-semibold"style={{ textAlign: "center" }}>UE
                                         </th>
                                         <th scope="col"
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold" style={{ textAlign: "center" }}>EC
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400  tracking-wider font-semibold" style={{ textAlign: "center" }}>EC
                                         </th>
 
                                         <th scope="col"
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold" style={{ textAlign: "center" }}>État
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400  tracking-wider font-semibold" style={{ textAlign: "center" }}>État
                                         </th>
                                         <th scope="col"
-                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold" >Action
+                                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400  tracking-wider font-semibold" >Action
                                         </th>
                                     </tr>
                                     </thead>
@@ -232,25 +282,29 @@ const EvaluationEtudiantList = () => {
 
                                             <td className="px-4 py-4 text-sm whitespace-nowrap" style={{ textAlign: "center" }}>
                                                 <div className="flex items-center justify-center gap-x-6">
-
-
                                                     <button
-                                                        className="text-orange-300 transition-colors duration-200 dark:text-gray-300 focus:outline-none"
+                                                        disabled={!disabledButtons[evaluation.id]}
+                                                        className={`transition - colors duration-200 hover:text-blue-900 focus:outline-none ${!disabledButtons[evaluation.id] ? "text-gray-500 dark:text-gray-500 cursor-not-allowed opacity-50" : "text-blue-900 dark:hover:text-blue-900"}`}
+                                                        title={!disabledButtons[evaluation.id ?? '']? "Vous n'avez pas une réponse à consulter" : ""}
                                                         onClick={() => handleOpenDialog(evaluation)}>
                                                         <FontAwesomeIcon icon={faEye} className="w-5 h-5"/>
                                                     </button>
                                                     <button
-                                                        disabled={evaluation.etat === "CLO"}
-                                                        title={evaluation.etat === "CLO" ? "Évaluation est clôturée" : ""}
-                                                        onClick={()=>handleRepondre(evaluation.id)}
+                                                        disabled={disabledButtons[evaluation.id]}
+                                                        className={`transition - colors duration-200 hover:text-green-900 focus:outline-none ${disabledButtons[evaluation.id] ? "text-gray-500 dark:text-gray-500 cursor-not-allowed opacity-50" : "text-green-900 dark:hover:text-green-900"}`}
+                                                    title={disabledButtons[evaluation.id] ? "Vous avez déjà répondu à cette Évaluation" : ""}
+                                                        onClick={() => handleRepondre(evaluation.id)}
                                                     >
-                                                        <img
-                                                            width="20"
-                                                            height="20"
-                                                            src="https://img.icons8.com/external-microdots-premium-microdot-graphic/20/external-exam-education-science-vol1-microdots-premium-microdot-graphic.png"
-                                                            alt="external-exam-education-science-vol1-microdots-premium-microdot-graphic"
-                                                            className={evaluation.etat === "CLO" ? "filter grayscale" : ""}
-                                                        />
+                                                        <div>
+                                                            <FontAwesomeIcon
+                                                                className={`text - light - green - 800 ${disabledButtons[evaluation.id] ? "filter grayscale" : ""}`}
+                                                                icon={faCheckCircle}
+                                                                style={{
+                                                                    width: '1.25rem',
+                                                                    height: '1.25rem'
+                                                                }} // Taille personnalisée pour correspondre à celle de l'icône "eye"
+                                                            />
+                                                        </div>
                                                     </button>
 
                                                 </div>

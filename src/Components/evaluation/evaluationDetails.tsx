@@ -32,6 +32,18 @@ export function EvaluationDetails({open, setOpen, initialData}: DialogWithFormPr
         setShowQuestions(initialData?.rubriques.map(() => false) ?? []);
     }, [initialData]);
 
+    function handleEtat2(etat: string, evaluation: any) {
+        switch (etat) {
+            case "ELA":
+                return `Êtes-vous sûr(e) de vouloir publier l'évaluation "${evaluation.designation}" ?`;
+            case "DIS":
+                return `Êtes-vous sûr(e) de vouloir clôturer l'évaluation "${evaluation.designation}" ?`;
+            case "CLO":
+                return `Impossible de changer l'état de l'évaluation "${evaluation.designation}" car elle est déjà clôturée.`;
+            default:
+                return "Changer l'état de l'évaluation !";
+        }
+    }
 
 
     function handleAvancerWorkflow(id: number | undefined) {
@@ -86,18 +98,6 @@ export function EvaluationDetails({open, setOpen, initialData}: DialogWithFormPr
         });
     };
 
-    function handleEtat2(etat: string) {
-        switch (etat) {
-            case "ELA":
-                return "Êtes-vous sûr(e) de vouloir publier cette évaluation ?";
-            case "DIS":
-                return "Êtes-vous sûr(e) de vouloir clôturer cette évaluation ?";
-            case "CLO":
-                return "Impossible de changer l'état de cette évaluation car elle est déjà clôturée.";
-            default:
-                return "Changer l'état de l'évaluation !";
-        }
-    }
 
     const handleQuestionDoubleClick = (index: number) => {
         setShowQuestions(prev => {
@@ -192,7 +192,7 @@ export function EvaluationDetails({open, setOpen, initialData}: DialogWithFormPr
                             </div>
                             <div className="flex ">
                     <span
-                        className="text-sm border bg-blue-600 font-bold uppercase border-2 rounded-l px-4 py-2 bg-gray-50 whitespace-no-wrap w-2/6">Element Constitutif</span>
+                        className="text-sm border bg-blue-600 font-bold uppercase border-2 rounded-l px-4 py-2 bg-gray-50 whitespace-no-wrap w-2/6">Élèment Constitutif</span>
                                 <p
                                     className="px-4 border-l-0 cursor-default text-blackborder-gray-300 focus:outline-none  rounded-md rounded-l-none shadow-sm -ml-1 w-4/6 mt-2"
                                 >{evaluation?.codeEC ? evaluation.codeEC : '-- '}</p>
@@ -287,7 +287,7 @@ export function EvaluationDetails({open, setOpen, initialData}: DialogWithFormPr
                 open={dialogueChangeOpen}
                 onClose={() => setDialogeChangeOpen(false)}
                 title="Faire Avancé l'état d'une evaluation"
-                messageComp={handleEtat2(evaluation?.etat)}
+                messageComp={handleEtat2(evaluation?.etat,evaluation)}
                 eva={evaluation}
                 name={"evaluation"}
                 setOpen={setDialogeChangeOpen} />

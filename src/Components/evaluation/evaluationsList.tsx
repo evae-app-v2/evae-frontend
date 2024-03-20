@@ -8,9 +8,10 @@ import { Qualificatif } from '../../model/Qualificatif';
 import { Statics } from '../statics';
 import { EvaluationService } from "../../services/EvaluationService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye } from "@fortawesome/free-solid-svg-icons";
+import { faBan, faEye, faGear, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { EvaluationForm } from './evaluationForm';
-import {DialogChangeEtat} from "./dialogueChangeEtat";
+import { DialogChangeEtat } from "./dialogueChangeEtat";
+
 
 const EvaluationsList = () => {
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -31,19 +32,6 @@ const EvaluationsList = () => {
     const evaluationService = new EvaluationService();
     const [messageToDelete, setMessageToDelete] = useState("");
     const [initialLoadDone, setInitialLoadDone] = useState(false); // Etat pour suivre si le chargement initial est effectué
-
-    /*const loadEvaluations = async () => {
-        try {
-            const response = await evaluationService.findAllEvaluations();
-            setEvaluations(response);
-        } catch (error) {
-            console.error("Erreur lors du chargement des évaluations:", error);
-            toast.error("Erreur lors du chargement des évaluations.");
-        }
-    };*/
-
-
-
 
 
 
@@ -83,11 +71,11 @@ const EvaluationsList = () => {
         setIsUpdate(true);
         setIsEvaluationFormOpen(true);
     };
-    const handleOpenDialogDelete = (id: any , evaluation: Evaluation) => {
+    const handleOpenDialogDelete = (id: any, evaluation: Evaluation) => {
         console.log(id);
         setIdEvaluation(id)
         setEvaluation(evaluation);
-        const message = `Voulez-vous vraiment supprimer l'évaluation ${evaluation.designation}?`;
+        const message = `Voulez-vous vraiment supprimer l'évaluation "${evaluation.designation}" ?`;
         setMessageToDelete(message);
         setDialogDeleteOpen(true);
 
@@ -102,34 +90,45 @@ const EvaluationsList = () => {
     };
 
     const handleEtat = (etat: string) => {
+        // Style pour les spans
+        const spanStyle: React.CSSProperties = {
+            padding: '0.3rem 1rem', // Ajustez les valeurs de marge selon vos besoins
+            fontWeight: '600',
+            borderRadius: '0.5rem', // Arrondi des coins
+            display: 'inline-block',
+            textAlign: 'center' as React.CSSProperties['textAlign'], // Forcer le type TextAlign
+            minWidth: '13rem', // Largeur fixe pour les spans
+        };
+
         switch (etat) {
             case "ELA":
-                return <span className="px-2 py-1 font-semibold leading-tight text-orange-700 bg-orange-100 rounded ">En cours d'élaboration</span>;
+                return <span style={{ ...spanStyle, color: '#D18000', backgroundColor: '#FFDAB9' }}> <FontAwesomeIcon icon={faGear} /> En cours d'élaboration</span>;
 
             case "DIS":
-                return <span className="px-2 py-1 font-semibold leading-tight text-green-800 bg-green-100 rounded ">Mise à disposition</span>;
+                return <span style={{ ...spanStyle, color: '#008000', backgroundColor: '#98FB98' }}> <FontAwesomeIcon icon={faPaperPlane} /> Mise à disposition</span>;
 
             case "CLO":
-                return <span className="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded ">Clôturée</span>;
+                return <span style={{ ...spanStyle, color: '#8B0000', backgroundColor: '#FFC0CB' }}> <FontAwesomeIcon icon={faBan} /> Clôturée</span>;
 
             default:
                 return null;
         }
     };
-    function handleEtat2(etat: string) {
+    function handleEtat2(etat: string, evaluation: any) {
         switch (etat) {
             case "ELA":
-                return "Êtes-vous sûr(e) de vouloir publier cette évaluation ?";
+                return `Êtes-vous sûr(e) de vouloir publier l'évaluation "${evaluation.designation}" ?`;
             case "DIS":
-                return "Êtes-vous sûr(e) de vouloir clôturer cette évaluation ?";
+                return `Êtes-vous sûr(e) de vouloir clôturer l'évaluation "${evaluation.designation}" ?`;
             case "CLO":
-                return "Impossible de changer l'état de cette évaluation car elle est déjà clôturée.";
+                return `Impossible de changer l'état de l'évaluation "${evaluation.designation}" car elle est déjà clôturée.`;
             default:
                 return "Changer l'état de l'évaluation !";
         }
     }
 
-    const handleChange= (evaluation:any) => {
+
+    const handleChange = (evaluation: any) => {
         setEvaluation(evaluation);
         setDialogeChangeOpen(true);
 
@@ -141,7 +140,7 @@ const EvaluationsList = () => {
             <section className="container px-4 mx-auto mt-7 ">
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-x-3 ">
                     <h2 className="text-lg font-medium text-gray-800 dark:text-white mb-4 sm:mb-0">
-                        Liste des Évaluations &nbsp;
+                        Liste des évaluations &nbsp;
                         <span className="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full dark:bg-gray-800 dark:text-blue-400">{evaluations.length}</span>
                     </h2>
                     <Button
@@ -184,39 +183,38 @@ const EvaluationsList = () => {
                                             <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{ textAlign: "center" }}>{evaluation.promotion}</td>
                                             <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{ textAlign: "center" }}>{evaluation.codeUE}</td>
                                             <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{ textAlign: "center" }}>{evaluation.codeEC ? evaluation.codeEC : '--'}</td>
-                                            <td className="px-4 py-4 text-sm font-medium  text-center text-gray-700 whitespace-nowrap"><button onClick={()=>handleChange(evaluation)}> {handleEtat(evaluation.etat)}</button></td>
+                                            <td className="px-4 py-4 text-sm font-medium  text-center text-gray-700 whitespace-nowrap"><button onClick={() => handleChange(evaluation)}> {handleEtat(evaluation.etat)}</button></td>
 
                                             <td className="px-4 py-4 text-sm whitespace-nowrap">
                                                 <div className="flex items-center justify-center gap-x-6">
                                                     <button
-                                                        className="text-orange-300 transition-colors duration-200 dark:hover:text-yellow-500 dark:text-gray-300 hover:text-yellow-500 focus:outline-none"
-                                                        onClick={() => handleOpenDialog(evaluation)} >
+                                                        className="text-green-300 transition-colors duration-200 dark:hover:text-green-500 dark:text-gray-300 hover:text-green-500 focus:outline-none" onClick={() => handleOpenDialog(evaluation)} >
                                                         <FontAwesomeIcon icon={faEye} className="w-5 h-5" />
 
                                                     </button>
 
-                                                        <button
-                                                            onClick={() => handleOpenDialogUpdate(evaluation)}
-                                                            disabled={evaluation.etat !== "ELA"}
-                                                            title={evaluation.etat !== "ELA" ? "Impossible de modifier cette évaluation car elle n'est plus en cours d'élaboration." : ""}
-                                                            className={`transition-colors duration-200 hover:text-blue-600 focus:outline-none ${evaluation.etat !== "ELA" ? "text-gray-500 dark:text-gray-500 cursor-not-allowed opacity-50" : "text-blue-600 dark:hover:text-yellow-400"}`}                                                        >
+                                                    <button
+                                                        onClick={() => handleOpenDialogUpdate(evaluation)}
+                                                        disabled={evaluation.etat !== "ELA"}
+                                                        title={evaluation.etat !== "ELA" ? "Impossible de modifier cette évaluation car elle n'est plus en cours d'élaboration." : ""}
+                                                        className={`transition-colors duration-200 hover:text-blue-600 focus:outline-none ${evaluation.etat !== "ELA" ? "text-gray-500 dark:text-gray-500 cursor-not-allowed opacity-50" : "text-blue-600 dark:hover:text-yellow-400"}`}                                                        >
 
-                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                                            </svg>
-                                                        </button>
-                                                        <button
-                                                            onClick={() => handleOpenDialogDelete(evaluation.noEvaluation, evaluation)}
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                                        </svg>
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleOpenDialogDelete(evaluation.noEvaluation, evaluation)}
 
-                                                            disabled={evaluation.etat !== "ELA"}
-                                                            title={evaluation.etat !== "ELA" ? "Impossible de supprimer cette évaluation car elle n'est plus en cours d'élaboration." : ""}
+                                                        disabled={evaluation.etat !== "ELA"}
+                                                        title={evaluation.etat !== "ELA" ? "Impossible de supprimer cette évaluation car elle n'est plus en cours d'élaboration." : ""}
 
-                                                            className={`transition-colors duration-200 hover:text-red-500 focus:outline-none ${evaluation.etat !== "ELA" ? "text-gray-500 dark:text-gray-500 cursor-not-allowed opacity-50" : "text-red-500 dark:hover:text-red-400"}`}                                                        >
+                                                        className={`transition-colors duration-200 hover:text-red-500 focus:outline-none ${evaluation.etat !== "ELA" ? "text-gray-500 dark:text-gray-500 cursor-not-allowed opacity-50" : "text-red-500 dark:hover:text-red-400"}`}                                                        >
 
-                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                                            </svg>
-                                                        </button>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                                        </svg>
+                                                    </button>
                                                 </div>
                                             </td>
 
@@ -258,7 +256,7 @@ const EvaluationsList = () => {
                 open={dialogueChangeOpen}
                 onClose={() => setDialogeChangeOpen(false)}
                 title="Faire Avancé l'état d'une evaluation"
-                messageComp={handleEtat2(evaluation?.etat)}
+                messageComp={handleEtat2(evaluation?.etat,evaluation)}
                 eva={evaluation}
                 name={"evaluation"}
                 setOpen={setDialogeChangeOpen} />
