@@ -245,28 +245,28 @@ const RubriqueQuestion = () => {
                                     <Droppable droppableId="rubriques" type="rubriques">
                                         {(provided) => (
                                             <table
-                                                className="w-full divide-y divide-gray-200 dark:divide-gray-700"
+                                                className="w-full divide-y divide-gray-200 dark:divide-gray-700 mr-4"
                                                 {...provided.droppableProps}
                                                 ref={provided.innerRef}
                                             >
-                                                <thead className="bg-gray-50 dark:bg-gray-800 sticky top-0">
+                                                <thead className="bg-gray-50 dark:bg-gray-800 sticky top-0 mr-12">
                                                 <tr>
                                                     <th
                                                         scope="col"
-                                                        className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400">
+                                                        className="px-8 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400">
                                                         <div className="flex items-center gap-x-2">
                                                             <span>Désignation</span>
                                                         </div>
                                                     </th>
                                                     <th scope="col"
-                                                        className="px-8 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400">
+                                                        className="px-30 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400 flex justify-center mr-24">
                                                         Action
                                                     </th>
 
                                                 </tr>
                                                 </thead>
                                                 <tbody
-                                                    className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
+                                                    className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900 ">
                                                 {rubriqueQuestionDTOOs.map((rubriqueQuestion: RubriqueQuestionDTOO, index) => (
                                                     <Draggable
                                                         key={index}
@@ -280,13 +280,13 @@ const RubriqueQuestion = () => {
                                                                 tabIndex={0}
                                                                 className={index === highlightedRubriqueIndex ? 'bg-blue-50' : 'bg-white'}
                                                             >
-                                                                <td >
+                                                                <td  style={{ width: '80%' }}>
                                                                     <div
                                                                         onClick={() => setVisibleQuestions((prev) => ({
                                                                             ...prev,
                                                                             [index]: !prev[index]
                                                                         }))}
-                                                                        className=" px-4 py-4 text-sm whitespace-nowrap inline-flex items-center gap-x-3">
+                                                                        className=" px-8 py-4 text-sm whitespace-nowrap inline-flex items-center gap-x-3">
                                                                         <div
                                                                             className="flex items-center gap-x-2">
                                                                             <img src={icon}

@@ -30,6 +30,24 @@ export function RubriqueForm({ open, setOpen ,isUpdate,initialData}: DialogWithF
     const [alertMessage, setALertMessage] = useState<string | null>(null); // Variable d'état pour stocker le message d'erreur
     const [messageApi, contextHolder] = message.useMessage();
 
+
+    const [designationError, setDesignationError] = useState<string | null>(null);
+    const DESIGNATION_LIMIT = 32;
+    const handleDesignationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        if (value.length > DESIGNATION_LIMIT) {
+            setDesignationError("Vous avez atteint la limite maximale de caractères. (32 max)");
+        } else {
+            setDesignation(value);
+            setDesignationError(null);
+        }
+    };
+
+
+    const isFormValid = () => {
+        return designation && designation.length <= DESIGNATION_LIMIT && !designationError;
+    };
+
     useEffect(() => {
         if (initialData) {
             console.log("hani pour update")
@@ -45,10 +63,12 @@ export function RubriqueForm({ open, setOpen ,isUpdate,initialData}: DialogWithF
     };
 
     const handleSubmit = async () => {
+        const trimmedDesignation = designation.trim();
+
         const newRubrique = new Rubrique(
             'RBS',
             null,
-            designation,
+            trimmedDesignation,
             null
         );
 
@@ -113,13 +133,11 @@ export function RubriqueForm({ open, setOpen ,isUpdate,initialData}: DialogWithF
             <Card className="mx-auto w-full max-w-[24rem]" placeholder={undefined}>
                     <CardBody className="flex flex-col gap-4" placeholder={undefined}>
                         <Typography variant="h4" color="blue-gray" placeholder={undefined}>
-                            {isUpdate ? "Modifier " : "Créer "}
-                        </Typography>
-                        <Typography className="-mb-2" variant="h6" placeholder={undefined}>
-                            la nouvelle rubrique
+                            {isUpdate ? "Modifier une Rubrique " : "Créer une Rubrique"}
                         </Typography>
                         <Input label="Désignation *" size="lg" placeholder={undefined} value={designation}
-                               onChange={(e) => setDesignation(e.target.value)} crossOrigin={undefined} />
+                               onChange={handleDesignationChange} crossOrigin={undefined} />
+                        {designationError && <p className="text-sm text-red-500">{designationError}</p>}
                     </CardBody>
                     <CardFooter className="pt-0" placeholder={undefined}>
                         <Button variant="gradient" color="green" onClick={handleSubmit} fullWidth placeholder={undefined}

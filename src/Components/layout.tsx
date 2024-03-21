@@ -22,7 +22,7 @@ const adminMenu = [
         icon: faHouse
     },
     {
-        name: "Couple de Qualificatif",
+        name: "Couple de Qualificatifs",
         path: "/evae/couple-qualificatif",
         icon: faSquarespace
     },
@@ -187,7 +187,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <div
                     className="logo ml-12 dark:text-white transform ease-in-out duration-500 flex-none h-full flex items-center justify-center"
                     style={{fontWeight: "500", marginLeft : "65px"}}>
-                    Module Evaluation
+                    Évaluation des Enseignements
                 </div>
 
                 <div className="grow h-full flex items-center justify-center">
@@ -250,7 +250,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     <div
                         className="flex items-center space-x-3 group bg-gradient-to-r dark:from-cyan-500 dark:to-blue-500 from-indigo-500 via-purple-500 to-purple-500  pl-10 pr-2 py-1 rounded-full text-white  ">
                         <div className="transform ease-in-out duration-300 mr-12">
-                            Module Evaluation
+                            Menu
                         </div>
                     </div>
                 </div>

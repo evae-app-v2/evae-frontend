@@ -290,8 +290,8 @@ const EvaluationEtudiantList = () => {
                                                         <FontAwesomeIcon icon={faEye} className="w-5 h-5"/>
                                                     </button>
                                                     <button
-                                                        disabled={disabledButtons[evaluation.id]}
-                                                        className={`transition - colors duration-200 hover:text-green-900 focus:outline-none ${disabledButtons[evaluation.id] ? "text-gray-500 dark:text-gray-500 cursor-not-allowed opacity-50" : "text-green-900 dark:hover:text-green-900"}`}
+                                                        disabled={disabledButtons[evaluation.id] || evaluation.etat=="CLO"}
+                                                        className={`transition - colors duration-200 hover:text-green-900 focus:outline-none ${(disabledButtons[evaluation.id] || evaluation.etat=="CLO") ? "text-gray-500 dark:text-gray-500 cursor-not-allowed opacity-50" : "text-green-900 dark:hover:text-green-900"}`}
                                                     title={disabledButtons[evaluation.id] ? "Vous avez déjà répondu à cette Évaluation" : ""}
                                                         onClick={() => handleRepondre(evaluation.id)}
                                                     >

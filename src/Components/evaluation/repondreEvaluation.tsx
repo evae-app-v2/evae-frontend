@@ -165,7 +165,7 @@ const RepondreEvaluation = () => {
                         <div
                             className=" text-white font-medium mt-1 rounded-md flex items-center">
                                 <span
-                                    className="text-purple-800 text-sm">Créé par {evaluation?.noEnseignant.nom + " " + evaluation?.noEnseignant.prenom}</span>
+                                    className="text-purple-800 text-sm">Créé par {evaluation?.noEnseignant.prenom + " " + evaluation?.noEnseignant.nom}</span>
                         </div>
                     </div>
                     <div>

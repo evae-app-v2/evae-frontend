@@ -22,8 +22,8 @@ export function EmptyCompoenent() {
                 <div className="flex bg-white" style={{height: '85vh'}}>
                     <div className="flex items-center text-center lg:text-left px-8 md:px-12 lg:w-1/2">
                         <div>
-                            <h2 className="text-3xl font-semibold text-gray-800 md:text-4xl">Transformez vos idées en <span className="text-indigo-600">évaluations</span> concrètes</h2>
-                            <p className="mt-2 text-sm text-gray-500 md:text-base">Notre plateforme vous permet de créer facilement des évaluations pour que les étudiants puissent donner leur avis sur les cours des enseignants. Avec des fonctionnalités intuitives et
+                            <h2 className="text-3xl font-semibold text-gray-800 md:text-4xl">Transformez vos idées en <span className="text-indigo-600">Évaluations</span> concrètes</h2>
+                            <p className="mt-2 text-sm text-gray-500 md:text-base">Notre plateforme vous permet de créer facilement des évaluations pour que les étudiants puissent donner leurs avis sur les cours des enseignants. Avec des fonctionnalités intuitives et
                                 des outils puissants, vous pouvez concevoir des évaluations personnalisées qui répondent aux besoins de votre établissement. Commencez dès maintenant à collecter des retours précieux et à améliorer l'expérience d'apprentissage pour tous.</p>
                         </div>
                     </div>

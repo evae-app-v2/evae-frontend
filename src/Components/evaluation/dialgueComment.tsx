@@ -67,7 +67,7 @@ export function DialgueComment({ data, open, setOpen }: DialogWithFormProps) {
                 </div>
                 <DialogBody placeholder={undefined}>
                     <Typography className="mb-10 -mt-7 " color="gray" variant="lead" placeholder={undefined}>
-                        Vous souhaitez ajouter un commentaire.
+                        Souhaitez-vous laisser un commentaire ?
                     </Typography>
                     <div className="grid gap-6">
                         <Textarea label="Commentaire" placeholder={undefined} value={commentaire} onChange={(e) => setCommentaire(e.target.value)}/>

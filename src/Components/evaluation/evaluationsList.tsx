@@ -37,7 +37,7 @@ const EvaluationsList = () => {
 
     useEffect(() => {
         loadEvaluations();
-    }, []);
+    }, [evaluations]);
 
     const loadEvaluations = async () => {
         try {
@@ -188,7 +188,7 @@ const EvaluationsList = () => {
                                             <td className="px-4 py-4 text-sm whitespace-nowrap">
                                                 <div className="flex items-center justify-center gap-x-6">
                                                     <button
-                                                        className="text-green-300 transition-colors duration-200 dark:hover:text-green-500 dark:text-gray-300 hover:text-green-500 focus:outline-none" onClick={() => handleOpenDialog(evaluation)} >
+                                                        className="text-blue-900 transition-colors duration-200 dark:hover:text-green-500 dark:text-gray-300 hover:text-green-500 focus:outline-none" onClick={() => handleOpenDialog(evaluation)} >
                                                         <FontAwesomeIcon icon={faEye} className="w-5 h-5" />
 
                                                     </button>

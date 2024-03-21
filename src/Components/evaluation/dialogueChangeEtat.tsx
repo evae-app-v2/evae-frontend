@@ -30,11 +30,26 @@ export function DialogChangeEtat({ title, messageComp, eva, name, open, setOpen,
         // Effect
     }, [eva, name]);
 
-    function handleSuccess() {
+    function handleSuccess(etat: string) {
         handleOpen();
+
+        let successMessage = '';
+
+        switch (etat) {
+            case "ELA":
+                successMessage = 'Votre évaluation a été publiée avec succès';
+                break;
+            case "DIS":
+                successMessage = 'Votre évaluation a été clôturée avec succès';
+                break;
+            default:
+                successMessage = 'L\'état de l\'évaluation a été changé avec succès';
+                break;
+        }
+
         messageApi.open({
             type: 'success',
-            content: 'Opération réalisée avec succès',
+            content: successMessage,
             duration: 15,
         });
     }
@@ -86,9 +101,10 @@ export function DialogChangeEtat({ title, messageComp, eva, name, open, setOpen,
         };
 
         evaluationService.avancerWorkflow(id)
-            .then(handleSuccess)
+            .then(() => handleSuccess(eva.etat))
             .catch(handleFailure);
     }
+
 
 
     return (
