@@ -367,7 +367,7 @@ const RepondreEvaluation = () => {
                             </button>
                             <button type="button" onClick={next}
                                     disabled={isDisbledOrNot()}
-                                    title={isDisbledOrNot() ? "Vous devez au moins répondre à une question" : "hello"}
+                                    title={isDisbledOrNot() ? "Vous devez au moins répondre à une question" : ""}
                                     className={`py-2 px-3 inline-flex items-center gap-x-1 text-sm font-semibold rounded-lg border border-transparent  disabled:opacity-50 disabled:pointer-events-none`}
                                     data-hs-stepper-next-btn style={{
                                 backgroundColor: active + 1 != evaluation?.rubriques.length ? "-webkit-linear-gradient(90deg, #ea5c54, #bb6dec)" : "green",

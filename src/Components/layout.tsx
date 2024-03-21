@@ -187,7 +187,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <div
                     className="logo ml-12 dark:text-white transform ease-in-out duration-500 flex-none h-full flex items-center justify-center"
                     style={{fontWeight: "500", marginLeft : "65px"}}>
-                    Évaluation des Enseignements
+                    Gestion des Évaluations
                 </div>
 
                 <div className="grow h-full flex items-center justify-center">
@@ -343,9 +343,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <div className="flex flex-col h-screen justify-between">
                     <div className="mt-negative-3">
                         {children}
-                    </div>
-                    <div className="fixed inset-x-0 bottom-0">
-                        <Footer/>
                     </div>
                 </div>
 

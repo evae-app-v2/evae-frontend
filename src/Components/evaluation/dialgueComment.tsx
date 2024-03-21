@@ -54,6 +54,9 @@ export function DialgueComment({ data, open, setOpen }: DialogWithFormProps) {
         // Perform logout logic, clear local storage, or revoke the authentication token
         navigate("/evae/etud/evaluations"); // Redirect to the login page after logout
     };
+    const handleClose2 = () => {
+        handleGoBack();
+    }
 
     return (
         <>

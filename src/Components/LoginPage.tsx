@@ -109,8 +109,8 @@ export const LoginPage = () => {
                     <div className="absolute bg-black opacity-60 inset-0 z-0"></div>
                     <div className="w-full px-24 z-10">
                         <h1 className="text-5xl font-bold justify-center text-left tracking-wide"
-                            style={{lineHeight: '1.4'}}>Bienvenue sur la plateforme de gestion des évaluations de
-                            l'UBO </h1>
+                            style={{lineHeight: '1.4'}}>Bienvenue sur la plateforme de gestion des Évaluations des Enseignements
+                            </h1>
                         <p className="text-3xl my-4"></p>
                     </div>
 

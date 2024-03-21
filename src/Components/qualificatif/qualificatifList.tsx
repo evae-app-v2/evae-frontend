@@ -149,7 +149,7 @@ const QualificatifList = () => {
                                         <th scope="col"
                                             className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-black-400 dark:text-gray-400">
                                             <button className="flex items-center gap-x-2">
-                                                <span>Minmal</span>
+                                                <span>Minimal</span>
 
                                                 <svg className="h-3" viewBox="0 0 10 11" fill="none"
                                                      xmlns="http://www.w3.org/2000/svg" onClick={() => {
@@ -235,7 +235,7 @@ const QualificatifList = () => {
                                                     <button onClick={() => handleOpenDialogUpdate(qualificatif)}
                                                             disabled={disabledButtons[qualificatif.id]}
                                                             className={`transition-colors duration-200 hover:text-blue-600 focus:outline-none ${disabledButtons[qualificatif.id] ? "text-gray-500 dark:text-gray-500 cursor-not-allowed opacity-50" : "text-blue-600 dark:hover:text-yellow-400"}`}
-                                                            title={disabledButtons[qualificatif.id] ? "Impossible de modifier le couple qualificatif car il est déjà utilisé dans une question" : ""}
+                                                            title={disabledButtons[qualificatif.id] ? "Impossible de modifier le couple de qualificatifs car il est déjà utilisé dans une question" : ""}
                                                     >
                                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                                                              viewBox="0 0 24 24"
@@ -250,7 +250,7 @@ const QualificatifList = () => {
                                                     <button
                                                         onClick={() => handleOpenDialogDelete(qualificatif.id)}
                                                         disabled={disabledButtons[qualificatif.id]}
-                                                        title={disabledButtons[qualificatif.id] ? "Impossible de supprimer le couple qualificatif car il est déjà utilisé dans une question" : ""}
+                                                        title={disabledButtons[qualificatif.id] ? "Impossible de supprimer le couple de qualificatifs car il est déjà utilisé dans une question" : ""}
                                                         className={`transition - colors duration-200 hover:text-red-500 focus:outline-none ${disabledButtons[qualificatif.id] ? "text-gray-500 dark:text-gray-500 cursor-not-allowed opacity-50" : "text-red-500 dark:hover:text-red-400"}`}
                                                     >
                                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none"

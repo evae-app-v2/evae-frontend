@@ -210,7 +210,7 @@ const RubriqueQuestion = () => {
             <section className="container px-4 mx-auto mt-7" style={{zIndex: 5}}>
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-x-3 ">
                     <h2 className="text-lg font-medium text-gray-800 dark:text-white mb-4 sm:mb-0">
-                        Liste des rubriques &nbsp;
+                        Liste des rubriques standards &nbsp;
                         <span
                             className="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full dark:bg-gray-800 dark:text-blue-400">
                             {rubriques.length}
