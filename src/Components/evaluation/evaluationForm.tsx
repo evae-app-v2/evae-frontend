@@ -507,6 +507,8 @@ export function EvaluationForm({ open, setOpen, isUpdate, initialData }: DialogW
         const startDate = new Date(debutReponse);
         const endDate = new Date(finReponse);
         const currentDate = new Date();
+        const yesterday = new Date(currentDate);
+        yesterday.setDate(currentDate.getDate() - 1);
         let isValid = true;
 
         // Réinitialisez les messages d'erreur
@@ -519,11 +521,12 @@ export function EvaluationForm({ open, setOpen, isUpdate, initialData }: DialogW
             isValid = false;
         }
 
-        // La date de début doit être supérieure à la date actuelle
-        if (startDate < currentDate) {
-            setDebutReponseError('La date de début doit être future à la date actuelle.');
+        // La date de début doit être supérieure ou égale à la date de la veille
+        if (startDate <= yesterday) {
+            setDebutReponseError('La date de début doit être future à la date de la veille.');
             isValid = false;
         }
+
 
         return isValid; // Retourne false si une erreur de validation est trouvée
     };

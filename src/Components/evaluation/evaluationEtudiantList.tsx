@@ -34,7 +34,7 @@ const EvaluationEtudiantList = () => {
         fetchData().then((data)=>{
             console.log(disabledButtons)
         })
-       // loadEvaluations();
+        // loadEvaluations();
     }, [evaluations]);
 
     const loadEvaluations = async () => {
@@ -69,15 +69,15 @@ const EvaluationEtudiantList = () => {
     const toggleSortOrder = () => {
         setSortOrder(sortOrder === "asc" ? "desc" : "asc");
     };
-   /* const estRepondre = async (id: any): Promise<boolean> => {
-        try {
-            const response = await evaluationService.isEtudiantRepondreEvaluation(id);
-            return response?.estRepondre; // Utilisez !! pour convertir la valeur en booléen
-        } catch (error) {
-            console.error("Une erreur s'est produite lors de la récupération des données :", error);
-            return false; // Retourner une valeur par défaut ou gérer l'erreur selon les besoins de votre application
-        }
-    };*/
+    /* const estRepondre = async (id: any): Promise<boolean> => {
+         try {
+             const response = await evaluationService.isEtudiantRepondreEvaluation(id);
+             return response?.estRepondre; // Utilisez !! pour convertir la valeur en booléen
+         } catch (error) {
+             console.error("Une erreur s'est produite lors de la récupération des données :", error);
+             return false; // Retourner une valeur par défaut ou gérer l'erreur selon les besoins de votre application
+         }
+     };*/
     const estRepondre = async (id: any): Promise<boolean> => {
         try {
             const response = await evaluationService.isEtudiantRepondreEvaluation(id);
@@ -87,6 +87,8 @@ const EvaluationEtudiantList = () => {
             return false; // Retourner une valeur par défaut ou gérer l'erreur selon les besoins de votre application
         }
     };
+
+
 
     const testDisabled=async (id: any) => {
         return await estRepondre(id);
@@ -143,6 +145,15 @@ const EvaluationEtudiantList = () => {
         navigate(`/evae/repondre-evaluation/${id}`);
     };
 
+    const formatDate = (dateString:any) => {
+        const date = new Date(dateString);
+        const jour = date.getDate().toString().padStart(2, '0');
+        const mois = (date.getMonth() + 1).toString().padStart(2, '0');
+        const annee = date.getFullYear().toString();
+        return `${jour}-${mois}-${annee}`;
+    };
+
+
     return (
         <>
             <section className="container px-4 mx-auto mt-7 ">
@@ -185,7 +196,10 @@ const EvaluationEtudiantList = () => {
                                         </th>
                                         <th scope="col"
                                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400  tracking-wider font-semibold" style={{ textAlign: "center" }}>EC
-                                        </th>
+                                        </th><th scope="col"
+                                                 className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400  tracking-wider font-semibold" style={{ textAlign: "center" }}>Fin de réponse
+                                    </th>
+
 
                                         <th scope="col"
                                             className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400  tracking-wider font-semibold" style={{ textAlign: "center" }}>État
@@ -274,6 +288,16 @@ const EvaluationEtudiantList = () => {
                                                     <div className="flex items-center gap-x-2">
                                                         <div>
                                                             <h2 className="font-medium text-gray-800 dark:text-white"
+                                                                style={{textAlign: "center"}}> {formatDate(evaluation.finReponse)}</h2>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap" style={{ textAlign: "center" }}>
+                                                <div className="inline-flex items-center gap-x-3">
+                                                    <div className="flex items-center gap-x-2">
+                                                        <div>
+                                                            <h2 className="font-medium text-gray-800 dark:text-white"
                                                                 style={{textAlign: "center"}}>{handleEtat(evaluation.etat)}</h2>
                                                         </div>
                                                     </div>
@@ -292,7 +316,7 @@ const EvaluationEtudiantList = () => {
                                                     <button
                                                         disabled={disabledButtons[evaluation.id] || evaluation.etat=="CLO"}
                                                         className={`transition - colors duration-200 hover:text-green-900 focus:outline-none ${(disabledButtons[evaluation.id] || evaluation.etat=="CLO") ? "text-gray-500 dark:text-gray-500 cursor-not-allowed opacity-50" : "text-green-900 dark:hover:text-green-900"}`}
-                                                    title={disabledButtons[evaluation.id] ? "Vous avez déjà répondu à cette Évaluation." : ""}
+                                                        title={disabledButtons[evaluation.id] ? "Vous avez déjà répondu à cette Évaluation." : ""}
                                                         onClick={() => handleRepondre(evaluation.id)}
                                                     >
                                                         <div>
